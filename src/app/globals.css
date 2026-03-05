@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+@theme {
+  /* 上水道・清澄な水をイメージしたカラーパレット（黒なし） */
+  --color-primary-deep: #023E8A;
+  --color-primary-main: #0077B6;
+  --color-primary-light: #0096C7;
+  --color-secondary-vibrant: #48CAE4;
+  --color-accent-soft: #CAF0F8;
+  --color-text-premium: #F0F9FF;
+  --color-text-muted: #ADE8F4;
+  --color-text-sub: #457B9D;
+
+  /* グラデーション */
+  --bg-gradient-premium: linear-gradient(135deg, #023E8A 0%, #0077B6 100%);
+  --bg-gradient-fluid: linear-gradient(-45deg, #023E8A, #0077B6, #0096C7, #48CAE4);
+
+  /* タイポグラフィ */
+  --font-sans: var(--font-inter), var(--font-noto-jp), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: #F0F9FF;
+    --foreground: #023E8A;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    @apply antialiased selection:bg-secondary-vibrant selection:text-white;
+    font-feature-settings: "palt";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight font-bold;
+  }
+}
+
+@layer utilities {
+
+  /* ===== グラスモフィズム ===== */
+  .glass-premium {
+    background: rgba(2, 62, 138, 0.25);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(202, 240, 248, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 119, 182, 0.3);
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(72, 202, 228, 0.15);
+  }
+
+  /* ===== テキストシャドウ ===== */
+  .text-shadow-premium {
+    text-shadow: 0 2px 10px rgba(2, 62, 138, 0.4);
+  }
+
+  .text-shadow-strong {
+    text-shadow: 0 4px 20px rgba(2, 62, 138, 0.6);
+  }
+
+  /* ===== テキストグラデーション ===== */
+  .text-gradient-water {
+    background: linear-gradient(135deg, #0077B6 0%, #48CAE4 50%, #00B4D8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-premium {
+    background: linear-gradient(135deg, #023E8A 0%, #0077B6 40%, #48CAE4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== 流体アニメーション（改良版） ===== */
+  .animate-fluid-bg {
+    background-size: 400% 400%;
+    animation: gradient-flow 15s ease infinite;
+  }
+
+  @keyframes gradient-flow {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* ===== メッシュグラデーション ===== */
+  .animate-mesh-bg {
+    background-size: 300% 300%;
+    animation: mesh-flow 20s ease infinite;
+  }
+
+  @keyframes mesh-flow {
+    0% {
+      background-position: 0% 0%;
+    }
+
+    25% {
+      background-position: 100% 0%;
+    }
+
+    50% {
+      background-position: 100% 100%;
+    }
+
+    75% {
+      background-position: 0% 100%;
+    }
+
+    100% {
+      background-position: 0% 0%;
+    }
+  }
+
+  /* ===== オーロラのような光彩ライン ===== */
+  .aurora-line {
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(72, 202, 228, 0.0) 10%,
+        rgba(72, 202, 228, 0.6) 30%,
+        rgba(0, 180, 216, 0.8) 50%,
+        rgba(72, 202, 228, 0.6) 70%,
+        rgba(72, 202, 228, 0.0) 90%,
+        transparent 100%);
+    background-size: 200% 100%;
+    animation: aurora-sweep 4s ease-in-out infinite;
+  }
+
+  @keyframes aurora-sweep {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* ===== パルスリング（緊急連絡先用） ===== */
+  .pulse-ring {
+    position: relative;
+  }
+
+  .pulse-ring::before,
+  .pulse-ring::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    border: 2px solid currentColor;
+    opacity: 0;
+    animation: pulse-ring-anim 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .pulse-ring::after {
+    animation-delay: 1s;
+  }
+
+  @keyframes pulse-ring-anim {
+    0% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+  }
+
+  /* ===== CTAボタンの光沢スイープ ===== */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%);
+    animation: shine-sweep 3s ease-in-out infinite;
+  }
+
+  @keyframes shine-sweep {
+    0% {
+      left: -100%;
+    }
+
+    50% {
+      left: 120%;
+    }
+
+    100% {
+      left: 120%;
+    }
+  }
+
+  /* ===== カードのグラデーション左ボーダー ===== */
+  .border-gradient-left {
+    position: relative;
+  }
+
+  .border-gradient-left::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 3px;
+    height: 80%;
+    background: linear-gradient(180deg, #48CAE4, #0077B6, #023E8A);
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .border-gradient-left:hover::before {
+    opacity: 1;
+  }
+
+  /* ===== ホバーグロウ（SNSアイコン等） ===== */
+  .hover-glow {
+    transition: all 0.4s ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow:
+      0 0 15px rgba(72, 202, 228, 0.4),
+      0 0 30px rgba(72, 202, 228, 0.2);
+  }
+
+  /* ===== ドロップシャドウ ===== */
+  .shadow-premium {
+    box-shadow:
+      0 10px 15px -3px rgba(0, 119, 182, 0.12),
+      0 4px 6px -2px rgba(0, 119, 182, 0.06);
+  }
+
+  .shadow-soft-xl {
+    box-shadow:
+      0 20px 25px -5px rgba(0, 119, 182, 0.08),
+      0 10px 10px -5px rgba(0, 119, 182, 0.04);
+  }
+
+  .shadow-glow {
+    box-shadow:
+      0 10px 40px -10px rgba(0, 119, 182, 0.25),
+      0 0 20px rgba(72, 202, 228, 0.1);
+  }
+
+  .shadow-glow-lg {
+    box-shadow:
+      0 20px 60px -15px rgba(0, 119, 182, 0.3),
+      0 0 40px rgba(72, 202, 228, 0.15);
+  }
+
+  /* ===== フローティング装飾のアニメーション ===== */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  .animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  @keyframes float-slow {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-20px) rotate(3deg);
+    }
+  }
+
+  /* ===== 波紋アニメーション ===== */
+  .animate-ripple {
+    animation: ripple 3s ease-out infinite;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+}
