@@ -6,6 +6,8 @@ import { Calendar, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+import { PageHeader } from '@/components/PageHeader';
+
 export default function NewsPage() {
     const [news, setNews] = React.useState<News[]>([]);
 
@@ -37,39 +39,11 @@ export default function NewsPage() {
 
     return (
         <div className="min-h-screen pt-20">
-            {/* ページヘッダー */}
-            <div className="bg-primary-deep py-16 md:py-24 relative overflow-hidden">
-                <div className="absolute inset-0 animate-fluid-bg bg-gradient-to-br from-primary-deep to-primary-main opacity-50" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.nav
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center justify-center space-x-2 md:space-x-3 text-xs md:text-sm font-black text-secondary-vibrant uppercase tracking-[0.2em] md:tracking-[0.3em] mb-5 md:mb-8 text-shadow-premium"
-                    >
-                        <Link href="/" className="hover:text-white transition-colors">Home</Link>
-                        <ChevronRight size={12} strokeWidth={3} className="md:hidden" />
-                        <ChevronRight size={14} strokeWidth={3} className="hidden md:block" />
-                        <span className="text-white">News</span>
-                    </motion.nav>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-3xl md:text-6xl font-black text-white text-shadow-strong"
-                    >
-                        お知らせ
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="mt-4 md:mt-6 text-white text-xs md:text-base max-w-xl mx-auto leading-relaxed font-bold text-shadow-premium"
-                    >
-                        企業団からの最新情報、議会報告、工事情報など
-                        市民の皆様へ向けた情報を随時更新しています。
-                    </motion.p>
-                </div>
-            </div>
+            <PageHeader
+                title="お知らせ"
+                subtitle={<>企業団からの最新情報、議会報告、工事情報など<br className="md:hidden" />市民の皆様へ向けた情報を随時更新しています。</>}
+                enTitle="News"
+            />
 
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
                 <div className="flex flex-col space-y-4 md:space-y-6">

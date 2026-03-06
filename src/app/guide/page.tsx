@@ -5,6 +5,8 @@ import { CreditCard, FileText, Wrench, ChevronRight, Download, HelpCircle, Arrow
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+import { PageHeader } from '@/components/PageHeader';
+
 export default function GuidePage() {
     const guides = [
         {
@@ -44,44 +46,13 @@ export default function GuidePage() {
 
     return (
         <div className="min-h-screen pt-20">
-            {/* ページヘッダー */}
-            <div className="bg-primary-deep py-16 md:py-32 relative overflow-hidden">
-                <div className="absolute inset-0 animate-mesh-bg bg-gradient-to-br from-primary-deep via-primary-main to-primary-light opacity-60" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/50 via-transparent to-transparent" />
-                <div className="absolute top-[25%] right-[15%] w-28 md:w-44 h-28 md:h-44 bg-secondary-vibrant/10 rounded-full blur-[60px] animate-float" />
-                <div className="absolute bottom-[35%] left-[8%] w-20 md:w-36 h-20 md:h-36 bg-primary-light/15 rounded-full blur-[50px] animate-float-slow" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.nav
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center justify-center space-x-2 md:space-x-3 text-xs md:text-sm font-black text-secondary-vibrant uppercase tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-10 text-shadow-premium"
-                    >
-                        <Link href="/" className="hover:text-white transition-colors">Home</Link>
-                        <ChevronRight size={12} strokeWidth={3} className="md:hidden" />
-                        <ChevronRight size={14} strokeWidth={3} className="hidden md:block" />
-                        <span className="text-white">Service Guide</span>
-                    </motion.nav>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-3xl md:text-7xl font-black text-white leading-tight text-shadow-strong"
-                    >
-                        手続き・料金
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="mt-5 md:mt-8 text-white text-sm md:text-xl max-w-2xl mx-auto leading-relaxed font-bold text-shadow-premium"
-                    >
-                        お引っ越しの際のお手続きや、毎月のお支払い方法、
-                        故障時の対応など、暮らしに役立つガイドです。
-                    </motion.p>
-                </div>
-            </div>
+            <PageHeader
+                title="手続き・料金"
+                subtitle="お引っ越しの際のお手続きや、毎月のお支払い方法、故障時の対応など、暮らしに役立つガイドです。"
+                enTitle="Service Guide"
+            />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 space-y-16 md:space-y-32">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                     {guides.map((guide, idx) => (
                         <motion.div

@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 
+import { PageHeader } from '@/components/PageHeader';
+
 export default function NewsDetailPage() {
     const params = useParams();
     const id = params.id as string;
@@ -64,31 +66,19 @@ export default function NewsDetailPage() {
 
     return (
         <div className="min-h-screen pt-20 pb-32">
-            {/* Background Decor */}
-            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-main/10 to-transparent pointer-events-none" />
+            <PageHeader
+                title="お知らせ詳細"
+                enTitle="News Detail"
+                breadcrumbs={[{ name: 'News', href: '/news' }]}
+            />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-16 md:pt-24">
-                {/* Navigation / Breadcrumb */}
-                <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="mb-12"
-                >
-                    <Link
-                        href="/news"
-                        className="inline-flex items-center space-x-3 text-primary-main font-black text-sm hover:translate-x-[-8px] transition-transform"
-                    >
-                        <ArrowLeft size={20} />
-                        <span className="tracking-widest uppercase">Back to List</span>
-                    </Link>
-                </motion.div>
-
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-16 md:pt-24 space-y-12">
                 {/* Article Header */}
                 <motion.header
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="bg-white p-10 md:p-16 rounded-[3rem] shadow-soft-xl border border-slate-50 mb-12"
+                    className="bg-white p-10 md:p-16 rounded-[3rem] shadow-soft-xl border border-slate-50"
                 >
                     <div className="flex flex-wrap items-center gap-6 mb-10">
                         <div className="flex items-center space-x-3 text-text-sub font-bold text-sm bg-slate-50 px-5 py-2 rounded-full">
