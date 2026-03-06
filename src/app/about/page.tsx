@@ -155,15 +155,13 @@ export default function AboutPage() {
 
                             {(section as any).link && (
                                 <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
-                                    <a
+                                    <Link
                                         href={(section as any).link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
                                         className="inline-flex items-center gap-2 text-primary-main font-bold text-xs md:text-sm hover:underline"
                                     >
-                                        <ArrowUpRight size={16} />
+                                        <ChevronRight size={16} />
                                         {(section as any).link.label}
-                                    </a>
+                                    </Link>
                                 </div>
                             )}
                         </motion.div>
