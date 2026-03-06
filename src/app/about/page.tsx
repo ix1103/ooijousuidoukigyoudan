@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Building2, Target, ChevronRight, ShieldCheck, MapPin, Globe } from 'lucide-react';
+import { Building2, Target, ChevronRight, ShieldCheck, MapPin, Globe, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -17,7 +17,8 @@ export default function AboutPage() {
                 { label: '設立', value: '1970年（昭和45年）' },
                 { label: '構成自治体', value: '島田市、吉田町、川根本町' },
                 { label: '事務所所在地', value: '静岡県島田市井口1145番地' },
-            ]
+            ],
+            link: { label: '事業概要の詳細はこちら', href: 'http://www.ooijousuidoukigyoudan.or.jp/jigyou-gaiyou.html' }
         },
         {
             title: '基本理念',
@@ -149,6 +150,20 @@ export default function AboutPage() {
                                             <span className="text-base md:text-lg font-bold text-primary-deep">{item.value}</span>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+
+                            {(section as any).link && (
+                                <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
+                                    <a
+                                        href={(section as any).link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 text-primary-main font-bold text-xs md:text-sm hover:underline"
+                                    >
+                                        <ArrowUpRight size={16} />
+                                        {(section as any).link.label}
+                                    </a>
                                 </div>
                             )}
                         </motion.div>

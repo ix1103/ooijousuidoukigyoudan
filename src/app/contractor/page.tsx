@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Wrench, FileText, AlertTriangle, ChevronRight, Phone, ClipboardList } from 'lucide-react';
+import { Wrench, FileText, AlertTriangle, ChevronRight, Phone, ClipboardList, ArrowUpRight, Download } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -59,6 +59,32 @@ export default function ContractorPage() {
                             </motion.div>
                         ))}
                     </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="mt-8 md:mt-12 bg-primary-main/5 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6"
+                    >
+                        <div className="flex items-center space-x-4">
+                            <div className="bg-primary-main text-white p-3 rounded-xl">
+                                <ClipboardList size={24} />
+                            </div>
+                            <div>
+                                <p className="text-primary-deep font-black text-lg md:text-xl">指定給水装置工事事業者名簿</p>
+                                <p className="text-text-sub text-xs md:text-sm mt-1">最新の指定工事店一覧（PDF）をご確認いただけます。</p>
+                            </div>
+                        </div>
+                        <a
+                            href="http://www.ooijousuidoukigyoudan.or.jp/R08_Jan_siteikoujiten(2).pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-shine inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
+                        >
+                            <FileText size={18} />
+                            <span>指定工事店一覧を表示 (PDF)</span>
+                        </a>
+                    </motion.div>
                 </section>
 
                 {/* 各種様式 */}
@@ -74,7 +100,8 @@ export default function ContractorPage() {
 
                     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                         {[
-                            { name: '給水装置工事申込書', desc: '新設・増設・改造時に提出', type: '申請' },
+                            { name: '給水装置工事申込書（Ver.4）', desc: '新設・増設・改造時に提出', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusuimoushikominituite_Ver4_R5_11_28.pdf' },
+                            { name: '受水槽を設置しないことに関する誓約書', desc: '受水槽を設置しない場合に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf' },
                             { name: '給水装置工事完了届', desc: '工事完了後に提出', type: '届出' },
                             { name: '指定給水装置工事事業者指定申請書', desc: '新規指定の申請', type: '申請' },
                             { name: '指定給水装置工事事業者変更届出書', desc: '届出事項変更時に提出', type: '届出' },
@@ -85,14 +112,28 @@ export default function ContractorPage() {
                                 <div className="flex items-center space-x-3 md:space-x-4">
                                     <FileText size={18} className="text-primary-main shrink-0" />
                                     <div>
-                                        <p className="text-sm md:text-base font-bold text-primary-deep">{form.name}</p>
+                                        {form.href ? (
+                                            <a href={form.href} target="_blank" rel="noopener noreferrer" className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2">
+                                                {form.name}
+                                                <ArrowUpRight size={14} className="opacity-40" />
+                                            </a>
+                                        ) : (
+                                            <p className="text-sm md:text-base font-bold text-primary-deep">{form.name}</p>
+                                        )}
                                         <p className="text-[10px] md:text-xs text-text-sub mt-0.5">{form.desc}</p>
                                     </div>
                                 </div>
-                                <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shrink-0 ${form.type === '申請' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
-                                    }`}>
-                                    {form.type}
-                                </span>
+                                <div className="flex items-center gap-3">
+                                    <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shrink-0 ${form.type === '申請' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
+                                        }`}>
+                                        {form.type}
+                                    </span>
+                                    {form.href && (
+                                        <a href={form.href} download className="text-primary-main/40 hover:text-primary-main transition-colors" title="PDFをダウンロード">
+                                            <Download size={16} />
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>

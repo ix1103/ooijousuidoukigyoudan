@@ -59,6 +59,29 @@ export const Footer = () => {
                                 </Link>
                             ))}
                         </nav>
+
+                        {/* 外部リンクセクション */}
+                        <div className="pt-4 space-y-3">
+                            <h3 className="text-[10px] font-black text-white/30 uppercase tracking-widest">お役立ちリンク</h3>
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                                <a href="http://www.ooijousuidoukigyoudan.or.jp/2025brochure.pdf" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                    <ChevronRight size={10} />
+                                    企業団パンフレット
+                                </a>
+                                <a href="http://www.ooijousuidoukigyoudan.or.jp/gikai-main.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                    <ChevronRight size={10} />
+                                    議会について
+                                </a>
+                                <a href="http://www.ooijousuidoukigyoudan.or.jp/simeisanka.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                    <ChevronRight size={10} />
+                                    入札・契約情報
+                                </a>
+                                <a href="http://www.ooijousuidoukigyoudan.or.jp/koukoku.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                    <ChevronRight size={10} />
+                                    公表・公告
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     {/* カラム3：お問い合わせ情報 */}

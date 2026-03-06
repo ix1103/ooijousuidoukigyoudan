@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ChevronRight, AlertTriangle, Droplets, Wrench, Snowflake, ShieldAlert, Phone, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, AlertTriangle, Droplets, Wrench, Snowflake, ShieldAlert, Phone, CheckCircle2, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
@@ -153,13 +153,35 @@ export default function TroublePage() {
                                         </a>
                                     )}
                                     {trouble.action === 'contractor' && (
-                                        <Link
-                                            href="/guide#contractors"
-                                            className="inline-flex items-center gap-2 mt-5 md:mt-6 bg-primary-deep text-white px-5 py-2.5 rounded-xl font-black text-sm md:text-base hover:bg-primary-main transition-colors shadow-premium active:scale-95"
-                                        >
-                                            指定工事業者を探す
-                                            <ChevronRight size={16} />
-                                        </Link>
+                                        <div className="flex flex-col sm:flex-row gap-3 mt-5 md:mt-6">
+                                            <Link
+                                                href="/guide#contractors"
+                                                className="inline-flex items-center gap-2 bg-primary-deep text-white px-5 py-2.5 rounded-xl font-black text-sm md:text-base hover:bg-primary-main transition-colors shadow-premium active:scale-95"
+                                            >
+                                                指定工事業者を探す
+                                                <ChevronRight size={16} />
+                                            </Link>
+                                            <div className="flex gap-2">
+                                                <a
+                                                    href="http://www.ooijousuidoukigyoudan.or.jp/FYR7_suidoutouban.pdf"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 bg-white text-primary-deep border border-primary-deep/20 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm hover:bg-slate-50 transition-colors active:scale-95"
+                                                >
+                                                    <FileText size={14} />
+                                                    R7当番店(PDF)
+                                                </a>
+                                                <a
+                                                    href="http://www.ooijousuidoukigyoudan.or.jp/FYR8toubanten.pdf"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 bg-white text-primary-deep border border-primary-deep/20 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm hover:bg-slate-50 transition-colors active:scale-95"
+                                                >
+                                                    <FileText size={14} />
+                                                    R8当番店(PDF)
+                                                </a>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             </div>

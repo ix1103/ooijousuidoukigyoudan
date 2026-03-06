@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Droplets, Shield, ClipboardCheck, Building2, ChevronRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Droplets, Shield, ClipboardCheck, Building2, ChevronRight, AlertTriangle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -139,7 +139,18 @@ export default function WaterQualityPage() {
                             </table>
                         </div>
                     </div>
-                    <p className="text-text-sub/60 text-xs mt-4">※ 検査結果の詳細は毎年10月と4月に公表しています。</p>
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                        <p className="text-text-sub/60 text-xs text-center sm:text-left">※ 検査結果の詳細は毎年10月と4月に公表しています。</p>
+                        <a
+                            href="http://www.ooijousuidoukigyoudan.or.jp/suisitu-jyouhou.html"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-primary-main font-bold text-sm hover:underline"
+                        >
+                            <ArrowUpRight size={16} />
+                            水質検査計画・過去の検査結果（公式サイト）
+                        </a>
+                    </div>
                 </section>
 
                 {/* 受水槽の管理 */}
