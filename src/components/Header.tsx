@@ -141,9 +141,9 @@ export const Header = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="xl:hidden fixed inset-0 z-[60] bg-primary-deep p-6"
+                        className="xl:hidden fixed inset-0 z-[60] bg-primary-deep p-6 overflow-y-auto overscroll-contain pb-24"
                     >
-                        <div className="flex justify-between items-center mb-10">
+                        <div className="flex justify-between items-center mb-10 pt-4 md:pt-0">
                             <div className="flex items-center space-x-3">
                                 <div className="bg-primary-main p-2 rounded-xl text-white">
                                     <WaterLogoIcon className="w-5 h-5" />
