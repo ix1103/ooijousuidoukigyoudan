@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       { source: '/faq', destination: '/resident/faq', permanent: true },
       // 業者向けページ（旧 → 新）
       { source: '/contractor', destination: '/business/contractor', permanent: true },
+      { source: '/business', destination: '/business/bidding', permanent: true },
+      // 組織情報（旧 → 新）
+      { source: '/about', destination: '/about/outline', permanent: true },
+      { source: '/about/business', destination: '/about/outline', permanent: true },
       // トラブルページ（旧 → 新）
       { source: '/trouble', destination: '/resident/trouble', permanent: true },
     ];

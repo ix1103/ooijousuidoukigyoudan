@@ -22,7 +22,9 @@ export default function SitemapPage() {
             links: [
                 { title: '各種手続き（開栓・閉栓・名義変更）', href: '/resident/procedure' },
                 { title: '水道料金のしくみ・お支払い', href: '/resident/price' },
+                { title: '水道メーター・定期交換', href: '/resident/meter' },
                 { title: '水質情報（基準・検査結果）', href: '/resident/quality' },
+                { title: 'クロスコネクションの禁止', href: '/resident/cross-connection' },
                 { title: '水道トラブル（水が出ない・漏水・困ったとき）', href: '/resident/trouble' },
                 { title: 'よくある質問（Q&A）', href: '/resident/faq' },
             ]
