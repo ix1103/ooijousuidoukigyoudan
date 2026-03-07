@@ -6,16 +6,36 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
-import { getWaterQualityList, WaterQuality } from '@/lib/microcms';
+import {
+    getWaterQualityList, WaterQuality,
+    getWqPageSettings, WqPageSettings,
+    getWqDailyList, WqDaily,
+    getWqStandardList, WqStandard,
+    getWqTankList, WqTank
+} from '@/lib/microcms';
 
 export default function WaterQualityPage() {
     const [waterQuality, setWaterQuality] = React.useState<WaterQuality[]>([]);
+    const [pageSettings, setPageSettings] = React.useState<WqPageSettings | null>(null);
+    const [dailyList, setDailyList] = React.useState<WqDaily[]>([]);
+    const [standardList, setStandardList] = React.useState<WqStandard[]>([]);
+    const [tankList, setTankList] = React.useState<WqTank[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         const fetchData = async () => {
-            const data = await getWaterQualityList();
+            const [data, pSettings, dList, sList, tList] = await Promise.all([
+                getWaterQualityList(),
+                getWqPageSettings(),
+                getWqDailyList(),
+                getWqStandardList(),
+                getWqTankList()
+            ]);
             setWaterQuality(data);
+            setPageSettings(pSettings);
+            setDailyList(dList);
+            setStandardList(sList);
+            setTankList(tList);
             setLoading(false);
         };
         fetchData();
@@ -25,7 +45,7 @@ export default function WaterQualityPage() {
     const latestQuality = waterQuality.find(item => item.is_latest) || waterQuality[0];
 
     // 主な水質基準項目（代表的なもの）
-    const qualityStandards = [
+    const defaultQualityStandards = [
         { item: '一般細菌', standard: '100個/mL以下', category: '健康' },
         { item: '大腸菌', standard: '検出されないこと', category: '健康' },
         { item: '鉛及びその化合物', standard: '0.01mg/L以下', category: '健康' },
@@ -39,27 +59,57 @@ export default function WaterQualityPage() {
         { item: 'pH値', standard: '5.8～8.6', category: '性状' },
         { item: '残留塩素', standard: '0.1mg/L以上', category: '管理' },
     ];
+    const qualityStandards = standardList.length > 0
+        ? standardList.map(item => ({ item: item.item_name, standard: item.standard_value, category: (item.category && item.category[0]) || '健康' }))
+        : defaultQualityStandards;
 
     // 毎日検査項目
-    const dailyItems = [
+    const defaultDailyItems = [
         { item: '色', description: '水に異常な色がないか確認します。' },
         { item: '濁り', description: '水に濁りがないか確認します。' },
         { item: '残留塩素', description: '消毒効果が維持されているか確認します。' },
     ];
+    const dailyItems = dailyList.length > 0
+        ? dailyList.map(item => ({ item: item.item_name, description: item.description }))
+        : defaultDailyItems;
 
     // 受水槽管理のポイント
-    const tankManagement = [
+    const defaultTankManagement = [
         { title: '定期清掃', desc: '1年に1回以上、受水槽の清掃を行ってください。' },
         { title: '定期検査', desc: '簡易専用水道（10㎥超）は年1回の法定検査が必要です。' },
         { title: '水質確認', desc: '色・濁り・臭い・味・残留塩素を定期的に確認してください。' },
         { title: '届出', desc: '設置・変更・廃止の際は企業団への届出が必要です。' },
     ];
+    const tankManagement = tankList.length > 0
+        ? tankList.map(item => ({ title: item.title, desc: item.description }))
+        : defaultTankManagement;
+
+    // サブタイトルとアラートテキストのフォールバック
+    const displaySubtitle = pageSettings?.subtitle ? (
+        <>{pageSettings.subtitle.split('\n').map((line, i, arr) => (
+            <React.Fragment key={i}>
+                {line}
+                {i !== arr.length - 1 && <br className="md:hidden" />}
+            </React.Fragment>
+        ))}</>
+    ) : (
+        <>51項目の厳しい水質基準に適合した<br className="md:hidden" />安全な水をお届けしています。</>
+    );
+
+    const fallbackTankAlert = "有効容量が10立方メートルを超える受水槽は「簡易専用水道」に該当し、\n維持管理は施設所有者の責任となります。年1回の法定検査が義務づけられています。";
+    const tankAlertText = pageSettings?.tank_alert_desc || fallbackTankAlert;
+    const displayTankAlert = tankAlertText.split('\n').map((line, i, arr) => (
+        <React.Fragment key={i}>
+            {line}
+            {i !== arr.length - 1 && <br className="hidden md:block" />}
+        </React.Fragment>
+    ));
 
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="水質情報"
-                subtitle={<>51項目の厳しい水質基準に適合した<br className="md:hidden" />安全な水をお届けしています。</>}
+                subtitle={displaySubtitle}
                 enTitle="Water Quality"
             />
 
@@ -207,8 +257,7 @@ export default function WaterQualityPage() {
                             <div>
                                 <p className="font-black text-amber-800 text-sm md:text-base mb-1">簡易専用水道（10㎥超）をご利用の方へ</p>
                                 <p className="text-amber-700 text-xs md:text-sm leading-relaxed">
-                                    有効容量が10立方メートルを超える受水槽は「簡易専用水道」に該当し、<br className="hidden md:block" />
-                                    維持管理は施設所有者の責任となります。年1回の法定検査が義務づけられています。
+                                    {displayTankAlert}
                                 </p>
                             </div>
                         </div>
