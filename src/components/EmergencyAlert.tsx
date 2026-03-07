@@ -29,8 +29,8 @@ export const EmergencyAlert = () => {
     if (!info || dismissed) return null;
 
     const content = (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
-            <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 md:pt-10 pb-4 md:pb-6">
+            <div className="flex items-end gap-3 min-h-[1.5rem] md:min-h-[2rem]">
                 <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
@@ -67,7 +67,7 @@ export const EmergencyAlert = () => {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="bg-red-50 border-b border-red-100 relative z-40 pt-20"
+                className="bg-red-50 border-b border-red-100 relative z-40 pt-[56px] md:pt-[64px]"
             >
                 {info.linkUrl ? (
                     <Link href={info.linkUrl} className="block hover:bg-red-100/50 transition-colors">
