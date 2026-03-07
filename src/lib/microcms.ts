@@ -23,44 +23,15 @@ export type News = {
 };
 
 // FAQの型定義
-export type FAQ = {
+export type Faq = {
   id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
   question: string;
   answer: string;
-  category: string[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-// 水質情報の型定義
-export type WaterQuality = {
-  id: string;
-  title: string;
-  pdf_url: string;
-  is_latest: boolean;
-  plan_pdf_url: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-// 工業者向け書類の型定義
-export type ContractorDoc = {
-  id: string;
-  title: string;
-  category: string[];
-  pdf_url: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-// サイト共通設定の型定義
-export type SiteSettings = {
-  phone_main: string;
-  phone_emergency: string;
-  business_hours: string;
-  address: string;
-  notice_banner?: string;
-  updatedAt: string;
+  category: string;
 };
 
 // お知らせ一覧を取得する関数
@@ -92,55 +63,15 @@ export const getNewsDetail = async (contentId: string) => {
 };
 
 // FAQ一覧を取得する関数
-export const getFAQList = async (limit = 100) => {
+export const getFaqList = async (limit = 100) => {
   try {
     const data = await client.get({
       endpoint: 'faq',
       queries: { limit: limit },
     });
-    return data.contents as FAQ[];
+    return data.contents as Faq[];
   } catch (error) {
-    console.error('Failed to fetch FAQ:', error);
+    console.error('Failed to fetch faq list:', error);
     return [];
-  }
-};
-
-// 水質情報一覧を取得する関数
-export const getWaterQualityList = async () => {
-  try {
-    const data = await client.get({
-      endpoint: 'water-quality',
-      queries: { orders: '-is_latest' },
-    });
-    return data.contents as WaterQuality[];
-  } catch (error) {
-    console.error('Failed to fetch water quality list:', error);
-    return [];
-  }
-};
-
-// 工業者向け書類一覧を取得する関数
-export const getContractorDocsList = async () => {
-  try {
-    const data = await client.get({
-      endpoint: 'contractor-docs',
-    });
-    return data.contents as ContractorDoc[];
-  } catch (error) {
-    console.error('Failed to fetch contractor docs:', error);
-    return [];
-  }
-};
-
-// サイト共通設定を取得する関数
-export const getSiteSettings = async () => {
-  try {
-    const data = await client.get({
-      endpoint: 'site-settings',
-    });
-    return data as SiteSettings;
-  } catch (error) {
-    console.error('Failed to fetch site settings:', error);
-    return null;
   }
 };

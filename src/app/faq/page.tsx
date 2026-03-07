@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
-import { getFAQList, FAQ } from '@/lib/microcms';
+import { getFaqList, Faq } from '@/lib/microcms';
 
 type FaqItem = {
     q: string;
@@ -65,11 +65,11 @@ export default function FaqPage() {
     React.useEffect(() => {
         const fetchFaq = async () => {
             try {
-                const list = await getFAQList();
+                const list = await getFaqList();
                 if (list && list.length > 0) {
                     const groups: Record<string, FaqItem[]> = {};
                     list.forEach(item => {
-                        const cat = (item.category && item.category[0]) || 'その他';
+                        const cat = item.category || 'その他';
                         if (!groups[cat]) groups[cat] = [];
                         groups[cat].push({ q: item.question, a: item.answer });
                     });

@@ -3,20 +3,8 @@
 import { MapPin, Phone, Mail, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { WaterLogoIcon } from './WaterLogoIcon';
-import React from 'react';
-import { getSiteSettings, SiteSettings } from '@/lib/microcms';
 
 export const Footer = () => {
-    const [settings, setSettings] = React.useState<SiteSettings | null>(null);
-
-    React.useEffect(() => {
-        const fetchSettings = async () => {
-            const data = await getSiteSettings();
-            setSettings(data);
-        };
-        fetchSettings();
-    }, []);
-
     const navLinks = [
         { name: 'ホーム', href: '/' },
         { name: 'お知らせ', href: '/news' },
@@ -27,11 +15,6 @@ export const Footer = () => {
         { name: '企業団について', href: '/about' },
         { name: '工事業者向け', href: '/contractor' },
     ];
-
-    const phoneMain = settings?.phone_main || '0547-46-4111';
-    const phoneEmergency = settings?.phone_emergency || '0547-46-4130';
-    const address = settings?.address || '〒428-0013 静岡県島田市金谷東一丁目1255番地の2';
-    const businessHours = settings?.business_hours || '8:30～17:15（土日祝・12/29～1/3を除く）';
 
     return (
         <footer className="bg-primary-deep text-white relative overflow-hidden">
@@ -108,8 +91,8 @@ export const Footer = () => {
                             {/* 所在地 */}
                             <div className="flex items-start space-x-3">
                                 <MapPin size={16} className="text-secondary-vibrant mt-0.5 shrink-0" />
-                                <p className="text-white/50 text-xs leading-relaxed whitespace-pre-wrap">
-                                    {address}
+                                <p className="text-white/50 text-xs leading-relaxed">
+                                    〒428-0013<br />静岡県島田市金谷東一丁目1255番地の2
                                 </p>
                             </div>
 
@@ -120,8 +103,8 @@ export const Footer = () => {
                                         <Phone size={14} className="text-secondary-vibrant" />
                                         <span className="text-[10px] text-white/60 font-bold">料金・引越しなど</span>
                                     </div>
-                                    <a href={`tel:${phoneMain}`} className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
-                                        {phoneMain}
+                                    <a href="tel:0547-46-4111" className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
+                                        0547-46-4111
                                     </a>
                                 </div>
                                 <div className="border-t border-white/10" />
@@ -130,8 +113,8 @@ export const Footer = () => {
                                         <Phone size={14} className="text-red-400" />
                                         <span className="text-[10px] text-white/60 font-bold">緊急・漏水（24時間）</span>
                                     </div>
-                                    <a href={`tel:${phoneEmergency}`} className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
-                                        {phoneEmergency}
+                                    <a href="tel:0547-46-4130" className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
+                                        0547-46-4130
                                     </a>
                                 </div>
                             </div>
@@ -153,7 +136,7 @@ export const Footer = () => {
                             {/* 業務時間 */}
                             <div className="flex items-center space-x-2 text-white/40 text-xs">
                                 <Clock size={12} className="text-secondary-vibrant shrink-0" />
-                                <span>{businessHours}</span>
+                                <span>8:30～17:15（土日祝・12/29～1/3を除く）</span>
                             </div>
                         </div>
                     </div>
