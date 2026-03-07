@@ -14,25 +14,25 @@ export default function Home() {
     {
       title: "水道料金・お支払い",
       icon: <FileText className="text-secondary-vibrant" />,
-      href: "/guide",
+      href: "/resident/price",
       desc: "検針の流れや、納入通知書・口座振替などのお支払い方法。"
     },
     {
       title: "使用開始・中止",
       icon: <Info className="text-secondary-vibrant" />,
-      href: "/guide#procedure",
+      href: "/resident/procedure",
       desc: "お引っ越し等に伴う水道の手続き、各種申請書類はこちら。"
     },
     {
       title: "指定工事店一覧",
       icon: <Wrench className="text-secondary-vibrant" />,
-      href: "/guide#contractors",
+      href: "/business/contractor",
       desc: "水道の新設・改造・修繕工事を行う「指定工事事業者」一覧。"
     },
     {
       title: "企業団の紹介",
       icon: <Building2 className="text-secondary-vibrant" />,
-      href: "/about",
+      href: "/about/outline",
       desc: "大井上水道企業団の組織概要、議会情報、水質検査結果など。"
     },
   ];

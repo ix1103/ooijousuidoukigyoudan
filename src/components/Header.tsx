@@ -41,12 +41,12 @@ export const Header = () => {
     const navItems = [
         { name: 'ホーム', href: '/', desc: 'トップページへ' },
         { name: 'お知らせ', href: '/news', desc: '最新情報・議会報告' },
-        { name: '手続き・料金', href: '/guide', desc: 'お支払い・各種申請' },
-        { name: '水質情報', href: '/water-quality', desc: '水質基準・検査結果' },
-        { name: '水道トラブル', href: '/trouble', desc: '漏水・断水・凍結の対処法' },
-        { name: 'よくある質問', href: '/faq', desc: '料金・水質のQ&A' },
-        { name: '企業団について', href: '/about', desc: '組織概要・アクセス' },
-        { name: '工事業者向け', href: '/contractor', desc: '指定工事店・様式' },
+        { name: '手続き・料金', href: '/resident/price', desc: 'お支払い・各種申請' },
+        { name: '水質情報', href: '/resident/quality', desc: '水質基準・検査結果' },
+        { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
+        { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
+        { name: '企業団について', href: '/about/outline', desc: '組織概要・アクセス' },
+        { name: '工事業者向け', href: '/business/contractor', desc: '指定工事店・様式' },
     ];
 
     return (

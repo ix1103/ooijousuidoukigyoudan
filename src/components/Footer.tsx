@@ -8,12 +8,12 @@ export const Footer = () => {
     const navLinks = [
         { name: 'ホーム', href: '/' },
         { name: 'お知らせ', href: '/news' },
-        { name: '手続き・料金', href: '/guide' },
-        { name: '水質情報', href: '/water-quality' },
-        { name: '水道トラブル', href: '/trouble' },
-        { name: 'よくある質問', href: '/faq' },
-        { name: '企業団について', href: '/about' },
-        { name: '工事業者向け', href: '/contractor' },
+        { name: '手続き・料金', href: '/resident/price' },
+        { name: '水質情報', href: '/resident/quality' },
+        { name: '水道トラブル', href: '/resident/trouble' },
+        { name: 'よくある質問', href: '/resident/faq' },
+        { name: '企業団について', href: '/about/outline' },
+        { name: '工事業者向け', href: '/business/contractor' },
     ];
 
     return (
