@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export const Hero = () => {
     return (
-        <section className="relative min-h-[100dvh] md:min-h-screen flex items-center overflow-hidden bg-primary-deep pt-12 md:pt-0 pb-12 md:pb-0">
+        <section className="relative min-h-[80dvh] md:min-h-screen flex items-center overflow-hidden bg-primary-deep pb-12 md:pb-0">
             {/* === 背景システム === */}
             <div className="absolute inset-0 z-0 pointer-events-none">
                 {/* 1. ベースグラデーション */}

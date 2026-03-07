@@ -52,11 +52,11 @@ export default function Home() {
 
   return (
     <div className="w-full overflow-hidden">
-      {/* 1. ヒーローセクション */}
-      <Hero />
-
-      {/* 2. 緊急のお知らせ（最優先情報） */}
+      {/* 1. 緊急のお知らせ（最優先情報） - ヘッダー直下に配置 */}
       <EmergencyAlert />
+
+      {/* 2. ヒーローセクション */}
+      <Hero />
 
       {/* 3. ★特大タイルボタン3つ（電話を減らす最重要UI） */}
       <section className="py-10 md:py-16 bg-slate-50">

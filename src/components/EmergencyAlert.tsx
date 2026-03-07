@@ -67,7 +67,7 @@ export const EmergencyAlert = () => {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="bg-red-50 border-b border-red-100"
+                className="bg-red-50 border-b border-red-100 relative z-40 pt-20"
             >
                 {info.linkUrl ? (
                     <Link href={info.linkUrl} className="block hover:bg-red-100/50 transition-colors">
