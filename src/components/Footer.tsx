@@ -58,6 +58,10 @@ export const Footer = () => {
                                     {link.name}
                                 </Link>
                             ))}
+                            <Link href="/sitemap" className="text-white/50 hover:text-white text-xs md:text-sm py-1.5 flex items-center group transition-colors">
+                                <ChevronRight size={12} className="mr-1 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                サイトマップ
+                            </Link>
                         </nav>
 
                         {/* 外部リンクセクション */}
@@ -68,18 +72,22 @@ export const Footer = () => {
                                     <ChevronRight size={10} />
                                     企業団パンフレット
                                 </a>
-                                <a href="http://www.ooijousuidoukigyoudan.or.jp/gikai-main.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                <Link href="/about/outline#assembly" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
                                     <ChevronRight size={10} />
                                     議会について
-                                </a>
-                                <a href="http://www.ooijousuidoukigyoudan.or.jp/simeisanka.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                </Link>
+                                <Link href="/business/bidding" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
                                     <ChevronRight size={10} />
                                     入札・契約情報
-                                </a>
-                                <a href="http://www.ooijousuidoukigyoudan.or.jp/koukoku.html" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                </Link>
+                                <Link href="/about/finance" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
                                     <ChevronRight size={10} />
                                     公表・公告
-                                </a>
+                                </Link>
+                                <Link href="/links" className="text-white/40 hover:text-white text-[11px] flex items-center gap-1 transition-colors">
+                                    <ChevronRight size={10} />
+                                    リンク集
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -89,12 +97,17 @@ export const Footer = () => {
                         <h3 className="text-sm font-black text-white/80">お問い合わせ</h3>
                         <div className="space-y-3">
                             {/* 所在地 */}
-                            <div className="flex items-start space-x-3">
-                                <MapPin size={16} className="text-secondary-vibrant mt-0.5 shrink-0" />
-                                <p className="text-white/50 text-xs leading-relaxed">
+                            <a
+                                href="https://www.google.com/maps/place/34%C2%B049'41.6%22N+138%C2%B008'12.1%22E"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start space-x-3 group"
+                            >
+                                <MapPin size={16} className="text-secondary-vibrant mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+                                <p className="text-white/50 text-xs leading-relaxed group-hover:text-white transition-colors">
                                     〒428-0013<br />静岡県島田市金谷東一丁目1255番地の2
                                 </p>
-                            </div>
+                            </a>
 
                             {/* 電話番号 */}
                             <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2.5">
@@ -148,8 +161,8 @@ export const Footer = () => {
                         &copy; {new Date().getFullYear()} 大井上水道企業団 All Rights Reserved.
                     </p>
                     <div className="flex space-x-6">
-                        <Link href="#" className="text-white/25 hover:text-white/60 text-[10px] font-bold transition-colors">個人情報保護方針</Link>
-                        <Link href="#" className="text-white/25 hover:text-white/60 text-[10px] font-bold transition-colors">利用規約</Link>
+                        <Link href="/privacy" className="text-white/25 hover:text-white/60 text-[10px] font-bold transition-colors">個人情報保護方針</Link>
+                        <Link href="/terms" className="text-white/25 hover:text-white/60 text-[10px] font-bold transition-colors">利用規約</Link>
                     </div>
                 </div>
             </div>
