@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Phone, ChevronRight } from 'lucide-react';
+import { Menu, X, Phone, ChevronRight, ChevronDown } from 'lucide-react';
 import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -38,15 +38,32 @@ export const Header = () => {
         return () => { document.body.style.overflow = ''; };
     }, [isOpen]);
 
-    const navItems = [
-        { name: 'ホーム', href: '/', desc: 'トップページへ' },
-        { name: 'お知らせ', href: '/news', desc: '最新情報・議会報告' },
-        { name: '手続き・料金', href: '/resident/price', desc: 'お支払い・各種申請' },
-        { name: '水質情報', href: '/resident/quality', desc: '水質基準・検査結果' },
-        { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
-        { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
-        { name: '企業団について', href: '/about/outline', desc: '組織概要・アクセス' },
-        { name: '工事業者向け', href: '/business/contractor', desc: '指定工事店・様式' },
+    const navCategories = [
+        { name: 'ホーム', href: '/', items: [] },
+        {
+            name: '住民の皆様へ',
+            items: [
+                { name: '手続き・料金', href: '/resident/price', desc: 'お支払い・各種申請' },
+                { name: '水質情報', href: '/resident/quality', desc: '水質基準・検査結果' },
+                { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
+                { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
+            ]
+        },
+        {
+            name: '事業者の皆様へ',
+            items: [
+                { name: '入札・契約情報', href: '/business/bidding', desc: '電子入札・登録等' },
+                { name: '指定工事店向け', href: '/business/contractor', desc: '給水装置工事・様式' },
+            ]
+        },
+        {
+            name: '企業団について',
+            items: [
+                { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内' },
+                { name: '財政状況・公表資料', href: '/about/finance', desc: '予算決算・適格請求書' },
+            ]
+        },
+        { name: 'お知らせ', href: '/news', items: [] },
     ];
 
     return (
@@ -86,18 +103,51 @@ export const Header = () => {
 
                         {/* デスクトップナビ */}
                         <nav className="hidden xl:flex items-center space-x-1">
-                            {navItems.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={item.href === '/' ? handleHomeClick : undefined}
-                                    className={`px-4 py-2 text-[13px] font-black transition-all rounded-full relative group whitespace-nowrap ${scrolled
-                                        ? 'text-primary-deep/80 hover:text-primary-main hover:bg-primary-main/5'
-                                        : 'text-white/90 hover:text-white hover:bg-white/10'
-                                        }`}
-                                >
-                                    {item.name}
-                                </Link>
+                            {navCategories.map((category) => (
+                                <div key={category.name} className="relative group">
+                                    {category.items.length === 0 ? (
+                                        <Link
+                                            href={category.href!}
+                                            onClick={category.href === '/' ? handleHomeClick : undefined}
+                                            className={`px-4 py-2 text-[14px] font-black transition-all rounded-full relative block whitespace-nowrap ${scrolled
+                                                ? 'text-primary-deep/80 hover:text-primary-main hover:bg-primary-main/5'
+                                                : 'text-white/90 hover:text-white hover:bg-white/10'
+                                                }`}
+                                        >
+                                            {category.name}
+                                        </Link>
+                                    ) : (
+                                        <div className="relative">
+                                            <button
+                                                className={`flex items-center gap-1.5 px-4 py-2 text-[14px] font-black transition-all rounded-full whitespace-nowrap ${scrolled
+                                                    ? 'text-primary-deep/80 hover:text-primary-main hover:bg-primary-main/5'
+                                                    : 'text-white/90 hover:text-white hover:bg-white/10'
+                                                    }`}
+                                            >
+                                                {category.name}
+                                                <ChevronDown size={14} className={`transition-transform duration-300 group-hover:rotate-180`} />
+                                            </button>
+
+                                            {/* ドロップダウンメニュー */}
+                                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300">
+                                                <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-2 min-w-[240px] flex flex-col gap-1 relative before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-white">
+                                                    {category.items.map((subItem) => (
+                                                        <Link
+                                                            key={subItem.href}
+                                                            href={subItem.href}
+                                                            className="px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors group/item block"
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-bold text-primary-deep group-hover/item:text-primary-main text-sm">{subItem.name}</span>
+                                                                <ChevronRight size={14} className="text-secondary-vibrant opacity-0 group-hover/item:translate-x-1 group-hover/item:opacity-100 transition-all ml-auto" />
+                                                            </div>
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             ))}
 
                             <div className="ml-4 pl-4 border-l border-current/10 flex items-center">
@@ -159,28 +209,45 @@ export const Header = () => {
                             </button>
                         </div>
 
-                        <nav className="grid grid-cols-1 gap-3">
-                            {navItems.map((item, idx) => (
+                        <nav className="flex flex-col gap-6">
+                            {navCategories.map((category, idx) => (
                                 <motion.div
-                                    key={item.href}
+                                    key={category.name}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.05 }}
+                                    className="space-y-3"
                                 >
-                                    <Link
-                                        href={item.href}
-                                        className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 active:bg-white/20 transition-all group"
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        <div className="flex items-center space-x-4">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-secondary-vibrant opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            <div>
-                                                <p className="text-lg font-black">{item.name}</p>
-                                                <p className="text-[10px] text-white/40 mt-1 font-medium tracking-wider">{item.desc}</p>
+                                    {category.items.length === 0 ? (
+                                        <Link
+                                            href={category.href!}
+                                            className="flex items-center text-white/90 hover:text-white group"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <h3 className="text-lg font-black">{category.name}</h3>
+                                            <ChevronRight size={20} className="ml-2 text-white/30 group-hover:text-white/70 transition-colors" />
+                                        </Link>
+                                    ) : (
+                                        <>
+                                            <h3 className="text-sm font-black text-secondary-vibrant uppercase tracking-widest">{category.name}</h3>
+                                            <div className="grid grid-cols-1 gap-2 pl-2 border-l-2 border-white/10">
+                                                {category.items.map((item) => (
+                                                    <Link
+                                                        key={item.href}
+                                                        href={item.href}
+                                                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 text-white hover:bg-white/10 active:bg-white/20 transition-all group"
+                                                        onClick={() => setIsOpen(false)}
+                                                    >
+                                                        <div>
+                                                            <p className="text-base font-bold">{item.name}</p>
+                                                            {item.desc && <p className="text-[10px] text-white/40 mt-0.5">{item.desc}</p>}
+                                                        </div>
+                                                        <ChevronRight size={16} className="text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all" />
+                                                    </Link>
+                                                ))}
                                             </div>
-                                        </div>
-                                        <ChevronRight size={18} className="text-white/20" />
-                                    </Link>
+                                        </>
+                                    )}
                                 </motion.div>
                             ))}
                         </nav>
