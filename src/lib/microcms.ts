@@ -34,6 +34,26 @@ export type Faq = {
   category: string;
 };
 
+// 緊急情報バナーの型定義（シングルコンテンツ型）
+export type Emergency = {
+  id: string;
+  isActive: boolean;       // true のときだけバナーを表示
+  message: string;         // 表示するテキスト
+  linkUrl?: string;        // クリック先URL（省略可能）
+  linkLabel?: string;      // ボタンのラベル（省略可能）
+};
+
+// 入札・契約情報の型定義
+export type Bidding = {
+  id: string;
+  createdAt: string;
+  publishedAt: string;
+  title: string;
+  type: string;            // '入札公告' | '落札結果' | 'お知らせ'
+  pdfUrl?: string;         // PDFリンク（省略可能）
+  content?: string;        // 本文（省略可能）
+};
+
 // お知らせ一覧を取得する関数
 export const getNewsList = async (limit = 3) => {
   try {
@@ -73,5 +93,32 @@ export const getFaqList = async (limit = 100) => {
   } catch (error) {
     console.error('Failed to fetch faq list:', error);
     return [];
+  }
+};
+
+// 緊急情報を取得する関数（シングルコンテンツAPIを使用）
+export const getEmergencyInfo = async (): Promise<Emergency | null> => {
+  try {
+    const data = await client.get({
+      endpoint: 'emergency',
+    });
+    return data as Emergency;
+  } catch (error) {
+    console.error('Failed to fetch emergency info:', error);
+    return null; // エラー時はnullを返し、バナーを非表示にする
+  }
+};
+
+// 入札・契約情報一覧を取得する関数
+export const getBiddingList = async (limit = 20) => {
+  try {
+    const data = await client.get({
+      endpoint: 'bidding',
+      queries: { limit: limit, orders: '-publishedAt' },
+    });
+    return data.contents as Bidding[];
+  } catch (error) {
+    console.error('Failed to fetch bidding list:', error);
+    return []; // エラー時は空配列を返す
   }
 };
