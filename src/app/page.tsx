@@ -58,10 +58,67 @@ export default function Home() {
       {/* 2. 緊急のお知らせ（最優先情報） */}
       <EmergencyAlert />
 
-      {/* 3. お知らせセクション（最新のお知らせ一覧） */}
+      {/* 3. ★特大タイルボタン3つ（電話を減らす最重要UI） */}
+      <section className="py-10 md:py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-black tracking-[0.2em] text-text-sub uppercase mb-6">よくあるお問い合わせはこちらからすぐ解決</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {[
+              {
+                emoji: '🏠',
+                title: '開栓・閉栓の\nお申し込み',
+                desc: 'お引越しで水を\n使い始める・止める',
+                href: '/resident/procedure',
+                color: 'from-blue-500 to-blue-700',
+                border: 'border-blue-200',
+                bg: 'bg-blue-50',
+              },
+              {
+                emoji: '🚨',
+                title: '水漏れ・\n水道トラブル',
+                desc: '水が止まらない・\n出ない・濁っている',
+                href: '/resident/trouble',
+                color: 'from-red-500 to-rose-700',
+                border: 'border-red-200',
+                bg: 'bg-red-50',
+              },
+              {
+                emoji: '💳',
+                title: '料金・\nお支払い変更',
+                desc: '口座振替・\nコンビニ払いなど',
+                href: '/resident/price',
+                color: 'from-emerald-500 to-teal-700',
+                border: 'border-emerald-200',
+                bg: 'bg-emerald-50',
+              },
+            ].map((tile, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Link href={tile.href} className={`flex items-center md:flex-col md:items-center gap-5 md:gap-3 p-5 md:p-8 rounded-2xl md:rounded-3xl border-2 ${tile.border} ${tile.bg} hover:shadow-xl transition-all duration-300 group block`}>
+                  <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${tile.color} flex items-center justify-center text-3xl md:text-4xl shadow-lg shrink-0`}>
+                    {tile.emoji}
+                  </div>
+                  <div className="md:text-center">
+                    <p className="font-black text-primary-deep text-lg md:text-xl leading-tight whitespace-pre-line">{tile.title}</p>
+                    <p className="text-text-sub text-xs md:text-sm mt-1 md:mt-2 leading-snug whitespace-pre-line">{tile.desc}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. お知らせセクション（最新のお知らせ一覧） */}
       <NewsSection />
 
-      {/* 4. 緊急連絡先セクション */}
+      {/* 5. 緊急連絡先セクション */}
       <EmergencyContact />
 
       {/* 5. クイックナビゲーション */}
