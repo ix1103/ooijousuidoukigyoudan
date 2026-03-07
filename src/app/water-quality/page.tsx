@@ -6,8 +6,24 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import { getWaterQualityList, WaterQuality } from '@/lib/microcms';
 
 export default function WaterQualityPage() {
+    const [waterQuality, setWaterQuality] = React.useState<WaterQuality[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            const data = await getWaterQualityList();
+            setWaterQuality(data);
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+
+    // 最新のデータを取得
+    const latestQuality = waterQuality.find(item => item.is_latest) || waterQuality[0];
+
     // 主な水質基準項目（代表的なもの）
     const qualityStandards = [
         { item: '一般細菌', standard: '100個/mL以下', category: '健康' },
@@ -140,16 +156,36 @@ export default function WaterQualityPage() {
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-                        <p className="text-text-sub/60 text-xs text-center sm:text-left">※ 検査結果の詳細は毎年10月と4月に公表しています。</p>
-                        <a
-                            href="http://www.ooijousuidoukigyoudan.or.jp/suisitu-jyouhou.html"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-primary-main font-bold text-sm hover:underline"
-                        >
-                            <ArrowUpRight size={16} />
-                            水質検査計画・過去の検査結果（公式サイト）
-                        </a>
+                        <div className="text-center sm:text-left">
+                            <p className="text-text-sub/60 text-xs">※ 検査結果の詳細は定期的に公表しています。</p>
+                            {latestQuality && (
+                                <p className="text-primary-deep font-bold text-sm mt-1">最新の検査結果: {latestQuality.title}</p>
+                            )}
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            {latestQuality?.pdf_url && (
+                                <a
+                                    href={latestQuality.pdf_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-primary-main font-bold text-sm hover:underline"
+                                >
+                                    <ArrowUpRight size={16} />
+                                    最新の水質検査結果 (PDF)
+                                </a>
+                            )}
+                            {(latestQuality?.plan_pdf_url || waterQuality.find(q => q.plan_pdf_url)?.plan_pdf_url) && (
+                                <a
+                                    href={latestQuality?.plan_pdf_url || waterQuality.find(q => q.plan_pdf_url)?.plan_pdf_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-primary-main font-bold text-sm hover:underline"
+                                >
+                                    <ArrowUpRight size={16} />
+                                    水質検査計画 (PDF)
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </section>
 

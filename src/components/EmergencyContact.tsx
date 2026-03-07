@@ -4,8 +4,22 @@ import React from 'react';
 import { AlertTriangle, Phone, Wrench } from 'lucide-react';
 import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion } from 'framer-motion';
+import { getSiteSettings, SiteSettings } from '@/lib/microcms';
+import Link from 'next/link';
 
 export const EmergencyContact = () => {
+    const [settings, setSettings] = React.useState<SiteSettings | null>(null);
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            const data = await getSiteSettings();
+            setSettings(data);
+        };
+        fetchSettings();
+    }, []);
+
+    const emergencyPhone = settings?.phone_emergency || '0547-46-4130';
+
     const contacts = [
         {
             title: '漏水・破裂',
@@ -60,7 +74,7 @@ export const EmergencyContact = () => {
                         className="relative"
                     >
                         <a
-                            href="tel:0547-46-4130"
+                            href={`tel:${emergencyPhone}`}
                             className="bg-gradient-to-br from-primary-deep to-primary-main p-5 md:p-8 rounded-2xl md:rounded-3xl flex items-center space-x-4 md:space-x-6 shadow-glow-lg relative overflow-hidden group active:scale-95 transition-transform block"
                         >
                             {/* ホバーオーバーレイ */}
@@ -80,7 +94,7 @@ export const EmergencyContact = () => {
                             <div className="relative z-10">
                                 <p className="text-secondary-vibrant text-[10px] md:text-xs font-black uppercase tracking-widest mb-1">24時間受付</p>
                                 <p className="text-2xl md:text-4xl font-black text-white leading-none">
-                                    0547-46-4130
+                                    {emergencyPhone}
                                 </p>
                             </div>
                         </a>
@@ -107,7 +121,7 @@ export const EmergencyContact = () => {
                             <p className="text-text-sub text-xs md:text-sm leading-relaxed mb-6 md:mb-8 relative z-10">{contact.desc}</p>
 
                             <div className="flex items-center space-x-2 text-secondary-vibrant font-black text-xs md:text-sm relative z-10">
-                                <span>詳細を確認する</span>
+                                <Link href="/trouble" className="hover:underline">詳細を確認する</Link>
                                 <div className="w-6 h-px bg-gradient-to-r from-secondary-vibrant to-primary-main group-hover:w-10 transition-all" />
                             </div>
                         </motion.div>

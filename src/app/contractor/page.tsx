@@ -6,8 +6,28 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import { getContractorDocsList, ContractorDoc } from '@/lib/microcms';
 
 export default function ContractorPage() {
+    const [docs, setDocs] = React.useState<ContractorDoc[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const fetchDocs = async () => {
+            const data = await getContractorDocsList();
+            setDocs(data);
+            setLoading(false);
+        };
+        fetchDocs();
+    }, []);
+
+    // カテゴリごとに書類を抽出
+    const registryDocs = docs.filter(doc => doc.category.includes('指定工事店名簿') || doc.category.includes('Registry'));
+    const applicationDocs = docs.filter(doc => doc.category.includes('申請書') || doc.category.includes('Application') || doc.category.includes('その他') || doc.category.includes('Other'));
+
+    // 最新の名簿PDFを取得
+    const latestRegistry = registryDocs[0];
+
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
@@ -75,15 +95,17 @@ export default function ContractorPage() {
                                 <p className="text-text-sub text-xs md:text-sm mt-1">最新の指定工事店一覧（PDF）をご確認いただけます。</p>
                             </div>
                         </div>
-                        <a
-                            href="http://www.ooijousuidoukigyoudan.or.jp/R08_Jan_siteikoujiten(2).pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-shine inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
-                        >
-                            <FileText size={18} />
-                            <span>指定工事店一覧を表示 (PDF)</span>
-                        </a>
+                        {latestRegistry && (
+                            <a
+                                href={latestRegistry.pdf_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-shine inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
+                            >
+                                <FileText size={18} />
+                                <span>{latestRegistry.title || '指定工事店一覧を表示 (PDF)'}</span>
+                            </a>
+                        )}
                     </motion.div>
                 </section>
 
@@ -99,43 +121,34 @@ export default function ContractorPage() {
                     </p>
 
                     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                        {[
-                            { name: '給水装置工事申込書（Ver.4）', desc: '新設・増設・改造時に提出', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusuimoushikominituite_Ver4_R5_11_28.pdf' },
-                            { name: '受水槽を設置しないことに関する誓約書', desc: '受水槽を設置しない場合に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf' },
-                            { name: '給水装置工事完了届', desc: '工事完了後に提出', type: '届出' },
-                            { name: '指定給水装置工事事業者指定申請書', desc: '新規指定の申請', type: '申請' },
-                            { name: '指定給水装置工事事業者変更届出書', desc: '届出事項変更時に提出', type: '届出' },
-                            { name: '指定給水装置工事事業者廃止届出書', desc: '廃業時に提出', type: '届出' },
-                            { name: '給水装置工事主任技術者選任届', desc: '主任技術者の選任・変更時', type: '届出' },
-                        ].map((form, idx) => (
-                            <div key={idx} className={`flex items-center justify-between px-5 md:px-8 py-4 md:py-5 ${idx !== 0 ? 'border-t border-slate-50' : ''} hover:bg-slate-50/50 transition-colors`}>
-                                <div className="flex items-center space-x-3 md:space-x-4">
-                                    <FileText size={18} className="text-primary-main shrink-0" />
-                                    <div>
-                                        {form.href ? (
-                                            <a href={form.href} target="_blank" rel="noopener noreferrer" className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2">
-                                                {form.name}
+                        {applicationDocs.length > 0 ? (
+                            applicationDocs.map((form, idx) => (
+                                <div key={form.id} className={`flex items-center justify-between px-5 md:px-8 py-4 md:py-5 ${idx !== 0 ? 'border-t border-slate-50' : ''} hover:bg-slate-50/50 transition-colors`}>
+                                    <div className="flex items-center space-x-3 md:space-x-4">
+                                        <FileText size={18} className="text-primary-main shrink-0" />
+                                        <div>
+                                            <a href={form.pdf_url} target="_blank" rel="noopener noreferrer" className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2">
+                                                {form.title}
                                                 <ArrowUpRight size={14} className="opacity-40" />
                                             </a>
-                                        ) : (
-                                            <p className="text-sm md:text-base font-bold text-primary-deep">{form.name}</p>
-                                        )}
-                                        <p className="text-[10px] md:text-xs text-text-sub mt-0.5">{form.desc}</p>
+                                            <p className="text-[10px] md:text-xs text-text-sub mt-0.5">MicroCMSから管理されています</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shrink-0 ${form.type === '申請' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
-                                        }`}>
-                                        {form.type}
-                                    </span>
-                                    {form.href && (
-                                        <a href={form.href} download className="text-primary-main/40 hover:text-primary-main transition-colors" title="PDFをダウンロード">
+                                    <div className="flex items-center gap-3">
+                                        <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shrink-0 bg-blue-50 text-blue-600`}>
+                                            {form.category[0] === 'Registry' ? '名簿' : '申請・届出'}
+                                        </span>
+                                        <a href={form.pdf_url} download className="text-primary-main/40 hover:text-primary-main transition-colors" title="PDFをダウンロード">
                                             <Download size={16} />
                                         </a>
-                                    )}
+                                    </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="p-8 text-center text-text-sub">
+                                書類を読み込んでいます、または登録されていません。
                             </div>
-                        ))}
+                        )}
                     </div>
                     <p className="text-text-sub/60 text-xs mt-4">※ 様式のダウンロードは窓口にて配布、または公式サイトの「公表」ページからご確認ください。</p>
                 </section>

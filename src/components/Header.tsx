@@ -6,11 +6,21 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, ChevronRight } from 'lucide-react';
 import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getSiteSettings, SiteSettings } from '@/lib/microcms';
 
 export const Header = () => {
+    const [settings, setSettings] = React.useState<SiteSettings | null>(null);
     const [isOpen, setIsOpen] = React.useState(false);
     const [scrolled, setScrolled] = React.useState(false);
     const pathname = usePathname();
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            const data = await getSiteSettings();
+            setSettings(data);
+        };
+        fetchSettings();
+    }, []);
 
     // ホームへ戻る（同じページならスクロールトップ）
     const handleHomeClick = (e: React.MouseEvent) => {
@@ -48,6 +58,8 @@ export const Header = () => {
         { name: '企業団について', href: '/about', desc: '組織概要・アクセス' },
         { name: '工事業者向け', href: '/contractor', desc: '指定工事店・様式' },
     ];
+
+    const emergencyPhone = settings?.phone_emergency || '0547-46-4130';
 
     return (
         <>
@@ -102,7 +114,7 @@ export const Header = () => {
 
                             <div className="ml-4 pl-4 border-l border-current/10 flex items-center">
                                 <a
-                                    href="tel:0547-46-4130"
+                                    href={`tel:${emergencyPhone}`}
                                     className="flex items-center space-x-2 bg-primary-main text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
                                 >
                                     <Phone size={14} fill="currentColor" />
@@ -114,7 +126,7 @@ export const Header = () => {
                         {/* モバイルメニューボタン & 緊急連絡 */}
                         <div className="flex items-center space-x-2 xl:hidden">
                             <a
-                                href="tel:0547-46-4130"
+                                href={`tel:${emergencyPhone}`}
                                 className={`p-2.5 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
                                     }`}
                             >
@@ -192,14 +204,14 @@ export const Header = () => {
                             className="mt-8 pt-8 border-t border-white/10"
                         >
                             <a
-                                href="tel:0547-46-4130"
+                                href={`tel:${emergencyPhone}`}
                                 className="flex items-center justify-center space-x-3 bg-gradient-to-r from-red-500 to-rose-600 text-white py-5 rounded-2xl font-black text-lg shadow-2xl active:scale-95 transition-transform"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <Phone size={22} fill="currentColor" />
                                 <span>24時間緊急受付</span>
                             </a>
-                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest">TEL: 0547-46-4130</p>
+                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest">TEL: {emergencyPhone}</p>
                         </motion.div>
                     </motion.div>
                 )}

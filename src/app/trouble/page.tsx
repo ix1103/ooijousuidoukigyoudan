@@ -6,8 +6,25 @@ import { ChevronRight, AlertTriangle, Droplets, Wrench, Snowflake, ShieldAlert, 
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import { getSiteSettings, getContractorDocsList, SiteSettings, ContractorDoc } from '@/lib/microcms';
 
 export default function TroublePage() {
+    const [settings, setSettings] = React.useState<SiteSettings | null>(null);
+    const [repairShopDocs, setRepairShopDocs] = React.useState<ContractorDoc[]>([]);
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            const [siteSettings, docs] = await Promise.all([
+                getSiteSettings(),
+                getContractorDocsList()
+            ]);
+            setSettings(siteSettings);
+            // 修理当番店カテゴリの書類を抽出
+            setRepairShopDocs(docs.filter(doc => doc.category.includes('修理当番店') || doc.category.includes('Repair Shop')));
+        };
+        fetchData();
+    }, []);
+
     const troubles = [
         {
             id: 'bad-sales',
@@ -95,9 +112,19 @@ export default function TroublePage() {
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="水道トラブル対処法"
-                subtitle={<>よくある水道のトラブルとその対処法をご案内します。<br />緊急の場合は <strong className="text-secondary-vibrant">0547-46-4130</strong> へご連絡ください。</>}
+                subtitle={<>よくある水道のトラブルとその対処法をご案内します。<br />緊急の場合は <strong className="text-secondary-vibrant">{settings?.phone_emergency || '0547-46-4130'}</strong> へご連絡ください。</>}
                 enTitle="Water Trouble"
             />
+
+            {/* 緊急告知バナー (MicroCMS) */}
+            {settings?.notice_banner && (
+                <div className="bg-amber-100 border-b border-amber-200 py-3 md:py-4">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-2 text-amber-900 font-bold text-sm md:text-base">
+                        <AlertTriangle size={18} className="text-amber-600" />
+                        <span>{settings.notice_banner}</span>
+                    </div>
+                </div>
+            )}
 
             {/* 緊急電話バナー */}
             <div className="bg-red-600 py-4 md:py-5">
@@ -106,9 +133,9 @@ export default function TroublePage() {
                         <AlertTriangle size={18} />
                         <span>緊急の場合は今すぐ電話！</span>
                     </div>
-                    <a href="tel:0547-46-4130" className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
+                    <a href={`tel:${settings?.phone_emergency || '0547-46-4130'}`} className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
                         <Phone size={18} />
-                        0547-46-4130
+                        {settings?.phone_emergency || '0547-46-4130'}
                     </a>
                     <span className="text-white/70 text-xs md:text-sm">（24時間対応）</span>
                 </div>
@@ -145,11 +172,11 @@ export default function TroublePage() {
                                     </ul>
                                     {trouble.action === 'tel' && (
                                         <a
-                                            href="tel:0547-46-4130"
+                                            href={`tel:${settings?.phone_emergency || '0547-46-4130'}`}
                                             className="inline-flex items-center gap-2 mt-5 md:mt-6 bg-primary-deep text-white px-5 py-2.5 rounded-xl font-black text-sm md:text-base hover:bg-primary-main transition-colors shadow-premium active:scale-95"
                                         >
                                             <Phone size={16} />
-                                            企業団へ連絡（0547-46-4130）
+                                            企業団へ連絡（{settings?.phone_emergency || '0547-46-4130'}）
                                         </a>
                                     )}
                                     {trouble.action === 'contractor' && (
@@ -161,26 +188,22 @@ export default function TroublePage() {
                                                 指定工事業者を探す
                                                 <ChevronRight size={16} />
                                             </Link>
-                                            <div className="flex gap-2">
-                                                <a
-                                                    href="http://www.ooijousuidoukigyoudan.or.jp/FYR7_suidoutouban.pdf"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 bg-white text-primary-deep border border-primary-deep/20 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm hover:bg-slate-50 transition-colors active:scale-95"
-                                                >
-                                                    <FileText size={14} />
-                                                    R7当番店(PDF)
-                                                </a>
-                                                <a
-                                                    href="http://www.ooijousuidoukigyoudan.or.jp/FYR8toubanten.pdf"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 bg-white text-primary-deep border border-primary-deep/20 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm hover:bg-slate-50 transition-colors active:scale-95"
-                                                >
-                                                    <FileText size={14} />
-                                                    R8当番店(PDF)
-                                                </a>
-                                            </div>
+                                            {repairShopDocs.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {repairShopDocs.map((doc) => (
+                                                        <a
+                                                            key={doc.id}
+                                                            href={doc.pdf_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-2 bg-white text-primary-deep border border-primary-deep/20 px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm hover:bg-slate-50 transition-colors active:scale-95"
+                                                        >
+                                                            <FileText size={14} />
+                                                            {doc.title}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -197,9 +220,9 @@ export default function TroublePage() {
                     <AlertTriangle size={36} className="mx-auto mb-4 text-secondary-vibrant" />
                     <h2 className="text-2xl md:text-4xl font-black mb-4">お困りの場合はいつでも</h2>
                     <p className="text-white/60 mb-8 text-sm md:text-base">解決しない場合や緊急の場合は、遠慮なく企業団にご連絡ください。</p>
-                    <a href="tel:0547-46-4130" className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-lg md:text-xl shadow-glow hover:shadow-glow-lg transition-all active:scale-95">
+                    <a href={`tel:${settings?.phone_emergency || '0547-46-4130'}`} className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-lg md:text-xl shadow-glow hover:shadow-glow-lg transition-all active:scale-95">
                         <Phone size={22} />
-                        0547-46-4130
+                        {settings?.phone_emergency || '0547-46-4130'}
                     </a>
                 </div>
             </section>
