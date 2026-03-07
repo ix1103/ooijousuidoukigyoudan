@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import WaterBillSimulator from '@/components/WaterBillSimulator';
 
 export default function GuidePage() {
     const guides = [
@@ -140,6 +141,9 @@ export default function GuidePage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* 水道料金シミュレーター */}
+                    <WaterBillSimulator />
 
                     {/* 重要な注意事項 */}
                     <div className="mt-6 md:mt-8 bg-amber-50 border border-amber-200/60 rounded-2xl md:rounded-3xl p-5 md:p-8 flex items-start gap-4">
