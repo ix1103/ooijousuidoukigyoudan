@@ -8,22 +8,34 @@ import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/PageHeader';
 import {
     getWaterQualityList, WaterQuality,
-    getSiteSettings, SiteSettings
+    getWqPageSettings, WqPageSettings,
+    getWqDailyList, WqDaily,
+    getWqStandardList, WqStandard,
+    getWqTankList, WqTank
 } from '@/lib/microcms';
 
 export default function WaterQualityPage() {
     const [waterQuality, setWaterQuality] = React.useState<WaterQuality[]>([]);
-    const [siteSettings, setSiteSettings] = React.useState<SiteSettings | null>(null);
+    const [pageSettings, setPageSettings] = React.useState<WqPageSettings | null>(null);
+    const [dailyList, setDailyList] = React.useState<WqDaily[]>([]);
+    const [standardList, setStandardList] = React.useState<WqStandard[]>([]);
+    const [tankList, setTankList] = React.useState<WqTank[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         const fetchData = async () => {
-            const [data, sSettings] = await Promise.all([
+            const [data, pSettings, dList, sList, tList] = await Promise.all([
                 getWaterQualityList(),
-                getSiteSettings()
+                getWqPageSettings(),
+                getWqDailyList(),
+                getWqStandardList(),
+                getWqTankList()
             ]);
             setWaterQuality(data);
-            setSiteSettings(sSettings);
+            setPageSettings(pSettings);
+            setDailyList(dList);
+            setStandardList(sList);
+            setTankList(tList);
             setLoading(false);
         };
         fetchData();
@@ -47,7 +59,6 @@ export default function WaterQualityPage() {
         { item: 'pH値', standard: '5.8～8.6', category: '性状' },
         { item: '残留塩素', standard: '0.1mg/L以上', category: '管理' },
     ];
-    const standardList = siteSettings?.wq_standard || [];
     const qualityStandards = standardList.length > 0
         ? standardList.map(item => ({ item: item.item_name, standard: item.standard_value, category: (item.category && item.category[0]) || '健康' }))
         : defaultQualityStandards;
@@ -58,7 +69,6 @@ export default function WaterQualityPage() {
         { item: '濁り', description: '水に濁りがないか確認します。' },
         { item: '残留塩素', description: '消毒効果が維持されているか確認します。' },
     ];
-    const dailyList = siteSettings?.wq_daily || [];
     const dailyItems = dailyList.length > 0
         ? dailyList.map(item => ({ item: item.item_name, description: item.description }))
         : defaultDailyItems;
@@ -70,14 +80,13 @@ export default function WaterQualityPage() {
         { title: '水質確認', desc: '色・濁り・臭い・味・残留塩素を定期的に確認してください。' },
         { title: '届出', desc: '設置・変更・廃止の際は企業団への届出が必要です。' },
     ];
-    const tankList = siteSettings?.wq_tank || [];
     const tankManagement = tankList.length > 0
         ? tankList.map(item => ({ title: item.title, desc: item.description }))
         : defaultTankManagement;
 
     // サブタイトルとアラートテキストのフォールバック
-    const displaySubtitle = siteSettings?.wq_subtitle ? (
-        <>{siteSettings.wq_subtitle.split('\n').map((line, i, arr) => (
+    const displaySubtitle = pageSettings?.subtitle ? (
+        <>{pageSettings.subtitle.split('\n').map((line, i, arr) => (
             <React.Fragment key={i}>
                 {line}
                 {i !== arr.length - 1 && <br className="md:hidden" />}
@@ -88,7 +97,7 @@ export default function WaterQualityPage() {
     );
 
     const fallbackTankAlert = "有効容量が10立方メートルを超える受水槽は「簡易専用水道」に該当し、\n維持管理は施設所有者の責任となります。年1回の法定検査が義務づけられています。";
-    const tankAlertText = siteSettings?.wq_tank_alert_desc || fallbackTankAlert;
+    const tankAlertText = pageSettings?.tank_alert_desc || fallbackTankAlert;
     const displayTankAlert = tankAlertText.split('\n').map((line, i, arr) => (
         <React.Fragment key={i}>
             {line}
