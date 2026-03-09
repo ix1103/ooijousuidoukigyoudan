@@ -31,7 +31,7 @@ export const EmergencyContact = () => {
     ];
 
     return (
-        <section className="py-10 md:py-20 relative overflow-hidden">
+        <section className="pt-6 md:pt-10 pb-12 md:pb-20 relative overflow-hidden">
             {/* 装飾的な背景要素 */}
             <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-accent-soft/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-48 md:w-72 h-48 md:h-72 bg-secondary-vibrant/10 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2" />
