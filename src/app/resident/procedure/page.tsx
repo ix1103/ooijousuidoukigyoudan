@@ -59,8 +59,8 @@ export default function ProcedurePage() {
                 <div className="bg-primary-deep rounded-2xl md:rounded-3xl p-8 md:p-12 text-white text-center">
                     <h3 className="text-xl md:text-2xl font-black mb-3">お電話でのお申し込み</h3>
                     <p className="text-white/60 text-sm mb-6">平日 8:15〜17:00 受付（土日・祝日を除く）</p>
-                    <a href="tel:0547-46-4111" className="inline-flex items-center gap-3 bg-white text-primary-deep font-black text-xl md:text-2xl px-8 py-4 rounded-2xl hover:bg-primary-main hover:text-white transition-all shadow-lg">
-                        <Phone size={24} />0547-46-4111
+                    <a href="tel:0547-46-4130" className="inline-flex items-center gap-3 bg-white text-primary-deep font-black text-xl md:text-2xl px-8 py-4 rounded-2xl hover:bg-primary-main hover:text-white transition-all shadow-lg">
+                        <Phone size={24} />0547-46-4130
                     </a>
                 </div>
             </div>

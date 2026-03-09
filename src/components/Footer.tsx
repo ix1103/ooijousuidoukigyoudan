@@ -135,17 +135,7 @@ export const Footer = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-2">
                                         <Phone size={14} className="text-secondary-vibrant" />
-                                        <span className="text-[10px] text-white/60 font-bold">料金・引越しなど</span>
-                                    </div>
-                                    <a href="tel:0547-46-4111" className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
-                                        0547-46-4111
-                                    </a>
-                                </div>
-                                <div className="border-t border-white/10" />
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2">
-                                        <Phone size={14} className="text-red-400" />
-                                        <span className="text-[10px] text-white/60 font-bold">緊急・漏水（24時間）</span>
+                                        <span className="text-[10px] text-white/60 font-bold">お問い合わせ・緊急（24時間）</span>
                                     </div>
                                     <a href="tel:0547-46-4130" className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
                                         0547-46-4130
