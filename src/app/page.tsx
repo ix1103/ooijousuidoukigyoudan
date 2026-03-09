@@ -56,32 +56,39 @@ export default function Home() {
 
 
       {/* 4. お知らせセクション（最新のお知らせ一覧） */}
-      <NewsSection />
+      <section className="pt-0 pb-12 md:pb-20 bg-white">
+        <NewsSection />
+      </section>
 
       {/* 5. 緊急連絡先セクション */}
-      <EmergencyContact />
+      <section className="pb-12 md:pb-20">
+        <EmergencyContact />
+      </section>
 
       {/* 5. クイックナビゲーション */}
-      <section className="py-16 md:py-32 relative">
+      <section className="py-12 md:py-24 relative overflow-hidden bg-slate-50/50">
         {/* セクション背景装飾 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary-vibrant/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-secondary-vibrant/5 rounded-full blur-[160px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-8 md:mb-16 text-center"
+            className="mb-12 md:mb-24 text-left"
           >
-            <div className="flex items-center justify-center space-x-3 text-secondary-vibrant font-black mb-3 md:mb-4">
-              <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-              <span className="tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm uppercase">Services</span>
-              <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+            <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-4 md:mb-6">
+              <div className="w-10 md:w-16 h-1 bg-secondary-vibrant rounded-full" />
+              <span className="tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm uppercase font-black">Quick Services</span>
             </div>
-            <h2 className="text-2xl md:text-4xl font-black text-primary-deep mb-4">各種お手続き・ご案内</h2>
-            <p className="text-text-sub text-sm md:text-base">よく利用されるサービスや情報をまとめています。</p>
+            <h2 className="text-3xl md:text-5xl font-black text-primary-deep mb-6 tracking-tight">各種お手続き・ご案内</h2>
+            <p className="text-text-sub text-sm md:text-lg leading-relaxed max-w-3xl">
+              水道の使用開始・中止のお申し込みや、料金のお支払い方法など、<br className="hidden md:block" />
+              日常生活に必要な情報を分かりやすくまとめています。
+            </p>
           </motion.div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {quickNav.map((item, index) => (
               <motion.div
                 key={index}
@@ -92,24 +99,23 @@ export default function Home() {
               >
                 <Link
                   href={item.href}
-                  className="group block p-5 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-100/80 hover:border-secondary-vibrant/20 shadow-sm hover:shadow-glow transition-all duration-500 relative overflow-hidden h-full"
+                  className="group block p-8 md:p-10 rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-white/60 hover:border-secondary-vibrant/30 shadow-sm hover:shadow-premium transition-all duration-700 relative overflow-hidden h-full"
                 >
-                  {/* ホバー時に広がる背景グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary-vibrant/5 to-primary-main/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
                   <div className="relative z-10">
-                    <div className="bg-gradient-to-br from-primary-main/5 to-secondary-vibrant/10 p-3 md:p-4 rounded-xl md:rounded-2xl inline-block mb-4 md:mb-6 group-hover:scale-110 group-hover:shadow-premium transition-all duration-500">
-                      {item.icon}
+                    <div className="bg-gradient-to-br from-primary-main/5 to-secondary-vibrant/10 p-4 md:p-5 rounded-2xl md:rounded-3xl inline-block mb-6 md:mb-8 group-hover:scale-110 group-hover:bg-primary-main group-hover:text-white transition-all duration-500">
+                      <div className="transition-colors duration-500">
+                        {item.icon}
+                      </div>
                     </div>
-                    <h3 className="text-sm md:text-lg font-black text-primary-deep mb-2 md:mb-3 group-hover:text-primary-main transition-colors leading-snug">
+                    <h3 className="text-lg md:text-xl font-black text-primary-deep mb-3 md:mb-4 group-hover:text-primary-main transition-colors leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-text-sub text-xs md:text-sm leading-relaxed hidden sm:block">
+                    <p className="text-text-sub text-xs md:text-sm leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
                       {item.desc}
                     </p>
-                    <div className="mt-3 md:mt-5 flex items-center space-x-2 text-secondary-vibrant font-black text-[9px] md:text-[10px] tracking-widest uppercase">
-                      <span>詳細</span>
-                      <div className="w-4 md:w-6 h-px bg-secondary-vibrant group-hover:w-8 md:group-hover:w-10 transition-all" />
+                    <div className="mt-6 md:mt-8 flex items-center space-x-3 text-secondary-vibrant font-black text-[10px] md:text-xs tracking-widest uppercase">
+                      <span>VIEW DETAILS</span>
+                      <div className="w-6 md:w-10 h-px bg-secondary-vibrant group-hover:w-12 md:group-hover:w-16 transition-all duration-500" />
                     </div>
                   </div>
                 </Link>
@@ -120,32 +126,33 @@ export default function Home() {
       </section>
 
       {/* 6. 特徴・信頼のセクション */}
-      <section className="py-20 md:py-32 relative bg-white overflow-hidden">
+      <section className="py-12 md:py-24 relative bg-white overflow-hidden">
         {/* 装飾 */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-soft/20 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-secondary-vibrant/10 rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent-soft/10 rounded-full blur-[120px] translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-vibrant/5 rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-24 items-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className="lg:col-span-7"
             >
-              <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-4 md:mb-6">
-                <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-                <span className="tracking-[0.15em] md:tracking-[0.2em] text-xs md:text-sm uppercase">Our Mission</span>
+              <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-8">
+                <div className="w-12 md:w-20 h-1 bg-secondary-vibrant rounded-full" />
+                <span className="tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm uppercase font-black">Our Mission</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-primary-deep mb-6 md:mb-10 leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-primary-deep mb-8 md:mb-12 leading-[1.15] tracking-tight">
                 「当たり前」の品質を、<br />
                 <span className="text-gradient-water">揺るぎない覚悟</span>で。
               </h2>
-              <p className="text-text-sub text-sm md:text-lg leading-relaxed md:leading-loose mb-8 md:mb-12">
+              <p className="text-text-sub text-base md:text-xl leading-relaxed md:leading-loose mb-10 md:mb-16 opacity-80">
                 水道は生活に不可欠なインフラです。私たちは、技術革新と日々のメンテナンスを積み重ね、どのような状況下でも変わらない安全な水をお届けします。
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
                 {features.map((f, i) => (
                   <motion.div
                     key={i}
@@ -153,37 +160,36 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.15 }}
-                    className="space-y-3 md:space-y-4 group"
+                    className="space-y-4 md:space-y-6 group"
                   >
-                    <div className="text-secondary-vibrant bg-gradient-to-br from-accent-soft/40 to-secondary-vibrant/10 p-3 md:p-4 rounded-xl md:rounded-2xl w-fit group-hover:shadow-premium transition-shadow">
+                    <div className="text-secondary-vibrant bg-gradient-to-br from-accent-soft/40 to-secondary-vibrant/10 p-4 md:p-5 rounded-2xl md:rounded-3xl w-fit group-hover:shadow-premium group-hover:bg-secondary-vibrant group-hover:text-white transition-all duration-500">
                       {f.icon}
                     </div>
-                    <h4 className="text-base md:text-xl font-black text-primary-deep">{f.title}</h4>
-                    <p className="text-text-sub text-xs md:text-sm leading-relaxed">{f.desc}</p>
+                    <h4 className="text-lg md:text-2xl font-black text-primary-deep tracking-tight">{f.title}</h4>
+                    <p className="text-text-sub text-sm md:text-base leading-relaxed opacity-70">{f.desc}</p>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative aspect-[4/3] md:aspect-[4/5] rounded-2xl md:rounded-[3rem] overflow-hidden shadow-glow-lg"
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-5 relative aspect-square md:aspect-[4/5] rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-glow-lg"
             >
               {/* メッシュ背景 */}
               <div className="absolute inset-0 animate-mesh-bg bg-gradient-to-br from-primary-deep via-primary-main to-primary-light" />
               {/* 波紋装飾 */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] border border-white/10 rounded-full animate-ripple" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] h-[150px] border border-white/10 rounded-full animate-ripple" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-white/5 rounded-full animate-ripple" />
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-12 text-center text-white">
-                <div className="bg-white/10 backdrop-blur-2xl p-6 md:p-10 rounded-2xl md:rounded-[2.5rem] border border-white/15 shadow-2xl">
-                  <WaterLogoIcon className="w-10 h-10 md:w-16 md:h-16 text-secondary-vibrant mx-auto mb-4 md:mb-8" />
-                  <p className="text-3xl md:text-4xl font-black mb-2 md:mb-4">100%</p>
-                  <p className="text-xs md:text-sm font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase opacity-60">Pure Water Supply</p>
-                  <p className="mt-4 md:mt-8 text-accent-soft/70 leading-relaxed text-xs md:text-sm">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-10 md:p-16 text-center text-white">
+                <div className="bg-white/5 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-2xl relative z-10">
+                  <WaterLogoIcon className="w-16 h-16 md:w-24 md:h-24 text-secondary-vibrant mx-auto mb-8 md:mb-12 drop-shadow-glow" />
+                  <p className="text-5xl md:text-7xl font-black mb-4 md:mb-6 tracking-tighter">100%</p>
+                  <p className="text-xs md:text-sm font-black tracking-[0.3em] md:tracking-[0.4em] uppercase opacity-50 mb-8 md:mb-12">Pure Water Supply</p>
+                  <p className="text-accent-soft/80 leading-relaxed text-sm md:text-base font-medium">
                     私たちは自治体を超えた協力体制で、<br />最適な水道事業を運営しています。
                   </p>
                 </div>

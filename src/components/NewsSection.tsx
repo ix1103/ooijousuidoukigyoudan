@@ -35,7 +35,7 @@ export const NewsSection = () => {
     };
 
     return (
-        <section className="py-16 md:py-32 relative overflow-hidden">
+        <section className="py-10 md:py-20 relative overflow-hidden">
             {/* 背景装飾 */}
             <div className="absolute inset-0 bg-gradient-to-b from-[#f0f9ff] via-white to-[#f0f9ff]" />
             <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-secondary-vibrant/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
