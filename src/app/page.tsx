@@ -1,7 +1,6 @@
 "use client";
 
 import { Hero } from "@/components/Hero";
-import { EmergencyAlert } from "@/components/EmergencyAlert";
 import { EmergencyContact } from "@/components/EmergencyContact";
 import { NewsSection } from "@/components/NewsSection";
 import { Info, FileText, Wrench, Building2, ShieldCheck, Activity } from "lucide-react";
@@ -52,9 +51,6 @@ export default function Home() {
 
   return (
     <div className="w-full overflow-hidden">
-      {/* 1. 緊急のお知らせ（最優先情報） - ヘッダー直下に配置 */}
-      <EmergencyAlert />
-
       {/* 2. ヒーローセクション */}
       <Hero />
 

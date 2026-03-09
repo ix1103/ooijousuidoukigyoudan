@@ -44,6 +44,8 @@ export const Header = () => {
             name: '住民の皆様へ',
             items: [
                 { name: '手続き・料金', href: '/resident/price', desc: 'お支払い・各種申請' },
+                { name: '引っ越し・各種手続き', href: '/resident/procedure', desc: '開栓・閉栓・名義変更' },
+                { name: 'メーター・検針', href: '/resident/meter', desc: 'メーターの見方・漏水' },
                 { name: '水質情報', href: '/resident/quality', desc: '水質基準・検査結果' },
                 { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
                 { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
@@ -61,6 +63,7 @@ export const Header = () => {
             items: [
                 { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内' },
                 { name: '財政状況・公表資料', href: '/about/finance', desc: '予算決算・適格請求書' },
+                { name: '企業団議会', href: '/about/assembly', desc: '議会の組織と活動' },
             ]
         },
         { name: 'お知らせ', href: '/news', items: [] },
@@ -72,7 +75,7 @@ export const Header = () => {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+                className={`w-full transition-all duration-500 ${scrolled
                     ? 'bg-white shadow-lg py-2'
                     : 'bg-primary-deep py-3 md:py-4'
                     }`}

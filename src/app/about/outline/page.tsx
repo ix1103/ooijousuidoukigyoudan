@@ -285,17 +285,26 @@ export default function AboutPage() {
                             大井上水道企業団議会は、構成自治体（島田市・吉田町・川根本町）から選出された議員で構成されます。
                             予算の審議・決算の認定、条例の制定・改廃などを行い、企業団の運営を議会の立場から監視しています。
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
                             {[
-                                { label: '議員定数', value: '10名' },
+                                { label: '議員定数', value: '8名' },
                                 { label: '定例会', value: '年2回（3月・9月）' },
-                                { label: '構成', value: '島田市6名・吉田町2名・川根本町2名' },
+                                { label: '構成', value: '島田市5名・牧之原市3名' },
                             ].map((item, idx) => (
                                 <div key={idx} className="bg-white p-4 md:p-6 rounded-xl border border-slate-100 text-center">
                                     <p className="text-xs text-text-sub mb-1">{item.label}</p>
                                     <p className="text-sm md:text-base font-black text-primary-deep">{item.value}</p>
                                 </div>
                             ))}
+                        </div>
+                        <div className="flex justify-center">
+                            <Link
+                                href="/about/assembly"
+                                className="inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-2xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
+                            >
+                                議会の組織と活動について詳しく
+                                <ChevronRight size={18} />
+                            </Link>
                         </div>
                     </div>
                 </section>

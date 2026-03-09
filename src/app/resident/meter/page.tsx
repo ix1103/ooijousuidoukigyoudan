@@ -3,129 +3,150 @@
 import React from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
-import { Gauge, AlertTriangle, Calendar, CheckCircle2 } from 'lucide-react';
+import { Search, Info, CheckCircle2, Droplets, Wrench, AlertTriangle, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function MeterExchangePage() {
+export default function MeterPage() {
+    const howToRead = [
+        {
+            title: '検針の時期',
+            desc: '2ヶ月に1回、偶数月（一部地域は奇数月）の月初めに行われます。検針員が伺い、「水道使用量等のお知らせ（検針票）」をポストに投函します。',
+            icon: <Info size={24} className="text-primary-main" />
+        },
+        {
+            title: 'メーターの場所',
+            desc: '玄関先や駐車場などの地面にある、青色または黒色の「量水器」と書かれたボックス内にあります。常に検針ができるよう、ボックスの上に物を置かないでください。',
+            icon: <Search size={24} className="text-primary-main" />
+        },
+        {
+            title: '数値の読み方',
+            desc: 'メーター内の数字（黒地に白文字のデジタル部分）を左から読みます。単位は立方メートル（m³）です。前回の数値との差が、今回の使用量となります。',
+            icon: <CheckCircle2 size={24} className="text-primary-main" />
+        }
+    ];
+
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
-                title="水道メーターの定期交換"
-                subtitle="正確な計量と安全な給水のため、計量法に基づき8年ごとに水道メーターを交換しています。"
-                enTitle="Meter Exchange"
+                title="水道メーターと検針"
+                subtitle="メーターの読み方、検針の仕組み、漏水の調べ方、定期交換についてご案内します。"
+                enTitle="Water Meter"
             />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16">
-                {/* 概要セクション */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 space-y-16 md:space-y-32">
+
+                {/* メーターの見方 */}
                 <section>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100"
-                    >
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 bg-secondary-vibrant/20 rounded-2xl">
-                                <Gauge className="w-8 h-8 text-primary-deep" />
-                            </div>
-                            <h2 className="text-2xl md:text-3xl font-black text-primary-deep">定期交換の目的</h2>
-                        </div>
-                        <p className="text-text-sub leading-relaxed md:text-lg mb-8">
-                            水道メーターは、ご家庭で使用された水量を正確に計量するための大切な機器です。計量法により、水道メーターの有効期間は<strong>8年間</strong>と定められています。大井上水道企業団では、有効期間が満了する前に、順次新しいメーターへの交換作業を無料で実施しています。
-                        </p>
-                        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200/60">
-                            <h3 className="font-bold text-primary-main mb-3 flex items-center gap-2">
-                                <CheckCircle2 className="w-5 h-5" />
-                                皆様へのお願い
-                            </h3>
-                            <ul className="space-y-3 text-sm md:text-base text-text-sub">
-                                <li className="flex items-start gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-secondary-vibrant mt-2 shrink-0" />
-                                    <span>メーターボックスの上には車や物を置かないでください。</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-secondary-vibrant mt-2 shrink-0" />
-                                    <span>ボックス内は泥や水が入らないよう、いつもきれいにしておいてください。</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-secondary-vibrant mt-2 shrink-0" />
-                                    <span>犬は出入り口やメーターボックスから離して繋いでください。</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </motion.div>
+                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
+                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Meter Reading</span>
+                    </div>
+                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-12">検針とメーターの見方</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {howToRead.map((item, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all"
+                            >
+                                <div className="bg-primary-main/5 p-4 rounded-2xl w-fit mb-6">
+                                    {item.icon}
+                                </div>
+                                <h3 className="text-lg md:text-xl font-black text-primary-deep mb-4">{item.title}</h3>
+                                <p className="text-text-sub text-sm leading-relaxed">{item.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </section>
 
-                {/* 交換作業について */}
-                <section>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100"
-                    >
-                        <div className="flex items-center gap-4 mb-8">
-                            <div className="p-3 bg-secondary-vibrant/20 rounded-2xl">
-                                <Calendar className="w-8 h-8 text-primary-deep" />
-                            </div>
-                            <h2 className="text-2xl md:text-3xl font-black text-primary-deep">交換作業の流れ</h2>
+                {/* 漏水の調べ方 */}
+                <section className="bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 md:py-24 rounded-2xl md:rounded-[4rem]">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="flex items-center justify-center space-x-3 text-secondary-vibrant font-black mb-6">
+                            <Droplets size={24} />
+                            <h2 className="text-xl md:text-3xl font-black text-primary-deep">水漏れ（漏水）の調べ方</h2>
                         </div>
+                        <p className="text-center text-text-sub text-sm md:text-lg mb-12 leading-relaxed">
+                            「最近、使用量が急に増えたな」と思ったら、以下の方法で漏水チェックを行ってください。
+                        </p>
 
-                        <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
-                            {[
-                                { title: "事前のお知らせ", desc: "交換対象となるご家庭には、事前にハガキ等で「水道メーター交換のお知らせ」を送付いたします。" },
-                                { title: "訪問・交換作業", desc: "企業団が委託した指定給水装置工事事業者がお伺いし、作業を行います。作業中（15分〜30分程度）は水道がご使用になれません。" },
-                                { title: "作業完了", desc: "お留守の場合でも敷地内に入らせていただき、作業を実施いたします。完了後には「交換完了のお知らせ」をポスト等に投函します。" }
-                            ].map((step, idx) => (
-                                <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-main text-white font-black text-sm absolute left-0 md:left-1/2 -translate-x-1/2 z-10 shadow-sm">
-                                        {idx + 1}
-                                    </div>
-                                    <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-12 md:ml-0 bg-slate-50 p-6 rounded-2xl border border-slate-100 group-hover:border-primary-main/20 group-hover:shadow-soft transition-all">
-                                        <h4 className="font-black text-primary-deep mb-2">{step.title}</h4>
-                                        <p className="text-sm text-text-sub leading-relaxed">{step.desc}</p>
+                        <div className="bg-white rounded-3xl p-6 md:p-12 shadow-premium border border-slate-100 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-vibrant/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                            <div className="space-y-8 relative z-10">
+                                <div className="flex gap-4 md:gap-6 items-start">
+                                    <div className="w-10 h-10 rounded-full bg-primary-deep text-white flex items-center justify-center font-black shrink-0">1</div>
+                                    <p className="text-primary-deep font-bold text-sm md:text-lg mt-1.5">家中のすべての蛇口を閉めます。</p>
+                                </div>
+                                <div className="flex gap-4 md:gap-6 items-start">
+                                    <div className="w-10 h-10 rounded-full bg-primary-deep text-white flex items-center justify-center font-black shrink-0">2</div>
+                                    <div>
+                                        <p className="text-primary-deep font-bold text-sm md:text-lg mt-1.5">水道メーター内の「パイロット」を確認します。</p>
+                                        <p className="text-xs md:text-sm text-text-sub mt-2 leading-relaxed italic">
+                                            ※パイロットは、デジタル数字の近くにある、シルバーまたは赤色の小さな円板（星型のようなもの）です。
+                                        </p>
                                     </div>
                                 </div>
-                            ))}
+                                <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col items-center text-center">
+                                    <AlertTriangle className="text-red-500 mb-3" size={32} />
+                                    <p className="text-red-800 font-black text-lg md:text-xl mb-2">パイロットが回っていれば漏水です！</p>
+                                    <p className="text-red-700 text-xs md:text-sm">
+                                        蛇口をすべて閉めているのにパイロットが回っている場合は、どこかで水が漏れています。
+                                        早急に指定給水装置工事事業者へ修理を依頼してください。
+                                    </p>
+                                    <Link
+                                        href="/business/contractor"
+                                        className="mt-6 inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-red-700 transition-colors shadow-lg"
+                                    >
+                                        指定工事店一覧を見る
+                                        <ChevronRight size={16} />
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </section>
 
-                {/* 注意事項 */}
+                {/* メーターの交換 */}
                 <section>
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="bg-amber-50 p-8 md:p-12 rounded-3xl border border-amber-200/50"
-                    >
-                        <div className="flex items-center gap-4 mb-6">
-                            <AlertTriangle className="w-8 h-8 text-amber-600" />
-                            <h2 className="text-xl md:text-2xl font-black text-amber-900">ご注意ください</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
+                        <div className="space-y-6 md:space-y-8">
+                            <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-4">
+                                <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                                <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Meter Replacement</span>
+                            </div>
+                            <h2 className="text-2xl md:text-5xl font-black text-primary-deep leading-tight">メーターの定期交換にご協力ください</h2>
+                            <p className="text-text-sub text-sm md:text-lg leading-relaxed md:leading-loose">
+                                水道メーターは計量法により、<strong>8年の有効期限</strong>が定められています。
+                                当企業団では常に正確な計量を行うため、有効期限が満了する前にメーターを無料で交換しています。
+                            </p>
+                            <div className="space-y-4">
+                                {[
+                                    { label: '交換費用', value: '無料（企業団が負担します）' },
+                                    { label: '作業時間', value: '15〜30分程度（断水が伴います）' },
+                                    { label: '事前連絡', value: '対象のご家庭には事前にハガキやチラシで通知します' },
+                                ].map((row, i) => (
+                                    <div key={i} className="flex gap-4 items-center p-4 bg-white border border-slate-100 rounded-2xl">
+                                        <span className="text-[10px] md:text-xs font-black text-primary-main bg-primary-main/5 px-3 py-1 rounded-full uppercase tracking-widest">{row.label}</span>
+                                        <span className="text-xs md:text-base font-bold text-primary-deep">{row.value}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <ul className="space-y-4 text-amber-900/80 text-sm md:text-base">
-                            <li className="flex gap-3">
-                                <span className="shrink-0">•</span>
-                                <span>水道メーターの交換費用をお客様に請求することは<strong>絶対にありません。</strong></span>
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="shrink-0">•</span>
-                                <span>委託業者は、必ず企業団が発行した「身分証明書」を携帯し、腕章を着用しています。不審に思われた場合は身分証明書の提示を求めるか、企業団へお問い合わせください。</span>
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="shrink-0">•</span>
-                                <span>交換作業後、使い始めに空気や濁り水が出ることがあります。その場合は、少し水を出して濁りが取れてからご使用ください。（※濁り水の場合は浄水器などを通さないでください）</span>
-                            </li>
-                        </ul>
-                    </motion.div>
+                        <div className="relative">
+                            <div className="aspect-square bg-gradient-to-br from-primary-main/20 via-secondary-vibrant/20 to-primary-deep/20 rounded-[3rem] animate-morph overflow-hidden p-8 md:p-16">
+                                <Wrench className="w-full h-full text-primary-deep/10" strokeWidth={1} />
+                            </div>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-xl p-8 rounded-3xl border border-white shadow-premium text-center min-w-[240px]">
+                                <p className="text-3xl md:text-5xl font-black text-primary-deep mb-2">8<span className="text-xl md:text-2xl ml-1">年</span></p>
+                                <p className="text-xs font-bold text-text-sub tracking-widest uppercase">Replacement Cycle</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
-
-                <div className="text-center pt-8 border-t border-slate-100">
-                    <p className="text-text-sub mb-6">ご不明な点がございましたら、お気軽にお問い合わせください。</p>
-                    <Link href="/about/outline#access" className="inline-flex items-center justify-center px-8 py-4 bg-primary-main hover:bg-primary-hover text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
-                        企業団へのお問い合わせはこちら
-                    </Link>
-                </div>
             </div>
         </div>
     );

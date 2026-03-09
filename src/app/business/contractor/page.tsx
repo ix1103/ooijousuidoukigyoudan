@@ -60,6 +60,42 @@ export default function ContractorPage() {
                         ))}
                     </div>
 
+                    {/* 手数料・分担金 */}
+                    <div className="mt-8 md:mt-12 bg-slate-50 border border-slate-100 rounded-2xl md:rounded-3xl p-6 md:p-10">
+                        <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6">申請手数料・分担金</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <div>
+                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-3">指定申請手数料</h4>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                        <span className="text-sm font-bold text-text-sub">新規指定手数料</span>
+                                        <span className="text-primary-deep font-black">8,000円</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                        <span className="text-sm font-bold text-text-sub">指定更新手数料（5年ごと）</span>
+                                        <span className="text-primary-deep font-black">8,000円</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-3">加入分担金（税込）</h4>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                        <span className="font-bold text-text-sub">口径 13mm</span>
+                                        <span className="text-primary-deep font-black">44,000円</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                        <span className="font-bold text-text-sub">口径 20mm</span>
+                                        <span className="text-primary-deep font-black">132,000円</span>
+                                    </div>
+                                    <p className="text-[10px] text-text-sub/60 mt-2 italic leading-relaxed">
+                                        ※口径25mm以上の分担金については別途お問い合わせください。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}

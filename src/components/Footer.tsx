@@ -42,6 +42,10 @@ export const Footer = () => {
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     手続き・料金
                                 </Link>
+                                <Link href="/resident/meter" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    メーター・検針
+                                </Link>
                                 <Link href="/resident/quality" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     水質情報
@@ -84,9 +88,9 @@ export const Footer = () => {
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     財政状況・公表資料
                                 </Link>
-                                <Link href="/about/outline#assembly" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                <Link href="/about/assembly" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    議会について
+                                    企業団議会
                                 </Link>
                                 <a href="http://www.ooijousuidoukigyoudan.or.jp/2025brochure.pdf" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
@@ -99,15 +103,11 @@ export const Footer = () => {
                             <nav className="flex flex-col space-y-2.5">
                                 <Link href="/news" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    お知らせ
+                                    お知らせ一覧
                                 </Link>
                                 <Link href="/sitemap" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     サイトマップ
-                                </Link>
-                                <Link href="/links" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
-                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    リンク集
                                 </Link>
                             </nav>
                         </div>

@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { EmergencyAlert } from "@/components/EmergencyAlert";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoJp = Noto_Sans_JP({
@@ -14,6 +15,9 @@ const notoJp = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "大井上水道企業団 | 安心・安全な水を未来へ",
   description: "大井上水道企業団の公式ウェブサイトです。水道料金、各種手続き、緊急時の対応、水質情報などをお知らせします。",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`${inter.variable} ${notoJp.variable} antialiased min-h-screen flex flex-col`}>
-        <Header />
+        <div className="sticky top-0 z-50 w-full flex flex-col">
+          <EmergencyAlert />
+          <Header />
+        </div>
         <main className="flex-grow">
           {children}
         </main>

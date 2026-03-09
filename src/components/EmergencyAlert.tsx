@@ -29,8 +29,8 @@ export const EmergencyAlert = () => {
     if (!info || dismissed) return null;
 
     const content = (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 md:pt-10 pb-4 md:pb-6">
-            <div className="flex items-end gap-3 min-h-[1.5rem] md:min-h-[2rem]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+            <div className="flex items-center gap-3 min-h-[1.5rem] md:min-h-[2rem]">
                 <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ repeat: Infinity, duration: 2 }}
@@ -53,9 +53,9 @@ export const EmergencyAlert = () => {
                 <button
                     onClick={() => setDismissed(true)}
                     aria-label="バナーを閉じる"
-                    className="text-red-400 hover:text-red-600 transition-colors shrink-0"
+                    className="p-1.5 md:p-2 rounded-full bg-red-100/80 hover:bg-red-200 border border-red-200/50 text-red-600 hover:text-red-800 transition-all shrink-0 active:scale-95 shadow-sm"
                 >
-                    <X size={18} />
+                    <X size={24} className="md:w-7 md:h-7" />
                 </button>
             </div>
         </div>
@@ -67,15 +67,9 @@ export const EmergencyAlert = () => {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="bg-red-50 border-b border-red-100 relative z-40 pt-[56px] md:pt-[64px]"
+                className="bg-red-50 border-b border-red-100 relative z-40"
             >
-                {info.linkUrl ? (
-                    <Link href={info.linkUrl} className="block hover:bg-red-100/50 transition-colors">
-                        {content}
-                    </Link>
-                ) : (
-                    content
-                )}
+                {content}
             </motion.section>
         </AnimatePresence>
     );

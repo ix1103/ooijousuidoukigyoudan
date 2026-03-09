@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { CreditCard, FileText, Wrench, ChevronRight, Download, HelpCircle, ArrowRight, Droplets, ShieldCheck, Info } from 'lucide-react';
+import { CreditCard, FileText, Wrench, ChevronRight, Download, HelpCircle, ArrowRight, Droplets, ShieldCheck, Info, Building2, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -97,47 +97,96 @@ export default function GuidePage() {
                         <h2 className="text-xl md:text-3xl font-black text-primary-deep">水道料金について</h2>
                     </div>
 
-                    {/* 料金計算例 */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                        <div className="bg-white border border-slate-100/80 rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm hover:shadow-glow transition-all duration-500">
-                            <h3 className="font-black text-primary-deep text-base md:text-xl mb-4 md:mb-6">料金の仕組み（2ヶ月分）</h3>
-                            <div className="space-y-3 md:space-y-4 text-sm md:text-base text-text-sub">
-                                <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                                    <span className="font-bold">計算式</span>
-                                    <span className="text-primary-deep font-black text-xs md:text-sm">基本料金 ＋ 従量料金</span>
-                                </div>
-                                <div className="bg-accent-soft/30 rounded-xl md:rounded-2xl p-4 md:p-6">
-                                    <p className="text-xs text-text-sub font-bold mb-2 uppercase tracking-wider">計算例（口径20mm・160㎡使用）</p>
-                                    <p className="text-primary-deep font-black text-sm md:text-base leading-relaxed">
-                                        1,815円 + (160㎡ − 16㎡) × 155.1円
-                                        <span className="block text-secondary-vibrant text-lg md:text-2xl mt-2">= 約24,149円</span>
-                                        <span className="text-xs text-text-sub font-normal">（2ヶ月分・消費税10%込）</span>
-                                    </p>
-                                </div>
-                                <p className="text-xs text-text-sub leading-relaxed">
-                                    口径サイズが大きくなるほど基本料金が高くなります。詳細な料金表（PDF）は企業団窓口またはお電話でご請求ください。
-                                </p>
+                    {/* 料金体系の詳細 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                        <div className="lg:col-span-2 bg-white border border-slate-100/80 rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm">
+                            <h3 className="font-black text-primary-deep text-lg md:text-xl mb-6 flex items-center gap-2">
+                                <FileText className="text-secondary-vibrant" size={20} />
+                                水道料金表（2ヶ月につき・消費税10%込）
+                            </h3>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm md:text-base border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50 text-primary-deep font-black">
+                                            <th className="py-4 px-4 text-left border-b border-slate-200">口径</th>
+                                            <th className="py-4 px-4 text-left border-b border-slate-200">基本料金<span className="text-[10px] font-normal block opacity-60">※基本水量分含む</span></th>
+                                            <th className="py-4 px-4 text-left border-b border-slate-200">超過料金<span className="text-[10px] font-normal block opacity-60">※1m³あたり</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-text-sub font-bold">
+                                        <tr className="hover:bg-blue-50/30 transition-colors">
+                                            <td className="py-4 px-4 border-b border-slate-100">13mm / 20mm</td>
+                                            <td className="py-4 px-4 border-b border-slate-100">1,815円 <span className="text-[10px] font-normal opacity-60">(16m³まで)</span></td>
+                                            <td className="py-4 px-4 border-b border-slate-100">155.1円</td>
+                                        </tr>
+                                        <tr className="hover:bg-blue-50/30 transition-colors">
+                                            <td className="py-4 px-4 border-b border-slate-100">25mm</td>
+                                            <td className="py-4 px-4 border-b border-slate-100">2,299円 <span className="text-[10px] font-normal opacity-60">(16m³まで)</span></td>
+                                            <td className="py-4 px-4 border-b border-slate-100">155.1円</td>
+                                        </tr>
+                                        <tr className="bg-slate-50/50">
+                                            <td colSpan={3} className="py-3 px-4 text-[10px] text-primary-main/60 tracking-wider">※30mm以上は基本料金に使用分を含まない（0m³から有料）</td>
+                                        </tr>
+                                        {[
+                                            { size: '30mm', price: '3,630円' },
+                                            { size: '40mm', price: '4,840円' },
+                                            { size: '50mm', price: '6,215円' },
+                                            { size: '75mm', price: '12,100円' },
+                                            { size: '100mm', price: '78,650円' },
+                                            { size: '150mm', price: '94,380円' },
+                                        ].map((item, i) => (
+                                            <tr key={i} className="hover:bg-blue-50/30 transition-colors border-b border-slate-100 text-xs md:text-sm">
+                                                <td className="py-3 px-4">{item.size}</td>
+                                                <td className="py-3 px-4">{item.price}</td>
+                                                <td className="py-3 px-4">155.1円</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
+                            <p className="mt-4 text-[10px] md:text-xs text-text-sub leading-relaxed italic">
+                                ※水道使用料の円未満は切り捨てとなります。また、下水道使用料は別途、各市町（島田市・牧之原市等）より請求されます。
+                            </p>
                         </div>
 
-                        <div className="bg-white border border-slate-100/80 rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm hover:shadow-glow transition-all duration-500">
-                            <h3 className="font-black text-primary-deep text-base md:text-xl mb-4 md:mb-6">お支払い方法</h3>
-                            <div className="space-y-3 md:space-y-4">
-                                {[
-                                    { step: '①', title: '金融機関・コンビニ窓口', desc: '納入通知書をお持ちいただき、取扱い金融機関またはコンビニエンスストアでお支払いください。' },
-                                    { step: '②', title: '口座振替（自動引き落とし）', desc: '毎回の手続き不要で便利です。通帳と届出印を持参して企業団窓口または金融機関でお申し込みください。' },
-                                    { step: '③', title: 'スマートフォン決済', desc: '納入通知書のバーコードをスマートフォンで読み取るだけ。※納付期限を過ぎると使用不可。' },
-                                ].map((p, i) => (
-                                    <div key={i} className="flex items-start gap-3 md:gap-4">
-                                        <div className="bg-gradient-to-br from-primary-main to-secondary-vibrant text-white text-xs font-black w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                                            {p.step}
-                                        </div>
+                        <div className="space-y-6">
+                            <div className="bg-white border border-slate-100/80 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-sm">
+                                <h3 className="font-black text-primary-deep text-lg mb-4">お支払い方法</h3>
+                                <div className="space-y-4 text-xs md:text-sm">
+                                    <div className="flex gap-3">
+                                        <div className="bg-blue-50 p-2 rounded-lg shrink-0"><Building2 size={18} className="text-primary-main" /></div>
                                         <div>
-                                            <p className="font-black text-primary-deep text-sm md:text-base">{p.title}</p>
-                                            <p className="text-text-sub text-xs md:text-sm leading-relaxed mt-1">{p.desc}</p>
+                                            <p className="font-black text-primary-deep">金融機関・窓口</p>
+                                            <p className="text-text-sub leading-relaxed mt-1">静岡銀、スルガ、清水銀、ゆうちょ、島田掛川信金、JA大井川等</p>
                                         </div>
                                     </div>
-                                ))}
+                                    <div className="flex gap-3">
+                                        <div className="bg-emerald-50 p-2 rounded-lg shrink-0"><Droplets size={18} className="text-emerald-500" /></div>
+                                        <div>
+                                            <p className="font-black text-primary-deep">口座振替（推奨）</p>
+                                            <p className="text-text-sub leading-relaxed mt-1">毎回の手続きが不要で、振替日に自動的に引き落とされます。</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <div className="bg-purple-50 p-2 rounded-lg shrink-0"><Activity size={18} className="text-purple-500" /></div>
+                                        <div>
+                                            <p className="font-black text-primary-deep">スマホ決済アプリ</p>
+                                            <p className="text-text-sub leading-relaxed mt-1">PayPay, LINE Pay, au PAY, d払い, FamiPay等が利用可能です。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-gradient-to-br from-primary-main to-primary-deep text-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-glow">
+                                <h4 className="font-black mb-3">計算例</h4>
+                                <div className="text-sm border-l-2 border-secondary-vibrant/40 pl-4 space-y-2">
+                                    <p className="text-white/60 text-xs">口径20mm・160m³使用の場合</p>
+                                    <p className="font-black">基本料金 1,815円</p>
+                                    <p className="font-black">従量料金 22,334円</p>
+                                    <div className="pt-2 border-t border-white/10">
+                                        <p className="text-secondary-vibrant font-black text-xl">合計 24,149円</p>
+                                        <p className="text-[10px] text-white/40 leading-relaxed">(160-16) × 155.1 + 1815 = 24,149.4</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

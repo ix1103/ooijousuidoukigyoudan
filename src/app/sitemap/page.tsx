@@ -43,7 +43,7 @@ export default function SitemapPage() {
             links: [
                 { title: '企業団の概要・組織・アクセス', href: '/about/outline' },
                 { title: '財政状況・公表資料', href: '/about/finance' },
-                { title: '議会について', href: '/about/outline#assembly' },
+                { title: '企業団議会', href: '/about/assembly' },
             ]
         },
         {
