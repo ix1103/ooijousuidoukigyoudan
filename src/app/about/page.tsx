@@ -16,7 +16,7 @@ export default function AboutPage() {
                 { label: '名称', value: '大井上水道企業団' },
                 { label: '設立', value: '1970年（昭和45年）' },
                 { label: '構成自治体', value: '島田市、吉田町、川根本町' },
-                { label: '事務所所在地', value: '静岡県島田市井口1145番地' },
+                { label: '事務所所在地', value: '静岡県島田市金谷東一丁目1255番地の2' },
             ],
             link: { label: '事業概要の詳細はこちら', href: 'http://www.ooijousuidoukigyoudan.or.jp/jigyou-gaiyou.html' }
         },
@@ -313,11 +313,11 @@ export default function AboutPage() {
                         <MapPin className="text-secondary-vibrant mx-auto mb-5 md:mb-8 w-10 h-10 md:w-12 md:h-12" />
                         <h3 className="text-xl md:text-3xl font-black text-white mb-4 md:mb-6">アクセスマップ</h3>
                         <p className="text-accent-soft/60 mb-8 md:mb-10 leading-relaxed text-sm md:text-base">
-                            静岡県島田市井口1145番地<br />
-                            国道150号線より車で約10分。お越しの際は事前に案内図をご確認ください。
+                            静岡県島田市金谷東一丁目1255番地の2<br />
+                            JR金谷駅より徒歩約10分。国道1号バイパス大代ICより車で約5分。
                         </p>
                         <Link
-                            href="https://maps.google.com"
+                            href="https://maps.google.com/?q=大井上水道企業団"
                             target="_blank"
                             className="inline-flex items-center space-x-2 md:space-x-3 bg-secondary-vibrant hover:bg-white text-primary-deep px-8 py-4 md:px-10 md:py-5 rounded-2xl font-black transition-all shadow-lg text-sm md:text-base active:scale-95"
                         >

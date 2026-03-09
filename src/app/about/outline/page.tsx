@@ -328,7 +328,7 @@ export default function AboutPage() {
                             className="w-full aspect-video lg:aspect-square rounded-3xl overflow-hidden shadow-premium border border-white"
                         >
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3278.50348!2d138.13447!3d34.82822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDQ5JzQxLjYiTiAxMzjCsDA4JzEyLjEiRQ!5e0!3m2!1sja!2sjp!4v1711234567890!5m2!1sja!2sjp"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3275.0996209052214!2d138.1371668!3d34.8285877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601a571921f373f7%3A0x3df1e211ab438d72!2z44CSNDI4LTAwMTMg6Z2Z5bKh55yM5bO255Sw5biC6YeR6LC35p2x77yR5LiB55uu77yR77yS77yV77yV4oiS77yS!5e0!3m2!1sja!2sjp!4v1773065502865!5m2!1sja!2sjp"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}

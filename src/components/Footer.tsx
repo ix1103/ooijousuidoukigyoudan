@@ -131,13 +131,13 @@ export const Footer = () => {
                             </a>
 
                             {/* 電話番号 */}
-                            <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2.5">
-                                <div className="flex items-center justify-between">
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                <div className="flex flex-col space-y-1">
                                     <div className="flex items-center space-x-2">
                                         <Phone size={14} className="text-secondary-vibrant" />
                                         <span className="text-[10px] text-white/60 font-bold">お問い合わせ・緊急（24時間）</span>
                                     </div>
-                                    <a href="tel:0547-46-4130" className="text-sm font-black text-white hover:text-secondary-vibrant transition-colors">
+                                    <a href="tel:0547-46-4130" className="text-xl font-black text-white hover:text-secondary-vibrant transition-colors tracking-wider">
                                         0547-46-4130
                                     </a>
                                 </div>

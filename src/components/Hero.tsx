@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -68,72 +67,70 @@ export const Hero = () => {
                     transition={{ duration: 1, delay: 0.2 }}
                     className="flex flex-col items-center max-w-4xl w-full"
                 >
-                    {/* バッジ */}
+                    {/* キャッチフレーズ（ロゴなし、より洗練された印象に） */}
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="inline-flex items-center justify-center space-x-3 bg-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-full mb-4 md:mb-8 border border-white/20 shadow-glow"
+                        className="inline-flex items-center justify-center bg-white/5 backdrop-blur-sm text-white/60 px-6 py-2 rounded-full mb-6 md:mb-10 border border-white/10"
                     >
-                        <WaterLogoIcon className="w-4 h-4 text-secondary-vibrant" />
-                        <span className="text-[10px] md:text-xs font-black tracking-[0.3em] uppercase drop-shadow-sm">Water Infrastructure Pride</span>
+                        <span className="text-[9px] md:text-xs font-black tracking-[0.4em] uppercase">Trusted Water Infrastructure</span>
                     </motion.div>
 
-                    {/* メインキャッチコピー（ダイナミックな配置） */}
-                    <div className="mb-4 md:mb-10 w-full flex flex-col items-center">
+                    {/* メインキャッチコピー（バランスと改行の最適化） */}
+                    <div className="mb-6 md:mb-12 w-full flex flex-col items-center">
                         <motion.h1
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                            className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-[1.1] tracking-tighter w-full"
-                            style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
+                            className="text-[clamp(2.2rem,8vw,5.5rem)] font-black leading-[1.15] tracking-tight w-full"
                         >
-                            <span className="hidden md:inline-block text-white whitespace-nowrap">
-                                いつでも安心、
-                                <span className="bg-gradient-to-r from-secondary-vibrant via-[#48CAE4] to-white bg-clip-text text-transparent drop-shadow-none">未来へつなぐ水。</span>
+                            <span className="hidden md:inline-block text-white">
+                                いつでも安心、<br />
+                                <span className="bg-gradient-to-r from-secondary-vibrant via-cyan-300 to-white bg-clip-text text-transparent drop-shadow-2xl">未来へつなぐ水。</span>
                             </span>
                             <span className="block md:hidden text-white">
                                 いつでも安心、<br />
-                                <span className="bg-gradient-to-r from-secondary-vibrant via-[#48CAE4] to-white bg-clip-text text-transparent drop-shadow-none">未来へつなぐ水。</span>
+                                <span className="bg-gradient-to-r from-secondary-vibrant via-cyan-300 to-white bg-clip-text text-transparent">未来へつなぐ水。</span>
                             </span>
                         </motion.h1>
                     </div>
 
-                    {/* サブメッセージ */}
+                    {/* サブメッセージ（透明感と可読性の向上） */}
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.9 }}
+                        animate={{ opacity: 1 }}
                         transition={{ delay: 1 }}
-                        className="mb-4 md:mb-10 drop-shadow-md"
+                        className="mb-10 md:mb-16"
                     >
-                        <p className="text-sm md:text-xl text-white font-medium leading-relaxed md:leading-loose max-w-2xl text-center tracking-wide" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.4)' }}>
+                        <p className="text-sm md:text-xl text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)]">
                             大井上水道企業団は、24時間365日休むことなく、<br className="hidden md:block" />
-                            生命の源である「水」の安全を守り、<br className="block md:hidden" />皆様の暮らしを<br className="hidden md:block" />
-                            揺るぎない品質で支え続けます。
+                            生命の源である「水」の安全を守り、<br className="block md:hidden" />
+                            皆様の暮らしを揺るぎない品質で支え続けます。
                         </p>
                     </motion.div>
 
-                    {/* 統計データバー（水滴グラスモーフィズムパネル） */}
+                    {/* 統計データパネル（より透明感のあるデザイン） */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 1.2 }}
-                        className="relative w-full max-w-3xl grid grid-cols-3 gap-4 md:gap-8 p-4 md:p-10 rounded-[2rem] bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.25)] overflow-hidden"
+                        className="relative w-full max-w-2xl grid grid-cols-3 gap-2 md:gap-8 p-6 md:p-12 rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden"
                     >
-                        {/* 内部の光のゆらめき（水っぽさの演出） */}
-                        <div className="absolute -top-1/2 -right-10 w-64 h-64 bg-secondary-vibrant/20 rounded-full blur-3xl pointer-events-none" />
-                        <div className="absolute -bottom-1/2 -left-10 w-64 h-64 bg-[#48CAE4]/20 rounded-full blur-3xl pointer-events-none" />
+                        {/* 内部の光のゆらめき */}
+                        <div className="absolute -top-1/2 -right-10 w-64 h-64 bg-secondary-vibrant/10 rounded-full blur-[100px] pointer-events-none" />
+                        <div className="absolute -bottom-1/2 -left-10 w-64 h-64 bg-cyan-400/10 rounded-full blur-[100px] pointer-events-none" />
 
                         {[
                             { value: '24h', label: '監視体制' },
                             { value: '365d', label: '水質管理' },
-                            { value: '3', label: '自治体連携' },
+                            { value: '3', label: '自治体' },
                         ].map((stat, i) => (
                             <div key={i} className="relative z-10 flex flex-col items-center">
-                                <p className="text-3xl md:text-5xl font-black text-white leading-none tracking-tight mb-2 md:mb-3 drop-shadow-lg" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
+                                <p className="text-3xl md:text-6xl font-black text-white leading-none tracking-tighter mb-2 md:mb-4">
                                     {stat.value}
                                 </p>
-                                <p className="text-[10px] md:text-sm text-secondary-vibrant font-black uppercase tracking-[0.2em] drop-shadow-md">
+                                <p className="text-[8px] md:text-xs text-white/40 font-black uppercase tracking-[0.3em]">
                                     {stat.label}
                                 </p>
                             </div>
