@@ -56,14 +56,10 @@ export default function Home() {
 
 
       {/* 4. お知らせセクション（最新のお知らせ一覧） */}
-      <section className="pt-0 pb-12 md:pb-20 bg-white">
-        <NewsSection />
-      </section>
+      <NewsSection />
 
       {/* 5. 緊急連絡先セクション */}
-      <section className="pb-12 md:pb-20">
-        <EmergencyContact />
-      </section>
+      <EmergencyContact />
 
       {/* 5. クイックナビゲーション */}
       <section className="py-12 md:py-24 relative overflow-hidden bg-slate-50/50">
