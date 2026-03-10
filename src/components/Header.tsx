@@ -56,7 +56,8 @@ export const Header = () => {
             name: '事業者の皆様へ',
             items: [
                 { name: '水道工事等業者向け', href: '/business/contractor', desc: '給水装置工事・様式' },
-                { name: '入札参加資格申請書', href: '/business/bidding', desc: '入札参加登録・資格書類' },
+                { name: '入札参加資格申請', href: '/business/bidding', desc: '入札参加登録・資格書類' },
+                { name: '入札・見積結果公表', href: '/business/bidding/results', desc: '執行結果の公表' },
                 { name: '指定工事店一覧', href: '/business/designated-shops', desc: '指定給水装置工事事業者一覧' },
                 { name: 'インボイス制度', href: '/business/invoice', desc: '適格請求書等保存方式について' },
             ]

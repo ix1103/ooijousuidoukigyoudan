@@ -76,8 +76,12 @@ export const Footer = () => {
                                     水道工事等業者向け
                                 </Link>
                                 <Link href="/business/bidding" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
-                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    入札参加資格申請書
+                                    <ChevronRight size={12} className="mr-2 group-hover:translate-x-1 transition-transform" />
+                                    入札参加資格申請
+                                </Link>
+                                <Link href="/business/bidding/results" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 group-hover:translate-x-1 transition-transform" />
+                                    入札・見積結果公表
                                 </Link>
                                 <Link href="/business/designated-shops" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />

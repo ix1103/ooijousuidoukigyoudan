@@ -63,46 +63,46 @@ export default function BiddingPage() {
                 subtitle="指名入札参加資格申請（指名願）に関する情報や提出用様式を掲載しています。"
                 enTitle="Bid Qualification"
             />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
-                <div className="mt-20 md:mt-32">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                        <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <span className="px-3 py-1 bg-primary-main text-white text-[10px] font-black rounded-full uppercase tracking-widest">Application</span>
-                                <div className="h-px w-12 bg-primary-main/30" />
-                            </div>
-                            <h2 className="text-2xl md:text-4xl font-black text-primary-deep leading-tight">
-                                令和7・8年度 入札参加資格申請<br className="md:hidden" />
-                                <span className="text-primary-main">（指名願）</span>
-                            </h2>
-                        </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 space-y-16 md:space-y-32">
+                {/* 令和7・8年度 入札参加資格申請（指名願） */}
+                <section>
+                    <div className="flex items-center space-x-3 text-secondary-vibrant font-bold mb-6 md:mb-10">
+                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Application</span>
                     </div>
+                    <h2 className="text-2xl md:text-5xl font-bold text-primary-deep mb-4 md:mb-6">
+                        入札参加資格申請<span className="text-primary-main">（指名願）</span>
+                    </h2>
+                    <p className="text-text-sub text-sm md:text-base leading-relaxed mb-8 md:mb-12 max-w-3xl">
+                        令和7・8年度の入札参加資格審査申請（指名願）の受付を行っています。
+                        各区分（指名願）を提出される方は、以下の案内及び様式をご確認ください。
+                    </p>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* 左：ガイド */}
                         <div className="lg:col-span-1 space-y-6">
-                            <div className="bg-slate-900 text-white rounded-3xl p-8 shadow-glow-lg relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-main/10 rounded-full -mr-16 -mt-16 blur-3xl" />
-                                <h3 className="text-xl font-black mb-6 flex items-center gap-2">
+                            <div className="bg-primary-deep text-white rounded-3xl p-8 shadow-premium relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl" />
+                                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                                     <Info size={20} className="text-secondary-vibrant" />
                                     申請ガイド
                                 </h3>
                                 <div className="space-y-6">
                                     <div>
-                                        <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Period</p>
+                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Period</p>
                                         <p className="font-bold text-sm">定時受付：令和7年2月28日まで</p>
                                         <p className="text-xs text-white/60 mt-1">※令和7年3月1日以降も随時受け付けています。</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Method</p>
+                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Method</p>
                                         <p className="font-bold text-sm">原則郵送（持参も可）</p>
                                         <p className="text-xs text-white/60 mt-1 leading-relaxed">
                                             A4判フラットファイル（原則<span className="text-emerald-400 font-bold">緑色</span>）に綴じて提出してください。
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Documents</p>
-                                        <p className="text-xs text-white/60 leading-relaxed">
+                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Documents</p>
+                                        <p className="text-xs text-white/60 leading-relaxed font-bold">
                                             法人税・消費税等の納税証明書（3ヶ月以内、コピー可）が必要です。
                                         </p>
                                     </div>
@@ -110,7 +110,7 @@ export default function BiddingPage() {
                             </div>
 
                             <div className="bg-primary-main/5 border border-primary-main/10 rounded-3xl p-8">
-                                <h3 className="text-lg font-black text-primary-deep mb-4 flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-primary-deep mb-4 flex items-center gap-2">
                                     <Mail size={18} className="text-primary-main" />
                                     書類提出先
                                 </h3>
@@ -118,7 +118,7 @@ export default function BiddingPage() {
                                     <p className="font-bold">〒428-0013</p>
                                     <p>静岡県島田市金谷東一丁目1255-2</p>
                                     <p>大井上水道企業団 工務係</p>
-                                    <div className="pt-2 flex items-center gap-2 text-primary-main font-black">
+                                    <div className="pt-2 flex items-center gap-2 text-primary-main font-bold">
                                         <Phone size={14} />
                                         0547-46-4130（代表）
                                     </div>
@@ -127,7 +127,7 @@ export default function BiddingPage() {
                         </div>
 
                         {/* 右：ダウンロードリスト */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <div className="lg:col-span-2 space-y-8 text-primary-deep">
                             {[
                                 {
                                     title: '建設工事',
@@ -176,13 +176,13 @@ export default function BiddingPage() {
                                     transition={{ delay: gi * 0.1 }}
                                     className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm"
                                 >
-                                    <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex justify-between items-center">
-                                        <h4 className="font-black text-primary-deep flex items-center gap-2">
+                                    <div className="bg-slate-50 px-8 py-4 border-b border-slate-100 flex justify-between items-center transition-colors">
+                                        <h4 className="font-bold text-primary-deep flex items-center gap-2">
                                             <ClipboardList size={20} className="text-primary-main" />
                                             {group.title}
                                         </h4>
                                         {group.allZip && (
-                                            <a href={group.allZip} download className="text-[10px] font-black text-primary-main flex items-center gap-1 hover:underline">
+                                            <a href={group.allZip} download className="text-[10px] font-bold text-primary-main flex items-center gap-1 hover:underline">
                                                 <Download size={12} /> 一括ダウンロード(ZIP)
                                             </a>
                                         )}
@@ -196,19 +196,19 @@ export default function BiddingPage() {
                             ))}
                         </div>
                     </div>
-                </div>
 
-                <div className="mt-20 bg-slate-50 rounded-2xl p-6 md:p-10 border border-slate-100">
-                    <h3 className="font-black text-primary-deep mb-3 uppercase tracking-wider text-xs opacity-50">Support</h3>
-                    <h4 className="text-xl font-black text-primary-deep mb-3">入札・指名願に関するお問い合わせ</h4>
-                    <p className="text-text-sub text-sm leading-relaxed mb-6">
-                        申請書類の書き方や提出期限について不明な点がある場合は、下記担当窓口までお問い合わせください。
-                    </p>
-                    <a href="tel:0547-46-4130" className="inline-flex items-center gap-3 bg-white border border-primary-main/20 text-primary-main px-6 py-3 rounded-xl font-black hover:bg-primary-main hover:text-white transition-all shadow-sm">
-                        <Phone size={18} />
-                        0547-46-4130（代表 / 工務係）
-                    </a>
-                </div>
+                    <div className="mt-16 md:mt-32 bg-slate-50 rounded-2xl p-6 md:p-10 border border-slate-100">
+                        <h3 className="font-bold text-primary-deep mb-3 uppercase tracking-wider text-xs opacity-50">Support</h3>
+                        <h4 className="text-xl font-bold text-primary-deep mb-3">入札・指名願に関するお問い合わせ</h4>
+                        <p className="text-text-sub text-sm leading-relaxed mb-6 font-bold">
+                            申請書類の書き方や提出期限について不明な点がある場合は、下記担当窓口までお問い合わせください。
+                        </p>
+                        <a href="tel:0547-46-4130" className="inline-flex items-center gap-3 bg-white border border-primary-main/20 text-primary-main px-6 py-3 rounded-xl font-bold hover:bg-primary-main hover:text-white transition-all shadow-sm">
+                            <Phone size={18} />
+                            0547-46-4130（代表 / 工務係）
+                        </a>
+                    </div>
+                </section>
             </div>
         </div>
     );

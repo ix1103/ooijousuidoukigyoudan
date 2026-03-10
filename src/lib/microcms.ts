@@ -49,7 +49,9 @@ export type Bidding = {
   createdAt: string;
   publishedAt: string;
   title: string;
-  type: string;            // '入札公告' | '落札結果' | 'お知らせ'
+  type: string;            // '入札公告' | '落札結果' | '見積結果' | 'お知らせ'
+  fiscalYear?: string;     // 年度 (例: '令和6年度')
+  price?: string;          // 金額 (例: '2,888,000円')
   pdfUrl?: string;         // PDFリンク（省略可能）
   content?: string;        // 本文（省略可能）
 };
