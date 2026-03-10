@@ -33,6 +33,7 @@ export default function BiddingResultsPage() {
     const [items, setItems] = useState<Bidding[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedYear, setSelectedYear] = useState<string>('all');
+    const [selectedType, setSelectedType] = useState<string>('all');
 
     useEffect(() => {
         async function fetchData() {
@@ -58,10 +59,12 @@ export default function BiddingResultsPage() {
         fetchData();
     }, []);
 
-    // 年度でフィルタリング
-    const filteredItems = selectedYear === 'all'
-        ? items
-        : items.filter(item => item.fiscalYear === selectedYear);
+    // 年度と案件区分でフィルタリング
+    const filteredItems = items.filter(item => {
+        const yearMatch = selectedYear === 'all' || item.fiscalYear === selectedYear;
+        const typeMatch = selectedType === 'all' || item.type === selectedType;
+        return yearMatch && typeMatch;
+    });
 
     // 年度リストの抽出
     const years = ['all', ...Array.from(new Set(items.map(item => item.fiscalYear).filter(Boolean))) as string[]].sort().reverse();
@@ -98,20 +101,40 @@ export default function BiddingResultsPage() {
                         </p>
                     </div>
 
-                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm w-full md:w-64">
-                        <label className="block text-[10px] font-bold text-primary-main uppercase tracking-widest mb-2 px-2">Filter by Year</label>
-                        <div className="relative">
-                            <select
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(e.target.value)}
-                                className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary-deep appearance-none focus:ring-2 focus:ring-primary-main/20 outline-none cursor-pointer"
-                            >
-                                <option value="all">すべての年度</option>
-                                {years.filter(y => y !== 'all').map(year => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select>
-                            <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-primary-main/40 pointer-events-none" size={16} />
+                    <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                        {/* 区分フィルター */}
+                        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-48">
+                            <label className="block text-[10px] font-bold text-primary-main uppercase tracking-widest mb-2 px-2">Type</label>
+                            <div className="relative">
+                                <select
+                                    value={selectedType}
+                                    onChange={(e) => setSelectedType(e.target.value)}
+                                    className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary-deep appearance-none focus:ring-2 focus:ring-primary-main/20 outline-none cursor-pointer"
+                                >
+                                    <option value="all">すべての区分</option>
+                                    <option value="落札結果">落札結果</option>
+                                    <option value="見積結果">見積結果</option>
+                                </select>
+                                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-primary-main/40 pointer-events-none" size={16} />
+                            </div>
+                        </div>
+
+                        {/* 年度フィルター */}
+                        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm w-full sm:w-48">
+                            <label className="block text-[10px] font-bold text-primary-main uppercase tracking-widest mb-2 px-2">Fiscal Year</label>
+                            <div className="relative">
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    className="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-primary-deep appearance-none focus:ring-2 focus:ring-primary-main/20 outline-none cursor-pointer"
+                                >
+                                    <option value="all">すべての年度</option>
+                                    {years.filter(y => y !== 'all').map(year => (
+                                        <option key={year} value={year}>{year}</option>
+                                    ))}
+                                </select>
+                                <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-primary-main/40 pointer-events-none" size={16} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,8 +169,8 @@ export default function BiddingResultsPage() {
                                             </td>
                                             <td className="px-6 py-6 whitespace-nowrap">
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${item.type === '落札結果'
-                                                        ? 'bg-blue-50 text-blue-600'
-                                                        : 'bg-emerald-50 text-emerald-600'
+                                                    ? 'bg-blue-50 text-blue-600'
+                                                    : 'bg-emerald-50 text-emerald-600'
                                                     }`}>
                                                     {item.type}
                                                 </span>
