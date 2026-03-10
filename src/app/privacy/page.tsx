@@ -73,7 +73,7 @@ export default function PrivacyPage() {
                     <div className="mt-16 pt-8 border-t border-slate-100 text-center">
                         <p className="text-text-sub/60 text-xs">
                             お問い合わせ先：大井上水道企業団 庶務係<br />
-                            電話：0547-46-4111
+                            電話：0547-46-4130
                         </p>
                     </div>
                 </div>

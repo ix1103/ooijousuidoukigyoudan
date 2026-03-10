@@ -4,28 +4,13 @@ import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
 import { FileText, Phone, ChevronRight, Calendar, Loader2, Download, ArrowUpRight, Info, Mail, ClipboardList } from 'lucide-react';
 import React from 'react';
-import { getBiddingList, Bidding } from '@/lib/microcms';
 
 /**
- * 入札・契約情報ページ（/business/bidding）
- * MicroCMSの `bidding` エンドポイント（リスト型）から情報を取得します。
- * API取得失敗時（環境変数未設定等）はフォールバックとして静的な内容を表示します。
+ * 入札参加資格申請ページ（/business/bidding）
+ * 指名願に関する情報と提出書類のダウンロードを掲載します。
  */
 
-// MicroCMS未設定時に表示するフォールバックデータ
-const FALLBACK_ITEMS: Bidding[] = [
-    { id: '1', createdAt: '', publishedAt: '2025-04-01', title: '令和7年度 薬品購入（次亜塩素酸ナトリウム）', type: '入札公告' },
-    { id: '2', createdAt: '', publishedAt: '2025-03-15', title: '令和6年度 施設修繕工事（3号配水池）', type: '落札結果' },
-    { id: '3', createdAt: '', publishedAt: '2024-10-01', title: '令和6年度 計量機器定期点検業務', type: '入札公告' },
-];
-
-const typeColor: Record<string, string> = {
-    '入札公告': 'bg-blue-100 text-blue-700',
-    '落札結果': 'bg-green-100 text-green-700',
-    'お知らせ': 'bg-amber-100 text-amber-700',
-};
-
-// ダウンロード用コンポーネント（contractor/page.tsx と一貫性を持たせる）
+// ダウンロード用コンポーネント
 function FormRow({ item }: { item: any }) {
     const mainHref = item.pdf || item.excel || item.word || item.zip;
 
@@ -34,10 +19,15 @@ function FormRow({ item }: { item: any }) {
             <div className="flex items-start space-x-3">
                 <FileText size={18} className="text-primary-main shrink-0 mt-1" />
                 <div>
-                    <a href={mainHref} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2 leading-tight">
-                        {item.name}
-                        <ArrowUpRight size={14} className="opacity-30" />
-                    </a>
+                    {mainHref ? (
+                        <a href={mainHref} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2 leading-tight">
+                            {item.name}
+                            <ArrowUpRight size={14} className="opacity-30" />
+                        </a>
+                    ) : (
+                        <span className="text-sm font-bold text-primary-deep leading-tight">{item.name}</span>
+                    )}
+                    {item.desc && <p className="text-[10px] text-text-sub mt-1">{item.desc}</p>}
                 </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
@@ -66,78 +56,14 @@ function DownloadButton({ href, label, color }: { href: string; label: string; c
 }
 
 export default function BiddingPage() {
-    const [items, setItems] = React.useState<Bidding[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [isCmsData, setIsCmsData] = React.useState(false);
-
-    React.useEffect(() => {
-        getBiddingList().then((data) => {
-            if (data && data.length > 0) {
-                setItems(data);
-                setIsCmsData(true);
-            } else {
-                // MicroCMS未設定またはデータなし → フォールバックを表示
-                setItems(FALLBACK_ITEMS);
-            }
-            setLoading(false);
-        });
-    }, []);
-
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
-                title="入札・契約情報"
-                subtitle="入札公告・落札結果・指名参加業者等の情報を掲載しています。"
-                enTitle="Bidding & Contracts"
+                title="入札参加資格申請"
+                subtitle="指名入札参加資格申請（指名願）に関する情報や提出用様式を掲載しています。"
+                enTitle="Bid Qualification"
             />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
-
-                {/* MicroCMS未連動の場合の注意書き */}
-                {!isCmsData && !loading && (
-                    <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-bold">
-                        ⚠ 現在、MicroCMSとの連動が未設定のため、サンプルデータを表示しています。
-                    </div>
-                )}
-
-                {loading ? (
-                    <div className="flex items-center justify-center py-20 text-slate-400">
-                        <Loader2 size={24} className="animate-spin mr-2" />
-                        <span className="font-bold">読み込み中...</span>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {items.map((item, idx) => (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.06 }}
-                                className="bg-white border border-slate-100 rounded-2xl p-5 md:p-8 flex flex-col md:flex-row md:items-center gap-4 hover:shadow-lg transition-all"
-                            >
-                                <span className={`text-xs font-black px-3 py-1 rounded-full w-fit ${typeColor[item.type] ?? 'bg-slate-100 text-slate-600'}`}>
-                                    {item.type}
-                                </span>
-                                <div className="flex-1">
-                                    <p className="font-black text-primary-deep text-sm md:text-base">{item.title}</p>
-                                    <p className="text-text-sub text-xs mt-1 flex items-center gap-1">
-                                        <Calendar size={12} />
-                                        {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ja-JP') : ''}
-                                    </p>
-                                </div>
-                                {item.pdfUrl && (
-                                    <a href={item.pdfUrl} target="_blank" rel="noopener noreferrer"
-                                        className="flex items-center gap-2 text-xs font-bold text-primary-main hover:underline">
-                                        <FileText size={14} />PDF
-                                        <ChevronRight size={14} />
-                                    </a>
-                                )}
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
-
-                {/* --- 令和7・8年度 入札参加資格申請（指名願）セクション --- */}
                 <div className="mt-20 md:mt-32">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                         <div>
@@ -194,7 +120,7 @@ export default function BiddingPage() {
                                     <p>大井上水道企業団 工務係</p>
                                     <div className="pt-2 flex items-center gap-2 text-primary-main font-black">
                                         <Phone size={14} />
-                                        0547-46-4111（代表）
+                                        0547-46-4130（代表）
                                     </div>
                                 </address>
                             </div>
@@ -278,9 +204,9 @@ export default function BiddingPage() {
                     <p className="text-text-sub text-sm leading-relaxed mb-6">
                         申請書類の書き方や提出期限について不明な点がある場合は、下記担当窓口までお問い合わせください。
                     </p>
-                    <a href="tel:0547-46-4111" className="inline-flex items-center gap-3 bg-white border border-primary-main/20 text-primary-main px-6 py-3 rounded-xl font-black hover:bg-primary-main hover:text-white transition-all shadow-sm">
+                    <a href="tel:0547-46-4130" className="inline-flex items-center gap-3 bg-white border border-primary-main/20 text-primary-main px-6 py-3 rounded-xl font-black hover:bg-primary-main hover:text-white transition-all shadow-sm">
                         <Phone size={18} />
-                        0547-46-4111（代表 / 工務係）
+                        0547-46-4130（代表 / 工務係）
                     </a>
                 </div>
             </div>

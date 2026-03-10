@@ -79,10 +79,6 @@ export const Footer = () => {
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     入札参加資格申請書
                                 </Link>
-                                <Link href="/business/bidding/results" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
-                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    入札等結果
-                                </Link>
                                 <Link href="/business/designated-shops" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     指定工事店一覧
