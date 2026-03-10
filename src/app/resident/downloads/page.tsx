@@ -13,24 +13,6 @@ const downloadItems = [
         desc: '引っ越し・名義変更・口座振替など各種お手続き書類です。',
         items: [
             {
-                label: '水道使用開始・中止・名義変更申込書',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/02_shiyou_moushikomi_pdf.pdf',
-                note: 'PDF形式',
-                updated: 'R05.12',
-            },
-            {
-                label: '水道使用開始・中止・名義変更申込書（Word版）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/02_shiyou_moushikomi_word.docx',
-                note: 'Word形式',
-                updated: 'R05.12',
-            },
-            {
-                label: '口座振替依頼書（手続きのご案内）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/ryoukin-jyouhou.html',
-                note: '窓口配布・郵送取り寄せ',
-                updated: '随時',
-            },
-            {
                 label: '受水槽を設置しないことに関する誓約書',
                 href: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf',
                 note: 'PDF形式',
@@ -62,13 +44,13 @@ const downloadItems = [
         items: [
             {
                 label: '給水装置工事申込書（PDF版）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusui_moushikomi.pdf',
+                href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_mousikomi3.pdf',
                 note: 'PDF形式',
                 updated: '最新版',
             },
             {
                 label: '給水装置工事申込書（エクセル版）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusui_moushikomi.xls',
+                href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_syorui_ooi3.xls',
                 note: 'Excel形式',
                 updated: '最新版',
             },
