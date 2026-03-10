@@ -136,13 +136,16 @@ export default function ContractorPage() {
 
                     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                         {[
-                            { name: '給水装置工事申込書（Ver.4）', desc: '新設・増設・改造時に提出', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusuimoushikominituite_Ver4_R5_11_28.pdf' },
+                            { name: '給水装置工事申込書一式（Ver.4）', desc: '新設・増設・改造時に提出', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusuimoushikominituite_Ver4_R5_11_28.pdf' },
+                            { name: '給水装置工事完了届・検査請求書', desc: '工事完了後に提出（PDF版）', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_kennsasinnsei2.pdf' },
                             { name: '受水槽を設置しないことに関する誓約書', desc: '受水槽を設置しない場合に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf' },
-                            { name: '給水装置工事完了届', desc: '工事完了後に提出', type: '届出' },
-                            { name: '指定給水装置工事事業者指定申請書', desc: '新規指定の申請', type: '申請' },
-                            { name: '指定給水装置工事事業者変更届出書', desc: '届出事項変更時に提出', type: '届出' },
-                            { name: '指定給水装置工事事業者廃止届出書', desc: '廃業時に提出', type: '届出' },
-                            { name: '給水装置工事主任技術者選任届', desc: '主任技術者の選任・変更時', type: '届出' },
+                            { name: '指定給水装置工事事業者指定申請書（様式第1）', desc: '新規指定の申請', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no1_R03_May.pdf' },
+                            { name: '誓約書（様式第2）', desc: '欠格要件に該当しないことの誓約', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no2_R03_May.pdf' },
+                            { name: '機械器具の名称、性能及び数（別表）', desc: '所有機器の届出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_betu_R03_May.pdf' },
+                            { name: '指定給水装置工事事業者変更届出書（様式第4）', desc: '届出事項変更時に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no4_R03_May.pdf' },
+                            { name: '指定給水装置工事事業者廃止・休止・再開届出書（様式第5）', desc: '廃業・休止時に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no5_R03_May.pdf' },
+                            { name: '給水装置工事主任技術者選任・解任届出書（様式第6）', desc: '主任技術者の選任・変更時', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no6_R03_May.pdf' },
+                            { name: '給水装置工事関係書類一式（ZIP版）', desc: 'すべての様式をまとめてダウンロード', type: '一式', href: 'http://www.ooijousuidoukigyoudan.or.jp/ooi_kyuusui_ver3_2.zip' },
                         ].map((form, idx) => (
                             <div key={idx} className={`flex items-center justify-between px-5 md:px-8 py-4 md:py-5 ${idx !== 0 ? 'border-t border-slate-50' : ''} hover:bg-slate-50/50 transition-colors`}>
                                 <div className="flex items-center space-x-3 md:space-x-4">
