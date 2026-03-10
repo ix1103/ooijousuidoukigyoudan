@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
-import { ClipboardList, Calendar, Info, Loader2, ArrowUpRight, TrendingUp, Building2, Search } from 'lucide-react';
+import {  ClipboardList, Calendar, Info, Loader2, ArrowUpRight, TrendingUp, Building2, Search , Phone } from 'lucide-react';
 import { Bidding, getBiddingList } from '@/lib/microcms';
 
 /**
@@ -222,7 +222,7 @@ export default function BiddingResultsPage() {
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <div className="w-1.5 h-1.5 bg-primary-main rounded-full shrink-0 mt-1.5" />
-                                    <span>お問い合わせは、大井上水道企業団 工務係（0547-46-4130）までお願いいたします。</span>
+                                    <span>お問い合わせは、大井上水道企業団 工務係（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）までお願いいたします。</span>
                                 </li>
                             </ul>
                         </div>

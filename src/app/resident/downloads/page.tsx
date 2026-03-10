@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { FileText, ChevronRight, Download, ExternalLink, ArrowUpRight } from 'lucide-react';
+import {  FileText, ChevronRight, Download, ExternalLink, ArrowUpRight , Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
@@ -81,7 +81,7 @@ export default function DownloadsPage() {
                         <FileText size={18} className="text-amber-500 mt-0.5 shrink-0" />
                         <p className="text-sm text-amber-800 leading-relaxed">
                             PDFファイルのご覧にはAdobe Acrobat Reader等のPDF閲覧ソフトが必要です。
-                            お手続きに不明点がある場合は、企業団窓口（0547-46-4130）へお問い合わせください。
+                            お手続きに不明点がある場合は、企業団窓口（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）へお問い合わせください。
                             お急ぎの場合や書類の入手が難しい場合は、窓口にて直接お渡しします。
                         </p>
                     </motion.div>
@@ -199,9 +199,7 @@ export default function DownloadsPage() {
                             <a
                                 href="tel:0547-46-4130"
                                 className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-base md:text-lg shadow-glow hover:shadow-glow-lg transition-all active:scale-95"
-                            >
-                                0547-46-4130
-                            </a>
+                            ><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                             <p className="mt-4 text-white/40 text-xs">平日 8:30〜17:15（土日祝・年末年始を除く）</p>
                         </div>
                     </motion.div>

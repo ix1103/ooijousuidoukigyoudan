@@ -57,20 +57,25 @@ export const Header = () => {
             items: [
                 { name: '水道工事等業者向け', href: '/business/contractor', desc: '給水装置工事・様式' },
                 { name: '入札参加資格申請', href: '/business/bidding', desc: '入札参加登録・資格書類' },
-                { name: '入札・見積結果公表', href: '/business/bidding/results', desc: '執行結果の公表' },
                 { name: '指定工事店一覧', href: '/business/designated-shops', desc: '指定給水装置工事事業者一覧' },
                 { name: 'インボイス制度', href: '/business/invoice', desc: '適格請求書等保存方式について' },
+            ]
+        },
+        {
+            name: '公表',
+            items: [
+                { name: '入札・見積結果公表', href: '/business/bidding/results', desc: '執行結果の公表' },
+                { name: '公表資料', href: '/about/disclosure', desc: '耐震化計画・各種公表書類' },
+                { name: '水質情報', href: '/about/water-quality', desc: '水質検査計画・検査結果' },
             ]
         },
         {
             name: '企業団について',
             items: [
                 { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内' },
-                { name: '水質情報', href: '/about/water-quality', desc: '水質検査計画・検査結果' },
-                { name: '公表資料', href: '/about/disclosure', desc: '耐震化計画・各種公表書類' },
                 { name: '水道料金等審議会', href: '/about/council', desc: '料金審議機関の活動' },
                 { name: '職員採用', href: '/recruit', desc: '採用試験・募集情報' },
-                { name: '企業団議会', href: '/about/assembly', desc: '議会の組織と活動' },
+                { name: '議会について', href: '/about/assembly', desc: '議会の組織と活動' },
                 { name: 'パンフレット・広報資料', href: '/about/brochure', desc: '企業団パンフレットPDF' },
             ]
         },
@@ -277,7 +282,7 @@ export const Header = () => {
                                 <Phone size={22} fill="currentColor" />
                                 <span>24時間緊急受付</span>
                             </a>
-                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest">TEL: 0547-46-4130</p>
+                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest"><span className="inline-flex items-center gap-1"><Phone size={14} />TEL: 0547-46-4130</span></p>
                         </motion.div>
                     </motion.div>
                 )}

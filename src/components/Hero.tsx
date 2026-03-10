@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { WaterRippleEffect } from './WaterRippleEffect';
 
 export const Hero = () => {
     return (
@@ -12,11 +13,11 @@ export const Hero = () => {
                 {/* 1. ベースグラデーション */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#021338] via-primary-deep/90 to-primary-main/80 opacity-95" />
 
-                {/* 2. プレミアム背景画像（生成画像への差し替え） */}
+                {/* 2. プレミアム背景画像（ゆっくりとズームアウト＆フェードイン） */}
                 <motion.div
-                    initial={{ scale: 1.1, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 0.8 }}
-                    transition={{ duration: 2, ease: "easeOut" }}
+                    initial={{ scale: 1.15, opacity: 0, filter: 'blur(10px)' }}
+                    animate={{ scale: 1, opacity: 0.8, filter: 'blur(0px)' }}
+                    transition={{ duration: 3, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute inset-0 w-full h-full mix-blend-screen"
                 >
                     <Image
@@ -57,6 +58,9 @@ export const Hero = () => {
                 {/* 4. 深みと立体感を出す光の演出 */}
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,180,216,0.15),transparent_70%)]" />
                 <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-[radial-gradient(ellipse_at_top_right,rgba(72,202,228,0.1),transparent_60%)]" />
+
+                {/* 5. マウス追従型の水波紋エフェクト */}
+                <WaterRippleEffect />
             </div>
 
             {/* === メインコンテンツ（奥行きのあるレイアウト） === */}
@@ -103,7 +107,7 @@ export const Hero = () => {
                         transition={{ delay: 1 }}
                         className="mb-[clamp(1.5rem,4vh,4rem)]"
                     >
-                        <p className="text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
+                        <p className="text-[clamp(0.75rem,1.8vh,1.1rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
                             大井上水道企業団は、24時間365日休むことなく、<br />
                             生命の源である「水」の安全を守り、<br />
                             皆様の暮らしを揺るぎない品質で支え続けます。
@@ -127,7 +131,7 @@ export const Hero = () => {
                             { value: '3', label: '自治体' },
                         ].map((stat, i) => (
                             <div key={i} className="relative z-10 flex flex-col items-center">
-                                <p className="text-[clamp(1.5rem,4vh,3rem)] font-black text-white leading-none tracking-tighter mb-[clamp(0.2rem,0.8vh,0.75rem)]">
+                                <p className="text-[clamp(1.25rem,3.5vh,2.5rem)] font-black text-white leading-none tracking-tighter mb-[clamp(0.2rem,0.8vh,0.75rem)]">
                                     {stat.value}
                                 </p>
                                 <p className="text-[clamp(0.45rem,1vh,0.65rem)] text-white/40 font-black uppercase tracking-[0.2em]">
@@ -139,14 +143,14 @@ export const Hero = () => {
                 </motion.div>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none text-[var(--background)] translate-y-[1px]">
-                <svg className="relative block w-full h-[80px] md:h-[96px]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[160%] overflow-hidden leading-none z-20 pointer-events-none text-[var(--background)] translate-y-[1px]">
+                <svg className="relative block w-full h-[80px] md:h-[96px]" viewBox="0 0 1600 120" preserveAspectRatio="none">
                     <motion.path
-                        d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                        d="M0,0V46.29c63.72,22.2,138.12,32.17,210.67,28,93.81-5.37,181.77-33.31,275.73-37.5C584.85,32.43,683.12,53.67,777.33,72.05c92.36,18,184.4,24.88,279.2,13.08,48.2-6,93.13-17.84,139.27-29.34C1319.32,25,1484,14.29,1600,52.47V0Z"
                         fill="currentColor"
                         opacity=".25"
                         animate={{
-                            x: [-20, 20, -20],
+                            x: [-40, 40, -40],
                         }}
                         transition={{
                             duration: 15,
@@ -155,11 +159,11 @@ export const Hero = () => {
                         }}
                     />
                     <motion.path
-                        d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5V0Z"
+                        d="M0,0V15.81C20.8,36.92,44.22,56.86,76.29,72.05,159.22,111.27,264,111,359.44,91.58c49.84-10.15,96.14-26.07,143.47-39.8,65.47-19,135.57-46,209.33-49.67,58.02-2.85,113.44,9.42,157.76,31.56,50.83,25.39,99.71,62,165.81,73,64.7,10.79,130.16-6.69,190.61-24.28s120.26-39,187.07-43.05c95.57-5.85,181.25,22.88,270.24,38.84,48.32,8.66,94.4,6.17,139.34-7.5V0Z"
                         fill="currentColor"
                         opacity=".5"
                         animate={{
-                            x: [20, -20, 20],
+                            x: [40, -40, 40],
                         }}
                         transition={{
                             duration: 12,
@@ -168,10 +172,10 @@ export const Hero = () => {
                         }}
                     />
                     <motion.path
-                        d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+                        d="M0,0V5.63C199.91,59,418.79,71.32,634.44,42.57c57.33-7.64,112.31-20.12,170.15-26.46,78.67-8.63,149.97,12.24,220.75,35.4c114.75,37.65,192.18,55.67,279.11,50.43,115.37-7,229.95-45.71,331.73-84.81V0Z"
                         fill="currentColor"
                         animate={{
-                            x: [-10, 10, -10],
+                            x: [-20, 20, -20],
                         }}
                         transition={{
                             duration: 8,

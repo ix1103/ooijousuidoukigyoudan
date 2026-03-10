@@ -38,9 +38,7 @@ export default function RepairShopsPage() {
                         <span>水が止まらない・大量に漏れている場合は今すぐ電話！</span>
                     </div>
                     <a href="tel:0547-46-4130" className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
-                        <Phone size={18} />
-                        0547-46-4130
-                    </a>
+                        <Phone size={18} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                 </div>
             </div>
 
@@ -66,7 +64,7 @@ export default function RepairShopsPage() {
                                         '「宅内漏水修理当番店」とは、宅地内（お客様の敷地内）の水道管の漏水修理に対応する、当企業団の指定給水装置工事事業者のうち当番制で対応する業者のことです。',
                                         '夜間・休日でも対応できる業者を輪番制で指名しており、急な漏水でもご相談いただけます。',
                                         '宅地内の修理費用はお客様のご負担となります。修理前に費用の目安を確認されることをおすすめします。',
-                                        '道路上の漏水は企業団が対応します。お気軽に企業団（0547-46-4130）へご連絡ください。',
+                                        '道路上の漏水は企業団が対応します。お気軽に企業団（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）へご連絡ください。',
                                     ].map((text, i) => (
                                         <li key={i} className="flex items-start gap-3">
                                             <ChevronRight size={16} className="text-primary-main mt-0.5 shrink-0" />

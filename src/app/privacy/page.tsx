@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { PageHeader } from '@/components/PageHeader';
-import { Shield, Lock, EyeOff, UserCheck, ShieldAlert } from 'lucide-react';
+import {  Shield, Lock, EyeOff, UserCheck, ShieldAlert , Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function PrivacyPage() {

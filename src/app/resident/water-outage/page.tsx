@@ -11,7 +11,7 @@ export default function WaterOutagePage() {
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="断水情報"
-                subtitle={<>突発断水・計画断水の状況をお知らせします。<br />緊急の場合は <strong className="text-secondary-vibrant">0547-46-4130</strong> へご連絡ください。</>}
+                subtitle={<>突発断水・計画断水の状況をお知らせします。<br />緊急の場合は <strong className="text-secondary-vibrant"><Phone size={20} className="inline-block mr-1 -mt-0.5" /><Phone size={16} className="inline-block mr-1 -mt-0.5"/>0547-46-4130</strong> へご連絡ください。</>}
                 enTitle="Water Outage"
             />
 
@@ -23,9 +23,7 @@ export default function WaterOutagePage() {
                         <span>道路上の漏水など緊急連絡は24時間受付中</span>
                     </div>
                     <a href="tel:0547-46-4130" className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
-                        <Phone size={18} />
-                        0547-46-4130
-                    </a>
+                        <Phone size={18} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                 </div>
             </div>
 
@@ -165,9 +163,7 @@ export default function WaterOutagePage() {
                     <h2 className="text-2xl md:text-4xl font-black mb-4">お困りの場合はいつでも</h2>
                     <p className="text-white/60 mb-8 text-sm md:text-base">道路上の漏水など緊急の場合は24時間受け付けております。</p>
                     <a href="tel:0547-46-4130" className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-lg md:text-xl shadow-glow hover:shadow-glow-lg transition-all active:scale-95">
-                        <Phone size={22} />
-                        0547-46-4130
-                    </a>
+                        <Phone size={22} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                 </div>
             </section>
         </div>

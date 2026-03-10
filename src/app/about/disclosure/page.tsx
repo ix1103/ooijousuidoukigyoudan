@@ -1,157 +1,144 @@
 "use client";
 
 import React from 'react';
-import { FileText, ChevronRight, BookOpen } from 'lucide-react';
+import { FileText, Download, ChevronRight, BookOpen, Calculator, ShieldCheck, Users, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/PageHeader';
 
-const documents = [
-    {
-        category: '耐震化計画',
-        items: [
-            {
-                label: '上下水道耐震化計画',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/R7taishinkakeikaku.pdf',
-                note: '令和7年1月策定',
-            },
-        ],
-    },
-    {
-        category: '水質情報',
-        items: [
-            {
-                label: '水質検査計画（令和8年度）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/suisitu-jyouhou.html',
-                note: '令和8年1月9日掲載',
-            },
-        ],
-    },
-    {
-        category: '議会資料',
-        items: [
-            {
-                label: '令和8年第1回議会定例会 資料（3月5日開催）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/gikai-main.html',
-                note: '令和8年3月掲載',
-            },
-        ],
-    },
-];
-
 export default function DisclosurePage() {
+    const categories = [
+        {
+            title: '事業計画・経営戦略',
+            icon: <BookOpen className="text-secondary-vibrant" size={28} />,
+            description: '大井上水道企業団の将来に向けた事業理念や中長期的な経営戦略に関する資料です。',
+            items: [
+                { label: '大井上水道ビジョン', href: 'http://www.ooijousuidoukigyoudan.or.jp/water_vision.pdf' },
+                { label: '大井上水道企業団 経営戦略2020', href: 'http://www.ooijousuidoukigyoudan.or.jp/2020keieisenryaku.pdf' },
+                { label: '大井上水道企業団経営比較分析表（令和4年度決算）', href: 'http://www.ooijousuidoukigyoudan.or.jp/36oijyosui_suido_2023.pdf' },
+                { label: '類似団体との経営比較分析表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R06suiitokibo.pdf' },
+            ]
+        },
+        {
+            title: '災害・インフラ対策（耐震化）',
+            icon: <ShieldCheck className="text-secondary-vibrant" size={28} />,
+            description: '安全で安定した給水を維持するための、施設の耐震化に関する計画および重要管路図です。',
+            items: [
+                { label: '管路の耐震化計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/taisin-R05.pdf' },
+                { label: '上下水道耐震化計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7taishinkakeikaku.pdf' },
+                { label: '重要管路図（A3版）', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7juuyoukanrozu.pdf' },
+            ]
+        },
+        {
+            title: '予算・決算情報',
+            icon: <Calculator className="text-secondary-vibrant" size={28} />,
+            description: '企業団の毎年度の予算案や決算状況を公開し、透明性のある経営に努めています。',
+            items: [
+                { label: '令和7年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/FYR7yosansyo.pdf' },
+                { label: '令和6年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R6yosan.pdf' },
+                { label: '令和6年度 決算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/r6kesasn.pdf' },
+                { label: '令和5年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R5yosan.pdf' },
+                { label: '令和5年度 決算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R5kessan.pdf' },
+                { label: '令和4年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R4yosan.pdf' },
+                { label: '令和4年度 決算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R4kessan.pdf' },
+                { label: '令和3年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R3%201-3-1%20%20yosan.pdf' },
+                { label: '令和3年度 決算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R3kessan.pdf' },
+            ]
+        },
+        {
+            title: '人事・組織関連',
+            icon: <Users className="text-secondary-vibrant" size={28} />,
+            description: '職員の勤務環境向上や、透明性のある人事行政に関する情報を公表しています。',
+            items: [
+                { label: '人事行政の運営等の状況の公表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R6jinjijoukyou.pdf' },
+                { label: '特定事業主行動計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/tokukoudoukeikaku.pdf' },
+                { label: '特定事業主行動計画の実施状況の公表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7tokuteijigyounusi.pdf' },
+                { label: '職員の給与の男女の差異の情報の公表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7kyuuyosai.pdf' },
+            ]
+        },
+        {
+            title: '環境・情報セキュリティ',
+            icon: <ShieldAlert className="text-secondary-vibrant" size={28} />,
+            description: '地球環境への配慮に関する計画や、情報保護のための基本方針です。',
+            items: [
+                { label: '大井上水道企業団 地球温暖化対策実行計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/ondanka.pdf' },
+                { label: '大井上水道企業団 情報セキュリティポリシー', href: 'http://www.ooijousuidoukigyoudan.or.jp/2025jouhousequrityporicy.pdf' },
+            ]
+        }
+    ];
+
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="公表資料"
-                subtitle="情報公開の観点から、各種計画・報告書などを掲載しています。"
+                subtitle="事業計画、予算・決算、耐震化計画など、大井上水道企業団の各種公表資料をご案内します。"
                 enTitle="Public Disclosure"
             />
 
-            <section className="py-16 md:py-24">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16">
+                <div className="text-center max-w-3xl mx-auto">
+                    <p className="text-text-sub text-sm md:text-base leading-relaxed">
+                        当企業団では、住民の皆様へ透明性のある事業運営をお約束するため、経営方針や水道事業に関する各種計画、並びに予算・決算などの重要な情報を積極的に公表しています。<br />
+                        以下のリストからPDFファイル形式にてご確認いただけます。
+                    </p>
+                </div>
 
-                    {/* 公表の趣旨 */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                        className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200/40 rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm"
-                    >
-                        <div className="flex items-start gap-4 md:gap-6">
-                            <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl shadow-sm shrink-0">
-                                <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-slate-500" />
-                            </div>
-                            <div className="flex-1">
-                                <h2 className="text-lg md:text-2xl font-black text-primary-deep mb-3">情報公表について</h2>
-                                <p className="text-text-sub text-sm md:text-base leading-relaxed">
-                                    大井上水道企業団では、透明性の高い事業運営を推進するため、各種計画書・報告書・財政状況等を積極的に公表しています。
-                                    住民の皆様や事業者の皆様からのご意見・情報公開請求については、企業団窓口にてご対応いたします。
-                                </p>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* カテゴリ別ドキュメント一覧 */}
-                    {documents.map((section, si) => (
-                        <motion.div
-                            key={section.category}
+                <div className="space-y-12 md:space-y-16">
+                    {categories.map((category, idx) => (
+                        <motion.section
+                            key={idx}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: si * 0.1 }}
+                            transition={{ duration: 0.5, delay: idx * 0.1 }}
+                            className="bg-slate-50 p-6 md:p-10 rounded-3xl border border-slate-100 shadow-sm"
                         >
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 md:w-12 h-1.5 bg-gradient-to-r from-primary-main to-secondary-vibrant rounded-full" />
-                                <h2 className="text-xl md:text-2xl font-black text-primary-deep">{section.category}</h2>
-                            </div>
-                            <div className="space-y-3">
-                                {section.items.map((item, i) => (
-                                    item.href ? (
+                            <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+                                {/* 左側タイトル */}
+                                <div className="md:w-1/3 flex flex-col pt-2">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-3 bg-white rounded-2xl shadow-sm inline-block shrink-0">
+                                            {category.icon}
+                                        </div>
+                                        <h2 className="text-xl md:text-2xl font-black text-primary-deep leading-tight">
+                                            {category.title}
+                                        </h2>
+                                    </div>
+                                    <p className="text-text-sub text-sm leading-relaxed mb-6">
+                                        {category.description}
+                                    </p>
+                                </div>
+
+                                {/* 右側リンク一覧 */}
+                                <div className="md:w-2/3 space-y-3">
+                                    {category.items.map((item, itemIdx) => (
                                         <a
-                                            key={i}
+                                            key={itemIdx}
                                             href={item.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center justify-between p-4 md:p-5 bg-white hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl shadow-sm transition-all group"
+                                            className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 bg-white rounded-2xl border border-transparent shadow-sm hover:shadow-md hover:border-primary-main/20 transition-all duration-300 gap-3"
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <div className="bg-primary-main/10 p-2 rounded-xl shrink-0">
-                                                    <FileText size={18} className="text-primary-main" />
+                                            <div className="flex items-center gap-3 md:gap-4 flex-1">
+                                                <div className="w-10 h-10 shrink-0 rounded-full bg-primary-main/5 flex items-center justify-center text-primary-main group-hover:bg-primary-main group-hover:text-white transition-colors">
+                                                    <Download size={18} />
                                                 </div>
-                                                <div>
-                                                    <p className="font-black text-primary-deep text-sm md:text-base">{item.label}</p>
-                                                    <p className="text-xs text-slate-400 mt-0.5">{item.note}</p>
-                                                </div>
+                                                <span className="font-bold text-primary-deep group-hover:text-primary-main transition-colors text-sm md:text-base leading-snug">
+                                                    {item.label}
+                                                </span>
                                             </div>
-                                            <ChevronRight size={18} className="text-primary-main/40 group-hover:text-primary-main group-hover:translate-x-1 transition-all shrink-0" />
+                                            <div className="hidden sm:flex items-center text-xs text-text-sub font-bold px-3 py-1 bg-slate-50 rounded-full shrink-0">
+                                                <FileText size={12} className="mr-1.5" />
+                                                PDF
+                                            </div>
+                                            <ChevronRight className="hidden sm:block text-slate-300 group-hover:text-primary-main group-hover:translate-x-1 transition-all" size={20} />
                                         </a>
-                                    ) : (
-                                        <div
-                                            key={i}
-                                            className="flex items-center justify-between p-4 md:p-5 bg-white border border-slate-100 rounded-2xl shadow-sm"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="bg-slate-100 p-2 rounded-xl shrink-0">
-                                                    <FileText size={18} className="text-slate-400" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-black text-primary-deep text-sm md:text-base">{item.label}</p>
-                                                    <p className="text-xs text-slate-400 mt-0.5">{item.note}</p>
-                                                </div>
-                                            </div>
-                                            <span className="text-xs text-slate-400 font-bold shrink-0">窓口にてご確認ください</span>
-                                        </div>
-                                    )
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </motion.div>
+                        </motion.section>
                     ))}
-
-                    {/* お問い合わせ */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                        className="bg-gradient-to-br from-primary-deep to-primary-main rounded-2xl md:rounded-3xl p-8 md:p-12 text-white text-center relative overflow-hidden shadow-glow-lg"
-                    >
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(72,202,228,0.1),transparent)]" />
-                        <div className="relative z-10">
-                            <h3 className="text-xl md:text-3xl font-black mb-3">情報公開請求・お問い合わせ</h3>
-                            <p className="text-white/60 text-sm md:text-base mb-6">資料の閲覧・情報公開請求は企業団窓口へご連絡ください。</p>
-                            <a
-                                href="tel:0547-46-4130"
-                                className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-base md:text-lg shadow-glow hover:shadow-glow-lg transition-all active:scale-95"
-                            >
-                                0547-46-4130
-                            </a>
-                            <p className="mt-4 text-white/40 text-xs">平日 8:30〜17:15（土日祝・年末年始を除く）</p>
-                        </div>
-                    </motion.div>
-
                 </div>
-            </section>
+            </div>
         </div>
     );
 }

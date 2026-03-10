@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import {  ChevronDown , Phone } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { getFaqList, Faq } from '@/lib/microcms';
 
@@ -35,7 +35,7 @@ const FALLBACK_FAQ: GroupedFaq[] = [
             },
             {
                 q: '引っ越しで水道の使用を開始・中止したいのですが？',
-                a: 'ご入居・退去の前日までにお電話（0547-46-4130）または窓口にてお申し込みください。土日・祝日の開閉栓作業は行えませんのでご注意ください。',
+                a: 'ご入居・退去の前日までにお電話（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）または窓口にてお申し込みください。土日・祝日の開閉栓作業は行えませんのでご注意ください。',
             },
             {
                 q: '水道メーターの交換時期が来たようですが、費用はかかりますか？',
@@ -52,7 +52,7 @@ const FALLBACK_FAQ: GroupedFaq[] = [
             },
             {
                 q: '水道水が濁っている・臭いがするのですが？',
-                a: '工事後や断水後に一時的に赤水（さび・濁り）が出ることがあります。しばらく流してもご改善いただけない場合は企業団（0547-46-4130）へご連絡ください。',
+                a: '工事後や断水後に一時的に赤水（さび・濁り）が出ることがあります。しばらく流してもご改善いただけない場合は企業団（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）へご連絡ください。',
             },
         ],
     },
@@ -61,7 +61,7 @@ const FALLBACK_FAQ: GroupedFaq[] = [
         items: [
             {
                 q: '突然水が出なくなりました。',
-                a: '①止水栓（元栓）が閉まっていないか、②近隣でも同様か（計画断水・突発断水の可能性）、③料金未納による停止の可能性をご確認ください。いずれでもない場合は企業団（0547-46-4130）へご連絡ください。',
+                a: '①止水栓（元栓）が閉まっていないか、②近隣でも同様か（計画断水・突発断水の可能性）、③料金未納による停止の可能性をご確認ください。いずれでもない場合は企業団（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）へご連絡ください。',
             },
             {
                 q: '宅地内で水が漏れているのですが誰に連絡すれば？',

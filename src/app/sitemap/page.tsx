@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
-import { ChevronRight, Droplets, Building2, UserCircle, MessageCircle, Link as LinkIcon } from 'lucide-react';
+import { ChevronRight, Droplets, Building2, UserCircle, MessageCircle, Link as LinkIcon, FileText } from 'lucide-react';
 
 export default function SitemapPage() {
     const sitemapData = [
@@ -20,30 +20,43 @@ export default function SitemapPage() {
             category: '住民の皆様へ',
             icon: <Droplets className="w-6 h-6 text-blue-500" />,
             links: [
-                { title: '各種手続き（開栓・閉栓・名義変更）', href: '/resident/procedure' },
-                { title: '水道料金のしくみ・お支払い', href: '/resident/price' },
-                { title: '水道メーター・定期交換', href: '/resident/meter' },
-                { title: '水質情報（基準・検査結果）', href: '/resident/quality' },
-                { title: 'クロスコネクションの禁止', href: '/resident/cross-connection' },
-                { title: '水道トラブル（水が出ない・漏水・困ったとき）', href: '/resident/trouble' },
+                { title: '水道料金・手続き', href: '/resident/price' },
+                { title: '水道料金改定のお知らせ', href: '/resident/billing-update' },
+                { title: '断水情報', href: '/resident/water-outage' },
+                { title: '水道トラブル（漏水・断水・凍結など）', href: '/resident/trouble' },
+                { title: '宅内漏水修理当番店', href: '/resident/repair-shops' },
                 { title: 'よくある質問（Q&A）', href: '/resident/faq' },
+                { title: '各種申請書ダウンロード', href: '/resident/downloads' },
             ]
         },
         {
             category: '事業者の皆様へ',
             icon: <Building2 className="w-6 h-6 text-amber-500" />,
             links: [
-                { title: '入札・契約情報', href: '/business/bidding' },
-                { title: '指定給水装置工事事業者向け情報・様式', href: '/business/contractor' },
+                { title: '水道工事等業者向け情報・様式', href: '/business/contractor' },
+                { title: '入札参加資格申請', href: '/business/bidding' },
+                { title: '指定工事店一覧', href: '/business/designated-shops' },
+                { title: 'インボイス制度について', href: '/business/invoice' },
+            ]
+        },
+        {
+            category: '公表資料',
+            icon: <FileText className="w-6 h-6 text-secondary-vibrant" />,
+            links: [
+                { title: '公表資料（各種計画・予算・決算）', href: '/about/disclosure' },
+                { title: '水質情報（検査計画・結果）', href: '/about/water-quality' },
+                { title: '入札・見積結果公表', href: '/business/bidding/results' },
             ]
         },
         {
             category: '大井上水道企業団について',
             icon: <MessageCircle className="w-6 h-6 text-emerald-500" />,
             links: [
-                { title: '企業団の概要・組織・アクセス', href: '/about/outline' },
-                { title: '財政状況・公表資料', href: '/about/finance' },
-                { title: '企業団議会', href: '/about/assembly' },
+                { title: '組織概要・アクセス', href: '/about/outline' },
+                { title: '水道料金等審議会', href: '/about/council' },
+                { title: '職員採用情報', href: '/recruit' },
+                { title: '議会について', href: '/about/assembly' },
+                { title: 'パンフレット・広報資料', href: '/about/brochure' },
             ]
         },
         {
@@ -51,8 +64,7 @@ export default function SitemapPage() {
             icon: <LinkIcon className="w-6 h-6 text-slate-500" />,
             links: [
                 { title: '個人情報保護方針', href: '/privacy' },
-                { title: '利用規約', href: '/terms' },
-                { title: 'お役立ちリンク集', href: '/links' },
+                { title: 'サイトマップ', href: '/sitemap' },
             ]
         }
     ];

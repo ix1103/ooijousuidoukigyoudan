@@ -291,7 +291,7 @@ export default function ContractorPage() {
                                 className="inline-flex items-center space-x-2 bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-amber-700 transition-colors active:scale-95"
                             >
                                 <Phone size={14} />
-                                <span>工務係に問い合わせ（0547-46-4130）</span>
+                                <span>工務係に問い合わせ（<Phone size={14} className="inline-block mr-0.5 -mt-0.5" />0547-46-4130）</span>
                             </a>
                         </div>
                     </div>

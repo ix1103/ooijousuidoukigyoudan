@@ -3,7 +3,7 @@
 import React from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
-import { Users, FileText, Calendar, Building, ChevronRight, Gavel } from 'lucide-react';
+import { Users, FileText, Calendar, Building, ChevronRight, Gavel, Download } from 'lucide-react';
 
 export default function AssemblyPage() {
     const structure = [
@@ -18,15 +18,37 @@ export default function AssemblyPage() {
         { title: '臨時会', desc: '必要に応じて開催されます' },
     ];
 
+    const parliamentData = [
+        {
+            year: "令和8年 第1回議会",
+            items: [
+                { title: "議案", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/1-1kagami.pdf" },
+                { title: "変更規約", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/1-2henkoukiyaku.pdf" },
+                { title: "新旧対比表", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/1-3sinkyuu.pdf" },
+                { title: "議案", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/2-1kagami.pdf" },
+                { title: "予算", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/2-2yosan.pdf" },
+                { title: "日程表", url: "http://www.ooijousuidoukigyoudan.or.jp/R8giai1/nittei.pdf" }
+            ]
+        }
+    ];
+
+    const resultsData = [
+        { title: "令和7年 第1回議会", url: "http://www.ooijousuidoukigyoudan.or.jp/R7_1_giketukekka.pdf" },
+        { title: "令和6年 第2回議会", url: "http://www.ooijousuidoukigyoudan.or.jp/R6-2gikaikekka.pdf" },
+        { title: "令和6年 第1回議会", url: "http://www.ooijousuidoukigyoudan.or.jp/R5-1kekka.pdf" },
+        { title: "令和5年 第2回議会", url: "http://www.ooijousuidoukigyoudan.or.jp/R5_2nd_giketsu.pdf" },
+        { title: "令和5年 第1回議会", url: "http://www.ooijousuidoukigyoudan.or.jp/R5_1st_giketsu.pdf" }
+    ];
+
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
-                title="企業団議会"
-                subtitle="大井上水道企業団の意思決定機関である「議会」の組織と活動についてご案内します。"
+                title="議会について"
+                subtitle="大井上水道企業団の意思決定機関である「議会」の組織と活動、各種資料をご案内します。"
                 enTitle="Assembly"
             />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 space-y-16 md:space-y-32">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16 md:space-y-24">
 
                 {/* 議会の役割 */}
                 <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
@@ -70,7 +92,7 @@ export default function AssemblyPage() {
                         <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
                         <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Meetings</span>
                     </div>
-                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-12">会議の開催</h2>
+                    <h2 className="text-2xl md:text-4xl font-black text-primary-deep mb-12">会議の開催</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         {meetings.map((meeting, idx) => (
@@ -92,25 +114,85 @@ export default function AssemblyPage() {
                     </div>
                 </section>
 
-                {/* 議事録・公表資料 */}
-                <section className="bg-primary-deep rounded-[3rem] p-8 md:p-16 text-white relative overflow-hidden text-center">
-                    <div className="absolute inset-0 animate-mesh-bg bg-gradient-to-r from-primary-deep via-primary-main to-primary-light opacity-30" />
-                    <div className="relative z-10 max-w-3xl mx-auto">
-                        <FileText className="text-secondary-vibrant mx-auto mb-6" size={48} />
-                        <h2 className="text-2xl md:text-4xl font-black mb-6">議事録の公開について</h2>
-                        <p className="text-accent-soft/70 text-sm md:text-lg leading-relaxed mb-10">
-                            会議の詳細は議事録としてまとめられ、公式サイトや企業団窓口にて閲覧いただけます。
-                            透明性の高い議会運営を行い、適正な水道事業の執行を監視しています。
-                        </p>
-                        <a
-                            href="http://www.ooijousuidoukigyoudan.or.jp/gikai-main.html"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-3 bg-white text-primary-deep font-black px-8 py-4 rounded-2xl hover:bg-secondary-vibrant hover:text-primary-deep transition-all shadow-lg active:scale-95"
-                        >
-                            <span>議会の詳細を見る（公式サイト）</span>
-                            <ChevronRight size={18} />
-                        </a>
+                {/* 議案・資料 */}
+                <section>
+                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
+                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Documents</span>
+                    </div>
+                    <h2 className="text-2xl md:text-4xl font-black text-primary-deep mb-6">議案・資料</h2>
+                    <p className="text-text-sub text-sm md:text-base mb-10">議会に提出された議案や関連資料をPDF形式で公開しています。</p>
+
+                    <div className="space-y-8">
+                        {parliamentData.map((data, idx) => (
+                            <div key={idx} className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                                <div className="bg-slate-50 px-6 py-4 border-b border-slate-100">
+                                    <h3 className="font-black text-primary-deep text-lg flex items-center gap-2">
+                                        <FileText size={20} className="text-primary-main" />
+                                        {data.year}
+                                    </h3>
+                                </div>
+                                <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                    {data.items.map((item, itemIdx) => (
+                                        <a
+                                            key={itemIdx}
+                                            href={item.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group flex flex-col justify-between p-4 rounded-2xl border border-slate-100 hover:border-primary-main/30 hover:shadow-md transition-all bg-white"
+                                        >
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className="bg-primary-main/10 p-2 rounded-xl group-hover:bg-primary-main group-hover:text-white transition-colors text-primary-main">
+                                                    <Download size={18} />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">PDF</span>
+                                            </div>
+                                            <h4 className="font-bold text-sm text-primary-deep group-hover:text-primary-main transition-colors line-clamp-2">
+                                                {item.title}
+                                            </h4>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* 議決結果 */}
+                <section>
+                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
+                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Results</span>
+                    </div>
+                    <h2 className="text-2xl md:text-4xl font-black text-primary-deep mb-6">議決結果一覧</h2>
+                    <p className="text-text-sub text-sm md:text-base mb-10">過去の会議における議案の議決結果を公開しています。</p>
+
+                    <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+                        <ul className="divide-y divide-slate-100">
+                            {resultsData.map((result, idx) => (
+                                <li key={idx}>
+                                    <a
+                                        href={result.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between p-5 md:px-8 hover:bg-slate-50 transition-colors group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="bg-slate-100 p-2.5 rounded-xl group-hover:bg-white group-hover:shadow-sm transition-all text-slate-500 group-hover:text-primary-main">
+                                                <FileText size={20} />
+                                            </div>
+                                            <span className="font-bold text-sm md:text-base text-primary-deep group-hover:text-primary-main transition-colors">
+                                                {result.title}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="hidden sm:inline-block text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">PDF</span>
+                                            <ChevronRight size={18} className="text-slate-300 group-hover:text-secondary-vibrant group-hover:translate-x-1 transition-all" />
+                                        </div>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </section>
             </div>
