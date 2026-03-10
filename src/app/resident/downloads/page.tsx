@@ -26,7 +26,7 @@ const downloadItems = [
             },
             {
                 label: '口座振替依頼書（手続きのご案内）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/syoukai.html#kouza',
+                href: 'http://www.ooijousuidoukigyoudan.or.jp/ryoukin-jyouhou.html',
                 note: '窓口配布・郵送取り寄せ',
                 updated: '随時',
             },
