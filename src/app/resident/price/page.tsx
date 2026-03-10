@@ -295,16 +295,10 @@ export default function PricePage() {
                                         <h4 className="font-black text-primary-deep text-base md:text-lg">口座振替</h4>
                                         <span className="bg-emerald-100 text-emerald-700 text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full">推奨</span>
                                     </div>
-                                    <p className="text-sm md:text-base text-text-sub leading-relaxed mb-4">
-                                        ご指定の預貯金口座から自動的に引き落とす、便利で確実なお支払い方法です。毎回の手続きが不要になり、払い忘れを防ぐことができます。
+                                    <p className="text-sm md:text-base text-text-sub leading-relaxed">
+                                        ご指定の預貯金口座から自動的に引き落とす、便利で確実なお支払い方法です。毎回の手続きが不要になり、払い忘れを防ぐことができます。<br />
+                                        <span className="inline-block mt-2 text-primary-deep font-bold bg-amber-50 px-3 py-1 rounded-lg border border-amber-100/50">※口座振替依頼書は、当企業団または各金融機関の窓口にて配布しております。郵送での取り寄せも可能です。</span>
                                     </p>
-                                    <Link
-                                        href="/resident/downloads"
-                                        className="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-emerald-500 transition-colors shadow-sm w-full sm:w-auto text-center active:scale-95"
-                                    >
-                                        <Download size={16} />
-                                        口座振替申込書をダウンロード
-                                    </Link>
                                 </div>
                             </div>
 
