@@ -52,17 +52,17 @@ const guides = [
             {
                 name: '使用開始（引越しで使い始めるとき）',
                 desc: '入居前日までにお申し込みください',
-                href: '/resident/procedure',
+                href: '/resident/procedure#usage-start',
             },
             {
                 name: '使用中止（引越しで止めるとき）',
                 desc: '退去日の前日までにご連絡を',
-                href: '/resident/procedure',
+                href: '/resident/procedure#usage-stop',
             },
             {
                 name: '名義変更・代表者変更',
                 desc: '所有者・使用者が変わるとき',
-                href: '/resident/procedure',
+                href: '/resident/procedure#name-change',
             },
             {
                 name: '申請書類ダウンロード',

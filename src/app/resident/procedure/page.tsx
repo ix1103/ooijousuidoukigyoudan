@@ -36,10 +36,11 @@ export default function ProcedurePage() {
 
                 {/* 1. 使用開始（開栓） */}
                 <motion.div
+                    id="usage-start"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="bg-white rounded-2xl md:rounded-3xl border border-blue-100 shadow-sm overflow-hidden"
+                    className="bg-white rounded-2xl md:rounded-3xl border border-blue-100 shadow-sm overflow-hidden scroll-mt-24"
                 >
                     <div className="bg-gradient-to-r from-blue-50 to-sky-50 p-6 md:p-8 border-b border-blue-100 flex items-center gap-4">
                         <div className="bg-white p-3 rounded-xl shadow-sm shrink-0">
@@ -76,10 +77,11 @@ export default function ProcedurePage() {
 
                 {/* 2. 使用中止（閉栓） */}
                 <motion.div
+                    id="usage-stop"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="bg-white rounded-2xl md:rounded-3xl border border-violet-100 shadow-sm overflow-hidden"
+                    className="bg-white rounded-2xl md:rounded-3xl border border-violet-100 shadow-sm overflow-hidden scroll-mt-24"
                 >
                     <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 md:p-8 border-b border-violet-100 flex items-center gap-4">
                         <div className="bg-white p-3 rounded-xl shadow-sm shrink-0">
@@ -118,10 +120,11 @@ export default function ProcedurePage() {
 
                 {/* 3. 名義変更 */}
                 <motion.div
+                    id="name-change"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="bg-white rounded-2xl md:rounded-3xl border border-emerald-100 shadow-sm overflow-hidden"
+                    className="bg-white rounded-2xl md:rounded-3xl border border-emerald-100 shadow-sm overflow-hidden scroll-mt-24"
                 >
                     <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6 md:p-8 border-b border-emerald-100 flex items-center gap-4">
                         <div className="bg-white p-3 rounded-xl shadow-sm shrink-0">
