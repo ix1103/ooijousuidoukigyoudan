@@ -7,6 +7,44 @@ import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
 
+function FormRow({ item }: { item: any }) {
+    const mainHref = item.pdf || item.excel || item.word || item.zip;
+
+    return (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-5 md:px-8 py-5 hover:bg-slate-50/50 transition-colors gap-4">
+            <div className="flex items-start space-x-3 md:space-x-4">
+                <FileText size={20} className="text-primary-main shrink-0 mt-1" />
+                <div>
+                    <a href={mainHref} target="_blank" rel="noopener noreferrer" className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2 leading-tight">
+                        {item.name}
+                        <ArrowUpRight size={14} className="opacity-30" />
+                    </a>
+                    {item.desc && <p className="text-[10px] md:text-xs text-text-sub mt-1">{item.desc}</p>}
+                </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+                {item.pdf && <DownloadButton href={item.pdf} label="PDF" color="bg-rose-50 text-rose-600 border-rose-100" />}
+                {item.word && <DownloadButton href={item.word} label="Word" color="bg-blue-50 text-blue-600 border-blue-100" />}
+                {item.excel && <DownloadButton href={item.excel} label="Excel" color="bg-emerald-50 text-emerald-600 border-emerald-100" />}
+                {item.zip && <DownloadButton href={item.zip} label="ZIP" color="bg-amber-50 text-amber-700 border-amber-200" />}
+            </div>
+        </div>
+    );
+}
+
+function DownloadButton({ href, label, color }: { href: string; label: string; color: string }) {
+    return (
+        <a
+            href={href}
+            download
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-black text-[10px] md:text-xs transition-all hover:shadow-sm active:scale-95 ${color}`}
+        >
+            <Download size={12} />
+            {label}
+        </a>
+    );
+}
+
 export default function ContractorPage() {
     return (
         <div className="min-h-screen pt-20">
@@ -134,47 +172,89 @@ export default function ContractorPage() {
                         給水装置工事に関する各種申請書・届出書の様式です。必要書類をご確認の上、窓口にご提出ください。
                     </p>
 
-                    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                        {[
-                            { name: '給水装置工事申込書一式（Ver.4）', desc: '新設・増設・改造時に提出', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyusuimoushikominituite_Ver4_R5_11_28.pdf' },
-                            { name: '給水装置工事完了届・検査請求書', desc: '工事完了後に提出（PDF版）', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_kennsasinnsei2.pdf' },
-                            { name: '受水槽を設置しないことに関する誓約書', desc: '受水槽を設置しない場合に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf' },
-                            { name: '指定給水装置工事事業者指定申請書（様式第1）', desc: '新規指定の申請', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no1_R03_May.pdf' },
-                            { name: '誓約書（様式第2）', desc: '欠格要件に該当しないことの誓約', type: '申請', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no2_R03_May.pdf' },
-                            { name: '機械器具の名称、性能及び数（別表）', desc: '所有機器の届出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_betu_R03_May.pdf' },
-                            { name: '指定給水装置工事事業者変更届出書（様式第4）', desc: '届出事項変更時に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no4_R03_May.pdf' },
-                            { name: '指定給水装置工事事業者廃止・休止・再開届出書（様式第5）', desc: '廃業・休止時に提出', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no5_R03_May.pdf' },
-                            { name: '給水装置工事主任技術者選任・解任届出書（様式第6）', desc: '主任技術者の選任・変更時', type: '届出', href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no6_R03_May.pdf' },
-                            { name: '給水装置工事関係書類一式（ZIP版）', desc: 'すべての様式をまとめてダウンロード', type: '一式', href: 'http://www.ooijousuidoukigyoudan.or.jp/ooi_kyuusui_ver3_2.zip' },
-                        ].map((form, idx) => (
-                            <div key={idx} className={`flex items-center justify-between px-5 md:px-8 py-4 md:py-5 ${idx !== 0 ? 'border-t border-slate-50' : ''} hover:bg-slate-50/50 transition-colors`}>
-                                <div className="flex items-center space-x-3 md:space-x-4">
-                                    <FileText size={18} className="text-primary-main shrink-0" />
-                                    <div>
-                                        {form.href ? (
-                                            <a href={form.href} target="_blank" rel="noopener noreferrer" className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2">
-                                                {form.name}
-                                                <ArrowUpRight size={14} className="opacity-40" />
-                                            </a>
-                                        ) : (
-                                            <p className="text-sm md:text-base font-bold text-primary-deep">{form.name}</p>
-                                        )}
-                                        <p className="text-[10px] md:text-xs text-text-sub mt-0.5">{form.desc}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shrink-0 ${form.type === '申請' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
-                                        }`}>
-                                        {form.type}
-                                    </span>
-                                    {form.href && (
-                                        <a href={form.href} download className="text-primary-main/40 hover:text-primary-main transition-colors" title="PDFをダウンロード">
-                                            <Download size={16} />
-                                        </a>
-                                    )}
-                                </div>
+                    <div className="space-y-12">
+                        {/* カテゴリ1: 指定・更新・届出 */}
+                        <div>
+                            <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6 flex items-center gap-2">
+                                <ClipboardList className="text-secondary-vibrant" size={24} />
+                                1. 事業者の指定・更新・届出
+                            </h3>
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-50">
+                                {[
+                                    { name: '指定給水装置工事事業者指定申請書（様式第1）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no1_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no1_R03_May.doc' },
+                                    { name: '誓約書（様式第2）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no2_R03_May.pdf' },
+                                    { name: '機械器具の名称、性能及び数（別表）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_betu_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_betu_R03_May.doc' },
+                                    { name: '指定給水装置工事事業者変更届出書（様式第4）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no4_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no4_R03_May.doc' },
+                                    { name: '指定給水装置工事事業者廃止・休止・再開届出書（様式第5）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no5_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no5_R03_May.doc' },
+                                    { name: '給水装置工事主任技術者選任・解任届出書（様式第6）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no6_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuisitei_no6_R03_May.doc' },
+                                    { name: '指定更新時確認事項届出書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/R2siteikousinjikou_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/R2siteikousinjikou_R03_May.docx' },
+                                    { name: '指定申請関係書類 一式', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyusui_sitei_all_R03_May.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyusui_sitei_all_R03_May.doc' },
+                                ].map((item, i) => (
+                                    <FormRow key={i} item={item} />
+                                ))}
                             </div>
-                        ))}
+                        </div>
+
+                        {/* カテゴリ2: 給水装置工事 申請・承諾書 */}
+                        <div>
+                            <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6 flex items-center gap-2">
+                                <FileText className="text-blue-500" size={24} />
+                                2. 給水装置工事 申請・承諾書
+                            </h3>
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-50">
+                                {[
+                                    { name: '給水装置工事申込書類 一式（ZIP）', zip: 'http://www.ooijousuidoukigyoudan.or.jp/ooi_kyuusui_ver3_2.zip' },
+                                    { name: '給水装置工事申込書（Ver.4）', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_mousikomi3.pdf', excel: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_syorui_ooi3.xls' },
+                                    { name: '給水装置工事申込変更申請書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_mousikomi3_henkou.pdf' },
+                                    { name: '給水装置工事事前協議書', excel: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusuikyougisyo.xlsx' },
+                                    { name: '給水装置工事申込チェックリスト', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_check_list.pdf' },
+                                    { name: '私有地埋設承諾書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_siyutimaisetu2.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/siyuutimaisetu_ooi.doc' },
+                                    { name: '給水管所有者分岐承諾書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_bunnki2.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_bunnki_ooi.doc' },
+                                    { name: '給水装置一部先行工事等注意事項承諾書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_sennkousyoudaku2.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_sennkousyoudaku.doc' },
+                                    { name: '給水管管理に関する承諾書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_kannrisyoudaku2.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_kannrisyoudaku.doc' },
+                                    { name: '受水槽を設置しないことに関する誓約書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.pdf', word: 'http://www.ooijousuidoukigyoudan.or.jp/jusuisou_seiyakusho.doc' },
+                                ].map((item, i) => (
+                                    <FormRow key={i} item={item} />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* カテゴリ3: 材料調書・検査・完了 */}
+                        <div>
+                            <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6 flex items-center gap-2">
+                                <ClipboardList className="text-emerald-500" size={24} />
+                                3. 材料調書・検査・完了
+                            </h3>
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-50">
+                                {[
+                                    { name: '給水装置工事完了届・検査請求書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_kennsasinnsei2.pdf' },
+                                    { name: '給水装置工事 屋外配管使用材料調書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_zairyou_okugai2.pdf' },
+                                    { name: '給水装置工事 屋内配管使用材料調書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_zairyou_okunai2.pdf' },
+                                    { name: '屋外配管使用材料調書 【記入例】', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_zairyou_okugai_TEST2.pdf' },
+                                    { name: '量水器ボックス設置例', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_haikann_rei2.pdf' },
+                                ].map((item, i) => (
+                                    <FormRow key={i} item={item} />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* カテゴリ4: 請求書・報告書 */}
+                        <div>
+                            <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6 flex items-center gap-2">
+                                <FileText className="text-purple-500" size={24} />
+                                4. 請求書・報告書（インボイス対応）
+                            </h3>
+                            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-50">
+                                {[
+                                    { name: '請求書（工事用）', excel: 'http://www.ooijousuidoukigyoudan.or.jp/seikyuu%20kouji(new).xlsx' },
+                                    { name: '請求書（物品用）', excel: 'http://www.ooijousuidoukigyoudan.or.jp/seikyuu%20buppin(new2).xlsx' },
+                                    { name: '請求書（入札工事用）', word: 'http://www.ooijousuidoukigyoudan.or.jp/4jou_seikyusyo.docx' },
+                                    { name: '漏水修理等修繕報告書', pdf: 'http://www.ooijousuidoukigyoudan.or.jp/rousui_houkoku1.pdf', excel: 'http://www.ooijousuidoukigyoudan.or.jp/rousui_houkoku1.xls' },
+                                ].map((item, i) => (
+                                    <FormRow key={i} item={item} />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                     <p className="text-text-sub/60 text-xs mt-4">※ 様式のダウンロードは窓口にて配布、または公式サイトの「公表」ページからご確認ください。</p>
                 </section>
