@@ -60,7 +60,7 @@ export const Hero = () => {
             </div>
 
             {/* === メインコンテンツ（奥行きのあるレイアウト） === */}
-            <div className="w-full px-5 sm:px-8 relative z-10 flex flex-col items-center text-center mt-12 md:mt-20">
+            <div className="w-full px-5 sm:px-8 relative z-10 flex flex-col items-center text-center pt-[clamp(3rem,8vh,5rem)] pb-[clamp(2rem,5vh,4rem)]">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -72,18 +72,18 @@ export const Hero = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="inline-flex items-center justify-center bg-white/5 backdrop-blur-sm text-white/60 px-6 py-2 rounded-full mb-6 md:mb-10 border border-white/10"
+                        className="inline-flex items-center justify-center bg-white/5 backdrop-blur-sm text-white/60 px-6 py-2 rounded-full mb-[clamp(1rem,3vh,2.5rem)] border border-white/10"
                     >
-                        <span className="text-[9px] md:text-xs font-black tracking-[0.4em] uppercase">Trusted Water Infrastructure</span>
+                        <span className="text-[clamp(0.5625rem,1.5vh,0.75rem)] font-black tracking-[0.4em] uppercase">Trusted Water Infrastructure</span>
                     </motion.div>
 
                     {/* メインキャッチコピー（バランスと改行の最適化） */}
-                    <div className="mb-6 md:mb-12 w-full flex flex-col items-center">
+                    <div className="mb-[clamp(1.5rem,4vh,3rem)] w-full flex flex-col items-center">
                         <motion.h1
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                            className="text-[clamp(2.2rem,8vw,5.5rem)] font-black leading-[1.15] tracking-tight w-full"
+                            className="text-[clamp(1.8rem,min(8vw,8vh),5.5rem)] font-black leading-[1.15] tracking-tight w-full"
                         >
                             <span className="hidden md:inline-block text-white">
                                 いつでも安心、<br />
@@ -101,11 +101,11 @@ export const Hero = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1 }}
-                        className="mb-10 md:mb-16"
+                        className="mb-[clamp(1.5rem,4vh,4rem)]"
                     >
-                        <p className="text-sm md:text-xl text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)]">
-                            大井上水道企業団は、24時間365日休むことなく、<br className="hidden md:block" />
-                            生命の源である「水」の安全を守り、<br className="block md:hidden" />
+                        <p className="text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
+                            大井上水道企業団は、24時間365日休むことなく、<br className="hidden sm:block" />
+                            生命の源である「水」の安全を守り、<br className="block sm:hidden" />
                             皆様の暮らしを揺るぎない品質で支え続けます。
                         </p>
                     </motion.div>
@@ -115,7 +115,7 @@ export const Hero = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 1.2 }}
-                        className="relative w-full max-w-2xl grid grid-cols-3 gap-2 md:gap-8 p-6 md:p-12 rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden"
+                        className="relative w-full max-w-2xl grid grid-cols-3 gap-2 md:gap-8 p-[clamp(1.25rem,3vh,3rem)] rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden"
                     >
                         {/* 内部の光のゆらめき */}
                         <div className="absolute -top-1/2 -right-10 w-64 h-64 bg-secondary-vibrant/10 rounded-full blur-[100px] pointer-events-none" />
@@ -127,10 +127,10 @@ export const Hero = () => {
                             { value: '3', label: '自治体' },
                         ].map((stat, i) => (
                             <div key={i} className="relative z-10 flex flex-col items-center">
-                                <p className="text-3xl md:text-6xl font-black text-white leading-none tracking-tighter mb-2 md:mb-4">
+                                <p className="text-[clamp(1.75rem,5vh,3.75rem)] font-black text-white leading-none tracking-tighter mb-[clamp(0.25rem,1vh,1rem)]">
                                     {stat.value}
                                 </p>
-                                <p className="text-[8px] md:text-xs text-white/40 font-black uppercase tracking-[0.3em]">
+                                <p className="text-[clamp(0.5rem,1.2vh,0.75rem)] text-white/40 font-black uppercase tracking-[0.3em]">
                                     {stat.label}
                                 </p>
                             </div>
