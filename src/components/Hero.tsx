@@ -115,7 +115,7 @@ export const Hero = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1, delay: 1.2 }}
-                        className="relative w-full max-w-2xl grid grid-cols-3 gap-2 md:gap-8 p-[clamp(1.25rem,3vh,3rem)] rounded-[2.5rem] bg-white/5 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden"
+                        className="relative w-full max-w-lg grid grid-cols-3 gap-2 md:gap-4 p-[clamp(1rem,2.5vh,2.5rem)] rounded-[2rem] bg-white/5 backdrop-blur-md border border-white/5 shadow-2xl overflow-hidden"
                     >
                         {/* 内部の光のゆらめき */}
                         <div className="absolute -top-1/2 -right-10 w-64 h-64 bg-secondary-vibrant/10 rounded-full blur-[100px] pointer-events-none" />
@@ -127,10 +127,10 @@ export const Hero = () => {
                             { value: '3', label: '自治体' },
                         ].map((stat, i) => (
                             <div key={i} className="relative z-10 flex flex-col items-center">
-                                <p className="text-[clamp(1.75rem,5vh,3.75rem)] font-black text-white leading-none tracking-tighter mb-[clamp(0.25rem,1vh,1rem)]">
+                                <p className="text-[clamp(1.5rem,4vh,3rem)] font-black text-white leading-none tracking-tighter mb-[clamp(0.2rem,0.8vh,0.75rem)]">
                                     {stat.value}
                                 </p>
-                                <p className="text-[clamp(0.5rem,1.2vh,0.75rem)] text-white/40 font-black uppercase tracking-[0.3em]">
+                                <p className="text-[clamp(0.45rem,1vh,0.65rem)] text-white/40 font-black uppercase tracking-[0.2em]">
                                     {stat.label}
                                 </p>
                             </div>
