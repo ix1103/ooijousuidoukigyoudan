@@ -11,8 +11,8 @@ const documents = [
         items: [
             {
                 label: '上下水道耐震化計画',
-                href: null, // 旧サイトに掲載、URLが不明確のためnull
-                note: '令和7年3月28日掲載',
+                href: 'http://www.ooijousuidoukigyoudan.or.jp/R7taishinkakeikaku.pdf',
+                note: '令和7年1月策定',
             },
         ],
     },
