@@ -40,36 +40,56 @@ export const Footer = () => {
                             <nav className="flex flex-col space-y-2.5">
                                 <Link href="/resident/price" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    手続き・料金
+                                    水道料金・手続き
                                 </Link>
-                                <Link href="/resident/meter" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                <Link href="/resident/billing-update" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    メーター・検針
+                                    水道料金改定のお知らせ
                                 </Link>
-                                <Link href="/resident/quality" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                <Link href="/resident/water-outage" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    水質情報
+                                    断水情報
                                 </Link>
                                 <Link href="/resident/trouble" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     水道トラブル
                                 </Link>
+                                <Link href="/resident/repair-shops" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    宅内漏水修理当番店
+                                </Link>
                                 <Link href="/resident/faq" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     よくある質問
+                                </Link>
+                                <Link href="/resident/downloads" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    各種申請書ダウンロード
                                 </Link>
                             </nav>
                         </div>
                         <div>
                             <h3 className="text-sm font-black text-white/80 border-b border-white/10 pb-2 mb-4">事業者の皆様へ</h3>
                             <nav className="flex flex-col space-y-2.5">
-                                <Link href="/business/bidding" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
-                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    入札・契約情報
-                                </Link>
                                 <Link href="/business/contractor" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    指定工事店向け情報
+                                    水道工事等業者向け
+                                </Link>
+                                <Link href="/business/bidding" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    入札参加資格申請書
+                                </Link>
+                                <Link href="/business/bidding/results" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    入札等結果
+                                </Link>
+                                <Link href="/business/designated-shops" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    指定工事店一覧
+                                </Link>
+                                <Link href="/business/invoice" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    インボイス制度
                                 </Link>
                             </nav>
                         </div>
@@ -84,18 +104,30 @@ export const Footer = () => {
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     組織概要・アクセス
                                 </Link>
-                                <Link href="/about/finance" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                <Link href="/about/water-quality" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    財政状況・公表資料
+                                    水質情報
+                                </Link>
+                                <Link href="/about/disclosure" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    公表資料
+                                </Link>
+                                <Link href="/about/council" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    水道料金等審議会
+                                </Link>
+                                <Link href="/recruit" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                    <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
+                                    職員採用
                                 </Link>
                                 <Link href="/about/assembly" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
                                     企業団議会
                                 </Link>
-                                <a href="http://www.ooijousuidoukigyoudan.or.jp/2025brochure.pdf" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
+                                <Link href="/about/brochure" className="text-white/50 hover:text-white text-xs md:text-sm flex items-center group transition-colors">
                                     <ChevronRight size={12} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-colors" />
-                                    企業団パンフレット
-                                </a>
+                                    パンフレット・広報資料
+                                </Link>
                             </nav>
                         </div>
                         <div>

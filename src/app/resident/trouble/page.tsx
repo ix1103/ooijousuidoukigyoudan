@@ -89,6 +89,19 @@ export default function TroublePage() {
             ],
             action: 'contractor',
         },
+        {
+            id: 'cross-connection',
+            icon: <ShieldAlert className="w-7 h-7 md:w-8 md:h-8 text-red-500" />,
+            title: 'クロスコネクション（二重配管）の禁止',
+            color: 'from-red-50 to-orange-50',
+            border: 'border-red-200/40',
+            steps: [
+                '水道管と井戸水・工業用水・受水槽などの配管が直接つながっている状態を「クロスコネクション」といいます。',
+                'これは水道法第16条で禁止されている違法行為であり、深刻な健康被害にも及ぶ危険があります。',
+                'バルブ等による一時的な切替接続も禁止です。発見した場合は直ちに配管の切り離し（解消工事）が必要です。',
+            ],
+            action: null,
+        },
     ];
 
     return (
@@ -155,7 +168,7 @@ export default function TroublePage() {
                                     {trouble.action === 'contractor' && (
                                         <div className="flex flex-col sm:flex-row gap-3 mt-5 md:mt-6">
                                             <Link
-                                                href="/guide#contractors"
+                                                href="/business/designated-shops"
                                                 className="inline-flex items-center gap-2 bg-primary-deep text-white px-5 py-2.5 rounded-xl font-black text-sm md:text-base hover:bg-primary-main transition-colors shadow-premium active:scale-95"
                                             >
                                                 指定工事業者を探す

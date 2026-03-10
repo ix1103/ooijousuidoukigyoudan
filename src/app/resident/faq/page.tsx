@@ -16,6 +16,69 @@ type GroupedFaq = {
     items: FaqItem[];
 };
 
+// MicroCMSにデータがない場合のフォールバック静的QA
+const FALLBACK_FAQ: GroupedFaq[] = [
+    {
+        category: '水道料金について',
+        items: [
+            {
+                q: '水道料金はどうやって確認できますか？',
+                a: '水道料金は2ヶ月ごとにお届けする「納入通知書」に記載されています。また、口座振替をご利用の場合はご指定の金融機関の通帳でご確認ください。',
+            },
+            {
+                q: '水道料金の支払い方法を教えてください。',
+                a: '金融機関の窓口・口座振替・スマートフォン決済アプリ（PayPay・LINE Pay・au PAY・d払い・FamiPay等）がご利用いただけます。口座振替は自動で引き落とされるため便利です。',
+            },
+            {
+                q: '水道料金の引き落とし日はいつですか？',
+                a: '口座振替の場合、原則として検針の翌月の末日に引き落とされます。詳しくは納入通知書または企業団窓口にてご確認ください。',
+            },
+            {
+                q: '引っ越しで水道の使用を開始・中止したいのですが？',
+                a: 'ご入居・退去の前日までにお電話（0547-46-4130）または窓口にてお申し込みください。土日・祝日の開閉栓作業は行えませんのでご注意ください。',
+            },
+            {
+                q: '水道メーターの交換時期が来たようですが、費用はかかりますか？',
+                a: '計量法により定められた有効期限（8年）に基づく定期交換ですので、<strong>交換費用はお客様にはかかりません（無料）</strong>。企業団の委託業者が順次訪問して交換作業を行いますので、メーター周辺に物を置かないようご協力をお願いいたします。',
+            },
+        ],
+    },
+    {
+        category: '水質・水道水について',
+        items: [
+            {
+                q: '水道水は安全ですか？',
+                a: 'はい。当企業団では水道法に基づく定期的な水質検査を実施しており、国が定める51項目の水質基準を全てクリアしています。より詳しい検査結果は<a href="/about/water-quality" style="color:#00B4D8;text-decoration:underline">水質情報ページ</a>をご覧ください。',
+            },
+            {
+                q: '水道水が濁っている・臭いがするのですが？',
+                a: '工事後や断水後に一時的に赤水（さび・濁り）が出ることがあります。しばらく流してもご改善いただけない場合は企業団（0547-46-4130）へご連絡ください。',
+            },
+        ],
+    },
+    {
+        category: '水道トラブルについて',
+        items: [
+            {
+                q: '突然水が出なくなりました。',
+                a: '①止水栓（元栓）が閉まっていないか、②近隣でも同様か（計画断水・突発断水の可能性）、③料金未納による停止の可能性をご確認ください。いずれでもない場合は企業団（0547-46-4130）へご連絡ください。',
+            },
+            {
+                q: '宅地内で水が漏れているのですが誰に連絡すれば？',
+                a: '宅地内（お客様の敷地内）の配管はお客様の管理となります。まず元栓を閉めてから、当番店一覧または指定給水装置工事事業者へご依頼ください。<a href="/resident/repair-shops" style="color:#00B4D8;text-decoration:underline">当番店一覧はこちら</a>',
+            },
+            {
+                q: '水道管が凍結しました。どうすればいいですか？',
+                a: '蛇口にタオルを被せ、ぬるま湯（約40℃）をゆっくりかけてください。熱湯は管が破裂するおそれがあるため絶対に使わないでください。管が破裂した場合はすぐに元栓を閉め、企業団または指定工事店へご連絡ください。',
+            },
+            {
+                q: '水道局を名乗る人が訪問してきましたが大丈夫ですか？',
+                a: '当企業団では、事前連絡なしに訪問して水道設備の点検・工事を行うことは一切ありません。不審な場合は契約せず、すぐに企業団または警察にご連絡ください。',
+            },
+        ],
+    },
+];
+
 const FaqItemComponent: React.FC<{ item: FaqItem; index: number }> = ({ item, index }) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
@@ -95,7 +158,7 @@ export default function FaqPage() {
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="よくある質問"
-                subtitle="水道料金・水質に関するよくあるご質問をまとめました。"
+                subtitle="水道料金・お手続き・水質・トラブルに関するよくあるご質問をまとめました。"
                 enTitle="FAQ"
             />
 
@@ -119,10 +182,20 @@ export default function FaqPage() {
                                 </div>
                             ))
                         ) : (
-                            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
-                                <p className="text-slate-400 font-bold">現在、掲載されている質問はありません。</p>
-                                <p className="text-slate-300 text-xs mt-2">MicroCMSから新しい質問を追加するとここに表示されます。</p>
-                            </div>
+                            // MicroCMSにデータがない場合はフォールバック静的FAQを表示
+                            FALLBACK_FAQ.map((section) => (
+                                <div key={section.category}>
+                                    <div className="flex items-center space-x-3 mb-6 md:mb-8">
+                                        <div className="w-8 md:w-12 h-1.5 bg-gradient-to-r from-primary-main to-secondary-vibrant rounded-full" />
+                                        <h2 className="text-xl md:text-3xl font-black text-primary-deep">{section.category}</h2>
+                                    </div>
+                                    <div className="space-y-3 md:space-y-4">
+                                        {section.items.map((item, i) => (
+                                            <FaqItemComponent key={i} item={item} index={i} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))
                         )}
 
                         {/* 解決しない場合バナー */}

@@ -43,27 +43,35 @@ export const Header = () => {
         {
             name: '住民の皆様へ',
             items: [
-                { name: '手続き・料金', href: '/resident/price', desc: 'お支払い・各種申請' },
-                { name: '引っ越し・各種手続き', href: '/resident/procedure', desc: '開栓・閉栓・名義変更' },
-                { name: 'メーター・検針', href: '/resident/meter', desc: 'メーターの見方・漏水' },
-                { name: '水質情報', href: '/resident/quality', desc: '水質基準・検査結果' },
+                { name: '水道料金・手続き', href: '/resident/price', desc: 'お支払い・各種申請' },
+                { name: '水道料金改定のお知らせ', href: '/resident/billing-update', desc: '令和7年度の料金改定について' },
+                { name: '断水情報', href: '/resident/water-outage', desc: '突発・計画断水のお知らせ' },
                 { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
+                { name: '宅内漏水修理当番店', href: '/resident/repair-shops', desc: '修理当番店一覧（年度別PDF）' },
                 { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
+                { name: '各種申請書ダウンロード', href: '/resident/downloads', desc: '誓約書・給水装置申込書等' },
             ]
         },
         {
             name: '事業者の皆様へ',
             items: [
-                { name: '入札・契約情報', href: '/business/bidding', desc: '電子入札・登録等' },
-                { name: '指定工事店向け', href: '/business/contractor', desc: '給水装置工事・様式' },
+                { name: '水道工事等業者向け', href: '/business/contractor', desc: '給水装置工事・様式' },
+                { name: '入札参加資格申請書', href: '/business/bidding', desc: '入札参加登録・資格書類' },
+                { name: '入札等結果', href: '/business/bidding/results', desc: '落札結果・見積合わせ結果' },
+                { name: '指定工事店一覧', href: '/business/designated-shops', desc: '指定給水装置工事事業者一覧' },
+                { name: 'インボイス制度', href: '/business/invoice', desc: '適格請求書等保存方式について' },
             ]
         },
         {
             name: '企業団について',
             items: [
                 { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内' },
-                { name: '財政状況・公表資料', href: '/about/finance', desc: '予算決算・適格請求書' },
+                { name: '水質情報', href: '/about/water-quality', desc: '水質検査計画・検査結果' },
+                { name: '公表資料', href: '/about/disclosure', desc: '耐震化計画・各種公表書類' },
+                { name: '水道料金等審議会', href: '/about/council', desc: '料金審議機関の活動' },
+                { name: '職員採用', href: '/recruit', desc: '採用試験・募集情報' },
                 { name: '企業団議会', href: '/about/assembly', desc: '議会の組織と活動' },
+                { name: 'パンフレット・広報資料', href: '/about/brochure', desc: '企業団パンフレットPDF' },
             ]
         },
         { name: 'お知らせ', href: '/news', items: [] },
