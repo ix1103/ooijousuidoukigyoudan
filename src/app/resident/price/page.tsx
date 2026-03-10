@@ -23,7 +23,7 @@ const guides = [
             {
                 name: '口座振替の申し込み（推奨）',
                 desc: '自動引き落としで手間いらず',
-                href: '/resident/downloads',
+                href: '#bank-transfer',
             },
             {
                 name: '金融機関・コンビニでの支払い',
@@ -286,7 +286,7 @@ export default function PricePage() {
 
                         <div className="space-y-6 md:space-y-8">
                             {/* 口座振替（推奨） */}
-                            <div className="flex flex-col md:flex-row gap-4 p-5 md:p-6 rounded-2xl border border-emerald-100 bg-emerald-50/30">
+                            <div id="bank-transfer" className="flex flex-col md:flex-row gap-4 p-5 md:p-6 rounded-2xl border border-emerald-100 bg-emerald-50/30 scroll-mt-24">
                                 <div className="bg-white p-3 rounded-xl shadow-sm shrink-0 h-fit flex items-center justify-center">
                                     <CreditCard className="w-6 h-6 text-emerald-500" />
                                 </div>
