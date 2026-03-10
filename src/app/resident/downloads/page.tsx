@@ -10,7 +10,7 @@ import { PageHeader } from '@/components/PageHeader';
 const downloadItems = [
     {
         category: '住民の皆様向け（お手続き）',
-        desc: '引っ越し・名義変更・口座振替など各種お手続き書類です。',
+        desc: '受水槽の設置に関する誓約書です。',
         items: [
             {
                 label: '受水槽を設置しないことに関する誓約書',
@@ -46,12 +46,6 @@ const downloadItems = [
                 label: '給水装置工事申込書（PDF版）',
                 href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_mousikomi3.pdf',
                 note: 'PDF形式',
-                updated: '最新版',
-            },
-            {
-                label: '給水装置工事申込書（エクセル版）',
-                href: 'http://www.ooijousuidoukigyoudan.or.jp/kyuusui_syorui_ooi3.xls',
-                note: 'Excel形式',
                 updated: '最新版',
             },
             {
