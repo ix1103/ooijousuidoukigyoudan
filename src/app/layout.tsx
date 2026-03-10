@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`${inter.variable} ${notoJp.variable} antialiased min-h-screen flex flex-col`}>
-        <div className="sticky top-0 z-50 w-full flex flex-col">
+        <div className="fixed top-0 z-50 w-full flex flex-col">
           <EmergencyAlert />
           <Header />
         </div>

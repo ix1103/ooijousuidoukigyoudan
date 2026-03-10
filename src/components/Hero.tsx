@@ -60,7 +60,7 @@ export const Hero = () => {
             </div>
 
             {/* === メインコンテンツ（奥行きのあるレイアウト） === */}
-            <div className="w-full px-5 sm:px-8 relative z-10 flex flex-col items-center text-center mt-2 md:mt-0">
+            <div className="w-full px-5 sm:px-8 relative z-10 flex flex-col items-center text-center mt-12 md:mt-20">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
