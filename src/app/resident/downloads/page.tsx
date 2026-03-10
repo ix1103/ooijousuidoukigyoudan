@@ -118,12 +118,34 @@ export default function DownloadsPage() {
                                                 <Download size={18} className="text-primary-main" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-primary-deep text-sm md:text-base">{item.label}</p>
+                                                <a
+                                                    href={item.href}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-sm md:text-base font-bold text-primary-deep hover:text-primary-main transition-colors flex items-center gap-2"
+                                                >
+                                                    {item.label}
+                                                    <ArrowUpRight size={14} className="opacity-40" />
+                                                </a>
                                                 <p className="text-xs text-slate-400 mt-0.5">{item.note}　更新：{item.updated}</p>
                                             </div>
                                         </div>
-                                        <ChevronRight size={18} className="text-primary-main/40 group-hover:text-primary-main group-hover:translate-x-1 transition-all shrink-0" />
-                                    </a>
+                                        <div className="flex items-center space-x-4">
+                                            <span className="text-[10px] md:text-xs text-text-sub bg-slate-100 px-2 py-1 rounded">
+                                                {item.note}
+                                            </span>
+                                            <a
+                                                href={item.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                download
+                                                className="text-primary-main hover:text-primary-dark transition-colors"
+                                                title="ダウンロード"
+                                            >
+                                                <Download size={20} />
+                                            </a>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                             {/* 事業者向けカテゴリに詳細ページへの誘導 */}

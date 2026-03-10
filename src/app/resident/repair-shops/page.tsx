@@ -9,15 +9,17 @@ import { PageHeader } from '@/components/PageHeader';
 export default function RepairShopsPage() {
     const pdfLinks = [
         {
-            label: '宅内漏水修理当番店一覧（令和7年度）',
+            year: '令和7年度',
             href: 'http://www.ooijousuidoukigyoudan.or.jp/FYR7_suidoutouban.pdf',
-            note: 'PDF / R07年度版',
+            icon: <Calendar size={24} />,
+            color: 'bg-primary-main'
         },
         {
-            label: '宅内漏水修理当番店一覧（令和8年度）',
+            year: '令和8年度',
             href: 'http://www.ooijousuidoukigyoudan.or.jp/FYR8toubanten.pdf',
-            note: 'PDF / R08年度版',
-        },
+            icon: <Calendar size={24} />,
+            color: 'bg-secondary-vibrant'
+        }
     ];
 
     return (
@@ -104,24 +106,22 @@ export default function RepairShopsPage() {
                             <h2 className="text-xl md:text-2xl font-black text-primary-deep">当番店一覧（PDF）</h2>
                         </div>
                         <div className="space-y-3">
-                            {pdfLinks.map((pdf, i) => (
+                            {pdfLinks.map((shop, i) => (
                                 <a
                                     key={i}
-                                    href={pdf.href}
+                                    href={shop.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-between p-4 md:p-5 bg-slate-50 hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl transition-all group"
+                                    className={`flex items-center justify-center space-x-3 p-6 rounded-2xl border-2 transition-all group ${shop.color.replace('bg-', 'border-').replace('text-', 'hover:bg-').replace('hover:bg-', 'hover:border-')} bg-white shadow-sm hover:shadow-premium`}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-primary-main/10 p-2 rounded-xl">
-                                            <FileText size={18} className="text-primary-main" />
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-primary-deep text-sm md:text-base">{pdf.label}</p>
-                                            <p className="text-xs text-slate-400 mt-0.5">{pdf.note}</p>
-                                        </div>
+                                    <div className={`${shop.color} text-white p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
+                                        {shop.icon}
                                     </div>
-                                    <ChevronRight size={18} className="text-primary-main/40 group-hover:text-primary-main group-hover:translate-x-1 transition-all" />
+                                    <div className="text-left">
+                                        <p className="text-text-sub text-xs font-bold leading-none mb-1">{shop.year} 当番店</p>
+                                        <p className="text-primary-deep font-black text-lg">一覧を表示 (PDF)</p>
+                                    </div>
+                                    <ArrowUpRight size={20} className="text-slate-300 group-hover:text-primary-main transition-colors ml-auto" />
                                 </a>
                             ))}
                         </div>

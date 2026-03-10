@@ -36,6 +36,8 @@ function DownloadButton({ href, label, color }: { href: string; label: string; c
     return (
         <a
             href={href}
+            target="_blank"
+            rel="noopener noreferrer"
             download
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-black text-[10px] md:text-xs transition-all hover:shadow-sm active:scale-95 ${color}`}
         >
@@ -100,36 +102,50 @@ export default function ContractorPage() {
 
                     {/* 手数料・分担金 */}
                     <div className="mt-8 md:mt-12 bg-slate-50 border border-slate-100 rounded-2xl md:rounded-3xl p-6 md:p-10">
-                        <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6">申請手数料・分担金</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <h3 className="text-lg md:text-xl font-black text-primary-deep mb-6">申請手数料・分担金（令和元年10月1日改定）</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                             <div>
-                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-3">指定申請手数料</h4>
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                        <span className="text-sm font-bold text-text-sub">新規指定手数料</span>
-                                        <span className="text-primary-deep font-black">8,000円</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                        <span className="text-sm font-bold text-text-sub">指定更新手数料（5年ごと）</span>
-                                        <span className="text-primary-deep font-black">8,000円</span>
-                                    </div>
+                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-4">指定申請・届出手数料</h4>
+                                <div className="space-y-1">
+                                    {[
+                                        { label: '新規指定手数料', price: '10,000円' },
+                                        { label: '指定更新手数料（5年ごと）', price: '10,000円' },
+                                        { label: '指定証再交付手数料', price: '2,000円' },
+                                        { label: '分担金納入に対する審査手数料', price: '1,000円', note: '※別途消費税' },
+                                        { label: '開栓・閉栓・名義変更等手数料', price: '1,000円', note: '※別途消費税' },
+                                    ].map((row, i) => (
+                                        <div key={i} className="flex justify-between items-center py-2.5 border-b border-slate-200 last:border-0">
+                                            <div>
+                                                <span className="text-sm font-bold text-text-sub">{row.label}</span>
+                                                {row.note && <p className="text-[10px] text-text-sub/60 -mt-0.5">{row.note}</p>}
+                                            </div>
+                                            <span className="text-primary-deep font-black">{row.price}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div>
-                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-3">加入分担金（税込）</h4>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                        <span className="font-bold text-text-sub">口径 13mm</span>
-                                        <span className="text-primary-deep font-black">44,000円</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                        <span className="font-bold text-text-sub">口径 20mm</span>
-                                        <span className="text-primary-deep font-black">132,000円</span>
-                                    </div>
-                                    <p className="text-[10px] text-text-sub/60 mt-2 italic leading-relaxed">
-                                        ※口径25mm以上の分担金については別途お問い合わせください。
-                                    </p>
+                                <h4 className="text-xs font-black text-secondary-vibrant uppercase tracking-widest mb-4">加入分担金（口径別・税込）</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
+                                    {[
+                                        { label: '口径 13mm', price: '66,000円' },
+                                        { label: '口径 20mm', price: '132,000円' },
+                                        { label: '口径 25mm', price: '264,000円' },
+                                        { label: '口径 30mm', price: '440,000円' },
+                                        { label: '口径 40mm', price: '880,000円' },
+                                        { label: '口径 50mm', price: '1,540,000円' },
+                                        { label: '口径 75mm', price: '3,520,000円' },
+                                        { label: '口径 100mm', price: '6,490,000円' },
+                                    ].map((row, i) => (
+                                        <div key={i} className="flex justify-between items-center py-2 border-b border-slate-200">
+                                            <span className="text-sm font-bold text-text-sub">{row.label}</span>
+                                            <span className="text-primary-deep font-black text-sm">{row.price}</span>
+                                        </div>
+                                    ))}
                                 </div>
+                                <p className="text-[10px] text-text-sub/60 mt-4 italic leading-relaxed">
+                                    ※125mm以上の分担金については別途お問い合わせください。
+                                </p>
                             </div>
                         </div>
                     </div>
