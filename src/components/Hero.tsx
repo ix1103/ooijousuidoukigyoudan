@@ -103,9 +103,9 @@ export const Hero = () => {
                         transition={{ delay: 1 }}
                         className="mb-[clamp(1.5rem,4vh,4rem)]"
                     >
-                        <p className="font-serif text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
-                            大井上水道企業団は、24時間365日休むことなく、<br className="hidden sm:block" />
-                            生命の源である「水」の安全を守り、<br className="block sm:hidden" />
+                        <p className="text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
+                            大井上水道企業団は、24時間365日休むことなく、<br />
+                            生命の源である「水」の安全を守り、<br />
                             皆様の暮らしを揺るぎない品質で支え続けます。
                         </p>
                     </motion.div>
