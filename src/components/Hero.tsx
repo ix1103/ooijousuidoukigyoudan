@@ -83,7 +83,7 @@ export const Hero = () => {
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                            className="text-[clamp(1.8rem,min(8vw,8vh),5.5rem)] font-black leading-[1.15] tracking-tight w-full"
+                            className="font-serif text-[clamp(1.8rem,min(8vw,8vh),5.5rem)] font-black leading-[1.15] tracking-tight w-full"
                         >
                             <span className="hidden md:inline-block text-white">
                                 いつでも安心、<br />
@@ -103,7 +103,7 @@ export const Hero = () => {
                         transition={{ delay: 1 }}
                         className="mb-[clamp(1.5rem,4vh,4rem)]"
                     >
-                        <p className="text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
+                        <p className="font-serif text-[clamp(0.875rem,2vh,1.25rem)] text-white/90 font-medium leading-relaxed md:leading-loose max-w-3xl text-center tracking-wider [text-shadow:0_2px_20px_rgba(0,0,0,0.3)] px-4">
                             大井上水道企業団は、24時間365日休むことなく、<br className="hidden sm:block" />
                             生命の源である「水」の安全を守り、<br className="block sm:hidden" />
                             皆様の暮らしを揺るぎない品質で支え続けます。
