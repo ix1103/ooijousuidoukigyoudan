@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { FileText, Phone, ChevronRight, Wrench, AlertTriangle } from 'lucide-react';
+import { FileText, Phone, ChevronRight, Wrench, AlertTriangle, Calendar, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';

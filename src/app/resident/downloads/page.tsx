@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { FileText, ChevronRight, Download, ExternalLink } from 'lucide-react';
+import { FileText, ChevronRight, Download, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
@@ -106,11 +106,8 @@ export default function DownloadsPage() {
                             </div>
                             <div className="space-y-3">
                                 {section.items.map((item, i) => (
-                                    <a
+                                    <div
                                         key={i}
-                                        href={item.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
                                         className="flex items-center justify-between p-4 md:p-5 bg-white hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl shadow-sm transition-all group"
                                     >
                                         <div className="flex items-center gap-3">
