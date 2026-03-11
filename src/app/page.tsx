@@ -173,19 +173,19 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-5 relative aspect-square md:aspect-[4/5] rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-glow-lg"
+              className="lg:col-span-5 relative aspect-square md:aspect-[4/5] min-h-[400px] md:min-h-0 rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-glow-lg"
             >
               {/* メッシュ背景 */}
               <div className="absolute inset-0 animate-mesh-bg bg-gradient-to-br from-primary-deep via-primary-main to-primary-light" />
               {/* 波紋装飾 */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-white/5 rounded-full animate-ripple" />
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-10 md:p-16 text-center text-white">
-                <div className="bg-white/5 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] border border-white/10 shadow-2xl relative z-10">
-                  <WaterLogoIcon className="w-16 h-16 md:w-24 md:h-24 text-secondary-vibrant mx-auto mb-8 md:mb-12 drop-shadow-glow" />
-                  <p className="text-5xl md:text-7xl font-black mb-4 md:mb-6 tracking-tighter">100%</p>
-                  <p className="text-xs md:text-sm font-black tracking-[0.3em] md:tracking-[0.4em] uppercase opacity-50 mb-8 md:mb-12">Pure Water Supply</p>
-                  <p className="text-accent-soft/80 leading-relaxed text-sm md:text-base font-medium">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-16 text-center text-white">
+                <div className="bg-white/5 backdrop-blur-3xl p-8 md:p-14 rounded-[2.5rem] md:rounded-[3rem] border border-white/10 shadow-2xl relative z-10 w-full max-w-[calc(100%-2rem)]">
+                  <WaterLogoIcon className="w-12 h-12 md:w-24 md:h-24 text-secondary-vibrant mx-auto mb-6 md:mb-12 drop-shadow-glow" />
+                  <p className="text-4xl md:text-7xl font-black mb-3 md:mb-6 tracking-tighter leading-none">100%</p>
+                  <p className="text-[10px] md:text-sm font-black tracking-[0.2em] md:tracking-[0.4em] uppercase opacity-50 mb-6 md:mb-12">Pure Water Supply</p>
+                  <p className="text-accent-soft/80 leading-relaxed text-xs md:text-base font-medium">
                     私たちは自治体を超えた協力体制で、<br />最適な水道事業を運営しています。
                   </p>
                 </div>
