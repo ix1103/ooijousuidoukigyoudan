@@ -161,7 +161,7 @@ export default function InvoicePage() {
                                 href="tel:0547-46-4130"
                                 className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-base md:text-lg shadow-glow hover:shadow-glow-lg transition-all active:scale-95"
                             >
-                                <Phone size={18} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
+                                <Phone size={18} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                             <p className="mt-4 text-white/40 text-xs">平日 8:30〜17:15（土日祝・年末年始を除く）</p>
                         </div>
                     </motion.div>

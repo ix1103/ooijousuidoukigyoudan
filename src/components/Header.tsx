@@ -282,7 +282,7 @@ export const Header = () => {
                                 <Phone size={22} fill="currentColor" />
                                 <span>24時間緊急受付</span>
                             </a>
-                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest"><span className="inline-flex items-center gap-1"><Phone size={14} />TEL: 0547-46-4130</span></p>
+                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest"><span className="inline-flex items-center gap-1"><Phone size={14} />0547-46-4130</span></p>
                         </motion.div>
                     </motion.div>
                 )}

@@ -108,7 +108,7 @@ export default function TroublePage() {
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="水道トラブル対処法"
-                subtitle={<>よくある水道のトラブルとその対処法をご案内します。<br />緊急の場合は <strong className="text-secondary-vibrant"><Phone size={20} className="inline-block mr-1 -mt-0.5" /><Phone size={16} className="inline-block mr-1 -mt-0.5"/>0547-46-4130</strong> へご連絡ください。</>}
+                subtitle={<>よくある水道のトラブルとその対処法をご案内します。<br />緊急の場合は <strong className="text-secondary-vibrant"><Phone size={18} className="inline-block mr-1 -mt-0.5" />0547-46-4130</strong> へご連絡ください。</>}
                 enTitle="Water Trouble"
             />
 
@@ -120,7 +120,7 @@ export default function TroublePage() {
                         <span>緊急の場合は今すぐ電話！</span>
                     </div>
                     <a href="tel:0547-46-4130" className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
-                        <Phone size={18} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
+                        <Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                     <span className="text-white/70 text-xs md:text-sm">（24時間対応）</span>
                 </div>
             </div>
@@ -209,7 +209,7 @@ export default function TroublePage() {
                     <h2 className="text-2xl md:text-4xl font-black mb-4">お困りの場合はいつでも</h2>
                     <p className="text-white/60 mb-8 text-sm md:text-base">解決しない場合や緊急の場合は、遠慮なく企業団にご連絡ください。</p>
                     <a href="tel:0547-46-4130" className="btn-shine inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl font-black text-lg md:text-xl shadow-glow hover:shadow-glow-lg transition-all active:scale-95">
-                        <Phone size={22} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
+                        <Phone size={22} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                 </div>
             </section>
         </div>

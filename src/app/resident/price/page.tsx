@@ -414,7 +414,7 @@ export default function PricePage() {
                         <a href="tel:0547-46-4130" className="btn-shine w-full sm:w-auto flex flex-col items-center gap-1 bg-secondary-vibrant text-primary-deep px-8 py-4 rounded-2xl shadow-glow hover:shadow-glow-lg transition-all active:scale-95 group">
                             <span className="text-xs font-bold opacity-80 mb-1">お電話でのご相談（平日 8:15〜17:00）</span>
                             <span className="font-black text-xl md:text-2xl flex items-center gap-2">
-                                <Phone size={20} className="group-hover:animate-pulse" /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</span>
+                                <Phone size={20} className="group-hover:animate-pulse" />0547-46-4130</span>
                         </a>
                     </div>
                     <p className="text-xs text-white/60 mt-6">

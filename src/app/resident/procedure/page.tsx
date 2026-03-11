@@ -166,7 +166,7 @@ export default function ProcedurePage() {
                         <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
                             <p className="text-white font-bold mb-4">大井上水道企業団 窓口・お客様センター</p>
                             <a href="tel:0547-46-4130" className="btn-shine mx-auto inline-flex items-center gap-3 bg-secondary-vibrant text-primary-deep font-black text-2xl md:text-3xl px-8 py-4 rounded-2xl hover:bg-white transition-all shadow-lg active:scale-95 group">
-                                <Phone size={28} className="group-hover:animate-pulse" /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
+                                <Phone size={24} className="group-hover:animate-pulse" />0547-46-4130</a>
                             <div className="flex items-center justify-center gap-2 mt-4 text-xs md:text-sm text-white/80">
                                 <Clock size={16} />
                                 <p>営業時間：平日 8:15〜17:00 （土日祝・年末年始休み）</p>

@@ -38,7 +38,7 @@ export default function RepairShopsPage() {
                         <span>水が止まらない・大量に漏れている場合は今すぐ電話！</span>
                     </div>
                     <a href="tel:0547-46-4130" className="bg-white text-red-600 font-black px-6 py-2 rounded-full text-base md:text-lg tracking-wide flex items-center gap-2 hover:bg-red-50 transition-colors active:scale-95">
-                        <Phone size={18} /><Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
+                        <Phone size={20} className="inline-block mr-1 -mt-0.5" />0547-46-4130</a>
                 </div>
             </div>
 
