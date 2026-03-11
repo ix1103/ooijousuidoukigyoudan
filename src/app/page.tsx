@@ -1,4 +1,5 @@
 "use client";
+// Force rebuild for Vercel deployment: 2026-03-11 17:16
 
 import { Hero } from "@/components/Hero";
 import { EmergencyContact } from "@/components/EmergencyContact";
