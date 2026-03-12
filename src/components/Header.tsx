@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Phone, ChevronRight, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, Mail, ChevronRight, ChevronDown } from 'lucide-react';
 import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -119,60 +119,107 @@ export const Header = () => {
 
                         {/* デスクトップナビ */}
                         <nav className="hidden xl:flex items-center space-x-1">
-                            {navCategories.map((category) => (
-                                <div key={category.name} className="relative group">
-                                    {category.items.length === 0 ? (
-                                        <Link
-                                            href={category.href!}
-                                            onClick={category.href === '/' ? handleHomeClick : undefined}
-                                            className={`px-4 py-2 text-[14px] font-black transition-all rounded-full relative block whitespace-nowrap ${scrolled
-                                                ? 'text-primary-deep/80 hover:text-primary-main hover:bg-primary-main/5'
-                                                : 'text-white/90 hover:text-white hover:bg-white/10'
-                                                }`}
-                                        >
-                                            {category.name}
-                                        </Link>
-                                    ) : (
-                                        <div className="relative">
-                                            <button
-                                                className={`flex items-center gap-1.5 px-4 py-2 text-[14px] font-black transition-all rounded-full whitespace-nowrap ${scrolled
-                                                    ? 'text-primary-deep/80 hover:text-primary-main hover:bg-primary-main/5'
-                                                    : 'text-white/90 hover:text-white hover:bg-white/10'
+                            {navCategories.map((category) => {
+                                const isActive = category.href === '/'
+                                    ? pathname === '/'
+                                    : (category.href && pathname.startsWith(category.href)) ||
+                                    (category.items.some(item => pathname === item.href));
+
+                                return (
+                                    <div key={category.name} className="relative group">
+                                        {category.items.length === 0 ? (
+                                            <Link
+                                                href={category.href!}
+                                                onClick={category.href === '/' ? handleHomeClick : undefined}
+                                                className={`px-4 py-2 text-[14px] font-black transition-all rounded-full relative block whitespace-nowrap ${isActive
+                                                    ? (scrolled ? 'text-primary-main' : 'text-white')
+                                                    : (scrolled ? 'text-primary-deep/60 hover:text-primary-main hover:bg-primary-main/5' : 'text-white/60 hover:text-white hover:bg-white/10')
                                                     }`}
                                             >
                                                 {category.name}
-                                                <ChevronDown size={14} className={`transition-transform duration-300 group-hover:rotate-180`} />
-                                            </button>
-
-                                            {/* ドロップダウンメニュー */}
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300">
-                                                <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-2 min-w-[240px] flex flex-col gap-1 relative before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-white">
-                                                    {category.items.map((subItem) => (
-                                                        <Link
-                                                            key={subItem.href}
-                                                            href={subItem.href}
-                                                            className="px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors group/item block"
+                                                {isActive && (
+                                                    <motion.div
+                                                        layoutId="nav-active"
+                                                        className={`absolute inset-0 rounded-full -z-10 ${scrolled ? 'bg-primary-main/5' : 'bg-white/10'}`}
+                                                    />
+                                                )}
+                                                {isActive && (
+                                                    <motion.div
+                                                        layoutId="nav-icon"
+                                                        className={`absolute -bottom-2 left-1/2 -translate-x-1/2 transition-colors ${scrolled ? 'text-primary-main' : 'text-white'}`}
+                                                    >
+                                                        <WaterLogoIcon className="w-2.5 h-2.5" />
+                                                    </motion.div>
+                                                )}
+                                            </Link>
+                                        ) : (
+                                            <div className="relative">
+                                                <button
+                                                    className={`flex items-center gap-1.5 px-4 py-2 text-[14px] font-black transition-all rounded-full whitespace-nowrap relative ${isActive
+                                                        ? (scrolled ? 'text-primary-main' : 'text-white')
+                                                        : (scrolled ? 'text-primary-deep/60 hover:text-primary-main hover:bg-primary-main/5' : 'text-white/60 hover:text-white hover:bg-white/10')
+                                                        }`}
+                                                >
+                                                    {category.name}
+                                                    <ChevronDown size={14} className={`transition-transform duration-300 group-hover:rotate-180`} />
+                                                    {isActive && (
+                                                        <motion.div
+                                                            layoutId="nav-active"
+                                                            className={`absolute inset-0 rounded-full -z-10 ${scrolled ? 'bg-primary-main/5' : 'bg-white/10'}`}
+                                                        />
+                                                    )}
+                                                    {isActive && (
+                                                        <motion.div
+                                                            layoutId="nav-icon"
+                                                            className={`absolute -bottom-2 left-1/2 -translate-x-1/2 transition-colors ${scrolled ? 'text-primary-main' : 'text-white'}`}
                                                         >
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-bold text-primary-deep group-hover/item:text-primary-main text-sm">{subItem.name}</span>
-                                                                <ChevronRight size={14} className="text-secondary-vibrant opacity-0 group-hover/item:translate-x-1 group-hover/item:opacity-100 transition-all ml-auto" />
-                                                            </div>
-                                                        </Link>
-                                                    ))}
+                                                            <WaterLogoIcon className="w-2.5 h-2.5" />
+                                                        </motion.div>
+                                                    )}
+                                                </button>
+
+                                                {/* ドロップダウンメニュー */}
+                                                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300">
+                                                    <div className="bg-white rounded-2xl shadow-premium border border-slate-100 p-2 min-w-[240px] flex flex-col gap-1 relative before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-white">
+                                                        {category.items.map((subItem) => {
+                                                            const isSubActive = pathname === subItem.href;
+                                                            return (
+                                                                <Link
+                                                                    key={subItem.href}
+                                                                    href={subItem.href}
+                                                                    className={`px-4 py-3 rounded-xl transition-colors group/item block ${isSubActive ? 'bg-primary-main/5' : 'hover:bg-slate-50'}`}
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className={`font-bold text-sm transition-colors ${isSubActive ? 'text-primary-main' : 'text-primary-deep group-hover/item:text-primary-main'}`}>{subItem.name}</span>
+                                                                        <ChevronRight size={14} className={`text-secondary-vibrant transition-all ml-auto ${isSubActive ? 'translate-x-0.5 opacity-100' : 'opacity-0 group-hover/item:translate-x-1 group-hover/item:opacity-100'}`} />
+                                                                    </div>
+                                                                </Link>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                        )}
+                                    </div>
+                                );
+                            })}
 
-                            <div className="ml-4 pl-4 border-l border-current/10 flex items-center">
+                            <div className="ml-4 pl-4 border-l border-current/10 flex items-center space-x-3">
                                 <a
                                     href="tel:0547-46-4130"
-                                    className="flex items-center space-x-2 bg-primary-main text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
+                                    className="flex items-center space-x-2 bg-primary-main text-white px-4 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
+                                    title="緊急連絡先"
                                 >
                                     <Phone size={14} fill="currentColor" />
-                                    <span>緊急連絡先</span>
+                                    <span>緊急連絡</span>
+                                </a>
+                                <a
+                                    href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
+                                    className="flex items-center space-x-2 bg-primary-main text-white px-4 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
+                                    title="メールでお問い合わせ"
+                                >
+                                    <Mail size={14} />
+                                    <span>メール連絡</span>
                                 </a>
                             </div>
                         </nav>
@@ -183,8 +230,17 @@ export const Header = () => {
                                 href="tel:0547-46-4130"
                                 className={`p-2.5 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
                                     }`}
+                                title="緊急連絡先"
                             >
                                 <Phone size={20} />
+                            </a>
+                            <a
+                                href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
+                                className={`p-2.5 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
+                                    }`}
+                                title="メールでお問い合わせ"
+                            >
+                                <Mail size={20} />
                             </a>
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
@@ -274,15 +330,27 @@ export const Header = () => {
                             transition={{ delay: 0.3 }}
                             className="mt-8 pt-8 border-t border-white/10"
                         >
-                            <a
-                                href="tel:0547-46-4130"
-                                className="flex items-center justify-center space-x-3 bg-gradient-to-r from-red-500 to-rose-600 text-white py-5 rounded-2xl font-black text-lg shadow-2xl active:scale-95 transition-transform"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Phone size={22} fill="currentColor" />
-                                <span>24時間緊急受付</span>
-                            </a>
-                            <p className="text-center text-white/40 text-xs mt-4 font-bold tracking-widest"><span className="inline-flex items-center gap-1"><Phone size={14} />0547-46-4130</span></p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <a
+                                    href="tel:0547-46-4130"
+                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <Phone size={18} fill="currentColor" />
+                                    <span>緊急電話</span>
+                                </a>
+                                <a
+                                    href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
+                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <Mail size={18} />
+                                    <span>メール</span>
+                                </a>
+                            </div>
+                            <p className="text-center text-white/40 text-[10px] mt-4 font-bold tracking-widest uppercase">
+                                <span className="inline-flex items-center gap-1.5"><Phone size={12} /> 0547-46-4130</span>
+                            </p>
                         </motion.div>
                     </motion.div>
                 )}

@@ -149,7 +149,7 @@ export const Footer = () => {
                                 </div>
                                 <a href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp" className="text-white/40 hover:text-white text-xs flex items-center group transition-colors pt-1">
                                     <Mail size={14} className="mr-2 text-white/20 group-hover:text-secondary-vibrant" />
-                                    メールでおお問い合わせ
+                                    メールでお問い合わせ
                                 </a>
                             </div>
                         </nav>

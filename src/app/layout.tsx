@@ -4,6 +4,8 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EmergencyAlert } from "@/components/EmergencyAlert";
+import { BackToTop } from "@/components/BackToTop";
+import { FloatingContact } from "@/components/FloatingContact";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoJp = Noto_Sans_JP({
@@ -18,7 +20,10 @@ const notoSerifJp = Noto_Serif_JP({
 });
 
 export const metadata: Metadata = {
-  title: "大井上水道企業団 | 安心・安全な水を未来へ",
+  title: {
+    default: "大井上水道企業団 | 安心・安全な水を未来へ",
+    template: "%s | 大井上水道企業団"
+  },
   description: "大井上水道企業団の公式ウェブサイトです。水道料金、各種手続き、緊急時の対応、水質情報などをお知らせします。",
   icons: {
     icon: '/favicon.svg',
@@ -40,6 +45,8 @@ export default function RootLayout({
         <main className="flex-grow">
           {children}
         </main>
+        <BackToTop />
+        <FloatingContact />
         <Footer />
       </body>
     </html>
