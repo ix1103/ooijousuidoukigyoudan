@@ -1,12 +1,22 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Radio, Phone, Clock, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
+import { getWaterOutageInfo, WaterOutage } from '@/lib/microcms';
 
 export default function WaterOutagePage() {
+    const [outageInfo, setOutageInfo] = useState<WaterOutage | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getWaterOutageInfo().then((data) => {
+            setOutageInfo(data);
+            setLoading(false);
+        });
+    }, []);
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
@@ -36,17 +46,36 @@ export default function WaterOutagePage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200/40 rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm"
+                        className={`border rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm transition-colors duration-500 ${
+                            outageInfo?.isOutage
+                                ? 'bg-gradient-to-br from-red-50 to-rose-50 border-red-200/40'
+                                : 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200/40'
+                        }`}
                     >
                         <div className="flex items-start gap-4 md:gap-6">
                             <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl shadow-sm shrink-0">
-                                <Radio className="w-7 h-7 md:w-8 md:h-8 text-green-500" />
+                                {outageInfo?.isOutage ? (
+                                    <AlertTriangle className="w-7 h-7 md:w-8 md:h-8 text-red-500" />
+                                ) : (
+                                    <Radio className="w-7 h-7 md:w-8 md:h-8 text-green-500" />
+                                )}
                             </div>
                             <div className="flex-1">
-                                <h2 className="text-lg md:text-2xl font-black text-primary-deep mb-2">現在の断水状況</h2>
-                                <p className="text-text-sub text-sm md:text-base mb-4">
-                                    現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。
-                                </p>
+                                <h2 className={`text-lg md:text-2xl font-black mb-2 ${outageInfo?.isOutage ? 'text-red-700' : 'text-primary-deep'}`}>
+                                    {outageInfo?.isOutage ? '断水が発生しています' : '現在の断水状況'}
+                                </h2>
+                                
+                                {loading ? (
+                                    <div className="animate-pulse space-y-3 mb-4">
+                                        <div className="h-4 bg-slate-200/60 rounded w-full"></div>
+                                        <div className="h-4 bg-slate-200/60 rounded w-2/3"></div>
+                                    </div>
+                                ) : (
+                                    <p className="text-text-sub text-sm md:text-base mb-4 whitespace-pre-wrap leading-relaxed">
+                                        {outageInfo?.situationInfo || '現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。'}
+                                    </p>
+                                )}
+                                
                                 <p className="text-xs text-slate-400 mb-4">
                                     ※ 少規模な断水（工事に伴う一時的な断水など）については、事前に対象の方へ個別にご連絡いたします。
                                 </p>
@@ -57,6 +86,7 @@ export default function WaterOutagePage() {
                             </div>
                         </div>
                     </motion.div>
+
 
                     {/* 断水情報の種類 */}
                     <motion.div

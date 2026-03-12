@@ -1,11 +1,22 @@
 "use client";
 
-import React from 'react';
-import { FileText, ChevronRight, Phone, Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { FileText, ChevronRight, Phone, Search, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/PageHeader';
+import { getPublicDocuments, PublicDocument } from '@/lib/microcms';
 
 export default function DesignatedShopsPage() {
+    const [documents, setDocuments] = useState<PublicDocument[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // '指定工事店' カテゴリのドキュメントを取得
+        getPublicDocuments('指定工事店').then((data) => {
+            setDocuments(data);
+            setLoading(false);
+        });
+    }, []);
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
@@ -61,41 +72,87 @@ export default function DesignatedShopsPage() {
                             <h2 className="text-xl md:text-2xl font-black text-primary-deep">指定工事店一覧（PDF）</h2>
                         </div>
                         <div className="space-y-3">
-                            <a
-                                href="http://www.ooijousuidoukigyoudan.or.jp/R08_Jan_siteikoujiten(2).pdf"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 md:p-5 bg-slate-50 hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl transition-all group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-primary-main/10 p-2 rounded-xl">
-                                        <FileText size={18} className="text-primary-main" />
-                                    </div>
-                                    <div>
-                                        <p className="font-black text-primary-deep text-sm md:text-base">指定工事店一覧（令和8年1月更新版）</p>
-                                        <p className="text-xs text-slate-400 mt-0.5">PDF　更新：R08.01.14</p>
-                                    </div>
+                            {loading ? (
+                                <div className="space-y-3">
+                                    <div className="h-24 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                    <div className="h-24 bg-slate-100/50 animate-pulse rounded-2xl"></div>
                                 </div>
-                                <ChevronRight size={18} className="text-primary-main/40 group-hover:text-primary-main group-hover:translate-x-1 transition-all" />
-                            </a>
-                            <a
-                                href="http://www.ooijousuidoukigyoudan.or.jp/R06_Oct_siteikoujiten.pdf"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 md:p-5 bg-slate-50 hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl transition-all group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-slate-200/60 p-2 rounded-xl">
-                                        <FileText size={18} className="text-slate-500" />
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-slate-500 text-sm md:text-base">指定工事店一覧（令和6年10月更新版）</p>
-                                        <p className="text-xs text-slate-400 mt-0.5">PDF　更新：R06.11.01　※最新版ではありません</p>
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-1 transition-all" />
-                            </a>
+                            ) : documents.length > 0 ? (
+                                documents.map((doc, idx) => {
+                                    const pdfUrl = doc.pdfFile?.url || doc.pdfUrl || '#';
+                                    const isLatest = doc.isLatest !== false && idx === 0;
+
+                                    return (
+                                        <a
+                                            key={doc.id || idx}
+                                            href={pdfUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex items-center justify-between p-4 md:p-5 rounded-2xl transition-all group border ${
+                                                isLatest 
+                                                    ? 'bg-slate-50 hover:bg-primary-main/5 border-slate-100 hover:border-primary-main/20' 
+                                                    : 'bg-slate-50 border-slate-100 opacity-80 hover:opacity-100'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-xl ${isLatest ? 'bg-primary-main/10' : 'bg-slate-200/60'}`}>
+                                                    <FileText size={18} className={isLatest ? 'text-primary-main' : 'text-slate-500'} />
+                                                </div>
+                                                <div>
+                                                    <p className={`font-black text-sm md:text-base ${isLatest ? 'text-primary-deep' : 'text-slate-500'}`}>
+                                                        {doc.title}
+                                                    </p>
+                                                    <p className="text-xs text-slate-400 mt-0.5">
+                                                        PDF　更新：{new Date(doc.publishedAt || doc.createdAt).toLocaleDateString('ja-JP')}
+                                                        {!isLatest && '　※最新版ではありません'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <ChevronRight size={18} className={`${isLatest ? 'text-primary-main/40 group-hover:text-primary-main' : 'text-slate-300 group-hover:text-slate-500'} group-hover:translate-x-1 transition-all`} />
+                                        </a>
+                                    );
+                                })
+                            ) : (
+                                // MicroCMSに一つも登録されていない場合のフォールバック
+                                <>
+                                    <a
+                                        href="http://www.ooijousuidoukigyoudan.or.jp/R08_Jan_siteikoujiten(2).pdf"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between p-4 md:p-5 bg-slate-50 hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-primary-main/10 p-2 rounded-xl">
+                                                <FileText size={18} className="text-primary-main" />
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-primary-deep text-sm md:text-base">指定工事店一覧（令和8年1月更新版）</p>
+                                                <p className="text-xs text-slate-400 mt-0.5">PDF　更新：R08.01.14</p>
+                                            </div>
+                                        </div>
+                                        <ChevronRight size={18} className="text-primary-main/40 group-hover:text-primary-main group-hover:translate-x-1 transition-all" />
+                                    </a>
+                                    <a
+                                        href="http://www.ooijousuidoukigyoudan.or.jp/R06_Oct_siteikoujiten.pdf"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between p-4 md:p-5 bg-slate-50 hover:bg-primary-main/5 border border-slate-100 hover:border-primary-main/20 rounded-2xl transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-slate-200/60 p-2 rounded-xl">
+                                                <FileText size={18} className="text-slate-500" />
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-slate-500 text-sm md:text-base">指定工事店一覧（令和6年10月更新版）</p>
+                                                <p className="text-xs text-slate-400 mt-0.5">PDF　更新：R06.11.01　※最新版ではありません</p>
+                                            </div>
+                                        </div>
+                                        <ChevronRight size={18} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-1 transition-all" />
+                                    </a>
+                                </>
+                            )}
                         </div>
+
                     </motion.div>
 
                     {/* 申請・お問い合わせ */}

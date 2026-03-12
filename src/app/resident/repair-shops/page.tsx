@@ -1,13 +1,24 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Phone, ChevronRight, Wrench, AlertTriangle, Calendar, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
+import { getPublicDocuments, PublicDocument } from '@/lib/microcms';
 
 export default function RepairShopsPage() {
-    const pdfLinks = [
+    const [documents, setDocuments] = useState<PublicDocument[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPublicDocuments('当番店').then((data) => {
+            setDocuments(data);
+            setLoading(false);
+        });
+    }, []);
+
+    const pdfLinksFallback = [
         {
             year: '令和7年度',
             href: 'http://www.ooijousuidoukigyoudan.or.jp/FYR7_suidoutouban.pdf',
@@ -104,25 +115,58 @@ export default function RepairShopsPage() {
                             <h2 className="text-xl md:text-2xl font-black text-primary-deep">当番店一覧（PDF）</h2>
                         </div>
                         <div className="space-y-3">
-                            {pdfLinks.map((shop, i) => (
-                                <a
-                                    key={i}
-                                    href={shop.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`flex items-center justify-center space-x-3 p-6 rounded-2xl border-2 transition-all group ${shop.color.replace('bg-', 'border-').replace('text-', 'hover:bg-').replace('hover:bg-', 'hover:border-')} bg-white shadow-sm hover:shadow-premium`}
-                                >
-                                    <div className={`${shop.color} text-white p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
-                                        {shop.icon}
-                                    </div>
-                                    <div className="text-left">
-                                        <p className="text-text-sub text-xs font-bold leading-none mb-1">{shop.year} 当番店</p>
-                                        <p className="text-primary-deep font-black text-lg">一覧を表示 (PDF)</p>
-                                    </div>
-                                    <ArrowUpRight size={20} className="text-slate-300 group-hover:text-primary-main transition-colors ml-auto" />
-                                </a>
-                            ))}
+                            {loading ? (
+                                <div className="space-y-3">
+                                    <div className="h-24 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                    <div className="h-24 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                </div>
+                            ) : documents.length > 0 ? (
+                                documents.map((doc, i) => {
+                                    const pdfUrl = doc.pdfFile?.url || doc.pdfUrl || '#';
+                                    const isLatest = doc.isLatest !== false && i === 0;
+                                    const color = isLatest ? 'bg-primary-main' : 'bg-slate-500';
+
+                                    return (
+                                        <a
+                                            key={doc.id || i}
+                                            href={pdfUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex items-center justify-center space-x-3 p-6 rounded-2xl border-2 transition-all group ${color.replace('bg-', 'border-').replace('text-', 'hover:bg-').replace('hover:bg-', 'hover:border-')} bg-white shadow-sm hover:shadow-premium`}
+                                        >
+                                            <div className={`${color} text-white p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
+                                                <Calendar size={24} />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="text-text-sub text-xs font-bold leading-none mb-1">{doc.fiscalYear || doc.title} 当番店</p>
+                                                <p className="text-primary-deep font-black text-lg">一覧を表示 (PDF)</p>
+                                            </div>
+                                            <ArrowUpRight size={20} className="text-slate-300 group-hover:text-primary-main transition-colors ml-auto" />
+                                        </a>
+                                    );
+                                })
+                            ) : (
+                                pdfLinksFallback.map((shop, i) => (
+                                    <a
+                                        key={i}
+                                        href={shop.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`flex items-center justify-center space-x-3 p-6 rounded-2xl border-2 transition-all group ${shop.color.replace('bg-', 'border-').replace('text-', 'hover:bg-').replace('hover:bg-', 'hover:border-')} bg-white shadow-sm hover:shadow-premium`}
+                                    >
+                                        <div className={`${shop.color} text-white p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform`}>
+                                            {shop.icon}
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-text-sub text-xs font-bold leading-none mb-1">{shop.year} 当番店</p>
+                                            <p className="text-primary-deep font-black text-lg">一覧を表示 (PDF)</p>
+                                        </div>
+                                        <ArrowUpRight size={20} className="text-slate-300 group-hover:text-primary-main transition-colors ml-auto" />
+                                    </a>
+                                ))
+                            )}
                         </div>
+
                         <p className="text-xs text-slate-400 mt-4">
                             ※ 指定工事店の一覧（全業者）は
                             <Link href="/business/designated-shops" className="text-primary-main underline underline-offset-2 ml-1">指定工事店一覧ページ</Link>

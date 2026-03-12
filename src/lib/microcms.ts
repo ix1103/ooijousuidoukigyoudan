@@ -56,6 +56,26 @@ export type Bidding = {
   content?: string;        // 本文（省略可能）
 };
 
+// 【新規】断水情報の型定義（シングルコンテンツ型）
+export type WaterOutage = {
+  id: string;
+  isOutage: boolean;       // 断水発生中かどうか
+  situationInfo: string;   // 断水状況の説明用テキスト（「現在、断水は発生していません」など）
+};
+
+// 【新規】各種公表PDF・名簿等の汎用型定義（リスト型）
+export type PublicDocument = {
+  id: string;
+  createdAt: string;
+  publishedAt: string;
+  title: string;           // タイトル
+  category: string[];      // カテゴリ（'指定工事店', '水質検査計画', '予算' など）
+  pdfFile?: { url: string };// microCMSのファイルフィールド
+  pdfUrl?: string;         // 外部リンクベタ書き用
+  fiscalYear?: string;     // 年度（'令和7年度' など）
+  isLatest?: boolean;      // 最新版としてハイライトするかどうか
+};
+
 // お知らせ一覧を取得する関数
 export const getNewsList = async (limit = 3) => {
   try {
@@ -122,5 +142,36 @@ export const getBiddingList = async (limit = 20) => {
   } catch (error) {
     console.error('Failed to fetch bidding list:', error);
     return []; // エラー時は空配列を返す
+  }
+};
+
+// 【新規】断水情報を取得する関数（シングル）
+export const getWaterOutageInfo = async (): Promise<WaterOutage | null> => {
+  try {
+    const data = await client.get({
+      endpoint: 'water-outage',
+    });
+    return data as WaterOutage;
+  } catch (error) {
+    console.error('Failed to fetch water outage info:', error);
+    return null;
+  }
+};
+
+// 【新規】汎用ドキュメント一覧を取得する関数
+export const getPublicDocuments = async (categoryFilter?: string, limit = 100) => {
+  try {
+    const queries: any = { limit: limit, orders: '-publishedAt' };
+    if (categoryFilter) {
+      queries.filters = `category[contains]${categoryFilter}`;
+    }
+    const data = await client.get({
+      endpoint: 'documents',
+      queries: queries,
+    });
+    return data.contents as PublicDocument[];
+  } catch (error) {
+    console.error(`Failed to fetch documents for category ${categoryFilter}:`, error);
+    return [];
   }
 };

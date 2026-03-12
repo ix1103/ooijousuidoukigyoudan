@@ -1,17 +1,28 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Download, ChevronRight, BookOpen, Calculator, ShieldCheck, Users, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/PageHeader';
+import { getPublicDocuments, PublicDocument } from '@/lib/microcms';
 
 export default function DisclosurePage() {
-    const categories = [
+    const [documents, setDocuments] = useState<PublicDocument[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPublicDocuments('公表資料').then((data) => {
+            setDocuments(data);
+            setLoading(false);
+        });
+    }, []);
+
+    const categoriesDefinition = [
         {
             title: '事業計画・経営戦略',
             icon: <BookOpen className="text-secondary-vibrant" size={28} />,
             description: '大井上水道企業団の将来に向けた事業理念や中長期的な経営戦略に関する資料です。',
-            items: [
+            fallbackItems: [
                 { label: '大井上水道ビジョン', href: 'http://www.ooijousuidoukigyoudan.or.jp/water_vision.pdf' },
                 { label: '大井上水道企業団 経営戦略2020', href: 'http://www.ooijousuidoukigyoudan.or.jp/2020keieisenryaku.pdf' },
                 { label: '大井上水道企業団経営比較分析表（令和4年度決算）', href: 'http://www.ooijousuidoukigyoudan.or.jp/36oijyosui_suido_2023.pdf' },
@@ -22,7 +33,7 @@ export default function DisclosurePage() {
             title: '災害・インフラ対策（耐震化）',
             icon: <ShieldCheck className="text-secondary-vibrant" size={28} />,
             description: '安全で安定した給水を維持するための、施設の耐震化に関する計画および重要管路図です。',
-            items: [
+            fallbackItems: [
                 { label: '管路の耐震化計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/taisin-R05.pdf' },
                 { label: '上下水道耐震化計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7taishinkakeikaku.pdf' },
                 { label: '重要管路図（A3版）', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7juuyoukanrozu.pdf' },
@@ -32,7 +43,7 @@ export default function DisclosurePage() {
             title: '予算・決算情報',
             icon: <Calculator className="text-secondary-vibrant" size={28} />,
             description: '企業団の毎年度の予算案や決算状況を公開し、透明性のある経営に努めています。',
-            items: [
+            fallbackItems: [
                 { label: '令和7年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/FYR7yosansyo.pdf' },
                 { label: '令和6年度 予算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/R6yosan.pdf' },
                 { label: '令和6年度 決算書等', href: 'http://www.ooijousuidoukigyoudan.or.jp/r6kesasn.pdf' },
@@ -48,7 +59,7 @@ export default function DisclosurePage() {
             title: '人事・組織関連',
             icon: <Users className="text-secondary-vibrant" size={28} />,
             description: '職員の勤務環境向上や、透明性のある人事行政に関する情報を公表しています。',
-            items: [
+            fallbackItems: [
                 { label: '人事行政の運営等の状況の公表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R6jinjijoukyou.pdf' },
                 { label: '特定事業主行動計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/tokukoudoukeikaku.pdf' },
                 { label: '特定事業主行動計画の実施状況の公表', href: 'http://www.ooijousuidoukigyoudan.or.jp/R7tokuteijigyounusi.pdf' },
@@ -59,7 +70,7 @@ export default function DisclosurePage() {
             title: '環境・情報セキュリティ',
             icon: <ShieldAlert className="text-secondary-vibrant" size={28} />,
             description: '地球環境への配慮に関する計画や、情報保護のための基本方針です。',
-            items: [
+            fallbackItems: [
                 { label: '大井上水道企業団 地球温暖化対策実行計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/ondanka.pdf' },
                 { label: '大井上水道企業団 情報セキュリティポリシー', href: 'http://www.ooijousuidoukigyoudan.or.jp/2025jouhousequrityporicy.pdf' },
             ]
@@ -83,7 +94,7 @@ export default function DisclosurePage() {
                 </div>
 
                 <div className="space-y-12 md:space-y-16">
-                    {categories.map((category, idx) => (
+                    {categoriesDefinition.map((category, idx) => (
                         <motion.section
                             key={idx}
                             initial={{ opacity: 0, y: 20 }}
@@ -110,29 +121,41 @@ export default function DisclosurePage() {
 
                                 {/* 右側リンク一覧 */}
                                 <div className="md:w-2/3 space-y-3">
-                                    {category.items.map((item, itemIdx) => (
-                                        <a
-                                            key={itemIdx}
-                                            href={item.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 bg-white rounded-2xl border border-transparent shadow-sm hover:shadow-md hover:border-primary-main/20 transition-all duration-300 gap-3"
-                                        >
-                                            <div className="flex items-center gap-3 md:gap-4 flex-1">
-                                                <div className="w-10 h-10 shrink-0 rounded-full bg-primary-main/5 flex items-center justify-center text-primary-main group-hover:bg-primary-main group-hover:text-white transition-colors">
-                                                    <Download size={18} />
+                                    {loading ? (
+                                        <div className="space-y-3">
+                                            <div className="h-16 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                            <div className="h-16 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                        </div>
+                                    ) : (() => {
+                                        const cmsItems = documents.filter(doc => doc.category.includes(category.title));
+                                        const displayItems = cmsItems.length > 0 
+                                            ? cmsItems.map(d => ({ label: d.title, href: d.pdfFile?.url || d.pdfUrl || '#' })) 
+                                            : category.fallbackItems;
+                                            
+                                        return displayItems.map((item, itemIdx) => (
+                                            <a
+                                                key={itemIdx}
+                                                href={item.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 bg-white rounded-2xl border border-transparent shadow-sm hover:shadow-md hover:border-primary-main/20 transition-all duration-300 gap-3"
+                                            >
+                                                <div className="flex items-center gap-3 md:gap-4 flex-1 overflow-hidden">
+                                                    <div className="w-10 h-10 shrink-0 rounded-full bg-primary-main/5 flex items-center justify-center text-primary-main group-hover:bg-primary-main group-hover:text-white transition-colors">
+                                                        <Download size={18} />
+                                                    </div>
+                                                    <span className="font-bold text-primary-deep group-hover:text-primary-main transition-colors text-sm md:text-base leading-snug truncate">
+                                                        {item.label}
+                                                    </span>
                                                 </div>
-                                                <span className="font-bold text-primary-deep group-hover:text-primary-main transition-colors text-sm md:text-base leading-snug">
-                                                    {item.label}
-                                                </span>
-                                            </div>
-                                            <div className="hidden sm:flex items-center text-xs text-text-sub font-bold px-3 py-1 bg-slate-50 rounded-full shrink-0">
-                                                <FileText size={12} className="mr-1.5" />
-                                                PDF
-                                            </div>
-                                            <ChevronRight className="hidden sm:block text-slate-300 group-hover:text-primary-main group-hover:translate-x-1 transition-all" size={20} />
-                                        </a>
-                                    ))}
+                                                <div className="hidden sm:flex items-center text-xs text-text-sub font-bold px-3 py-1 bg-slate-50 rounded-full shrink-0">
+                                                    <FileText size={12} className="mr-1.5" />
+                                                    PDF
+                                                </div>
+                                                <ChevronRight className="hidden sm:block text-slate-300 group-hover:text-primary-main group-hover:translate-x-1 transition-all shrink-0" size={20} />
+                                            </a>
+                                        ));
+                                    })()}
                                 </div>
                             </div>
                         </motion.section>
