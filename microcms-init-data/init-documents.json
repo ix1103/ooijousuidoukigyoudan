@@ -1,0 +1,56 @@
+{
+  "contents": [
+    {
+      "id": "doc-shop-1",
+      "title": "指定給水装置工事事業者名簿（五十音順）",
+      "category": ["指定工事店"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/R6siteikoujiten.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-repair-1",
+      "title": "令和6年度 宅内漏水修理当番店名簿",
+      "category": ["当番店"],
+      "fiscalYear": "令和6年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r6toubanten.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-water-1",
+      "title": "令和7年度 水質検査計画",
+      "category": ["水質検査計画"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r7suishitsukeikaku.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-water-2",
+      "title": "令和6年度 上半期 水質検査結果",
+      "category": ["水質検査結果"],
+      "fiscalYear": "令和6年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r6suishitukekka.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-disclosure-1",
+      "title": "大井上水道ビジョン",
+      "category": ["事業計画・経営戦略"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/water_vision.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-disclosure-2",
+      "title": "令和7年度 予算書等",
+      "category": ["予算・決算情報"],
+      "fiscalYear": "令和7年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/FYR7yosansyo.pdf",
+      "isLatest": true
+    },
+    {
+      "id": "doc-disclosure-3",
+      "title": "管路の耐震化計画",
+      "category": ["災害・インフラ対策（耐震化）"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/taisin-R05.pdf",
+      "isLatest": true
+    }
+  ]
+}

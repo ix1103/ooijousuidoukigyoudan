@@ -4,7 +4,7 @@ import React from 'react';
 import { AlertTriangle, ChevronRight, X } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getEmergencyInfo, Emergency } from '@/lib/microcms';
+import { getSiteStatus, SiteStatus } from '@/lib/microcms';
 
 /**
  * 緊急情報バナー
@@ -14,12 +14,12 @@ import { getEmergencyInfo, Emergency } from '@/lib/microcms';
  * - ユーザーが×ボタンでバナーを閉じることができます。
  */
 export const EmergencyAlert = () => {
-    const [info, setInfo] = React.useState<Emergency | null>(null);
+    const [info, setInfo] = React.useState<SiteStatus | null>(null);
     const [dismissed, setDismissed] = React.useState(false);
 
     React.useEffect(() => {
-        getEmergencyInfo().then((data) => {
-            if (data && data.isActive) {
+        getSiteStatus().then((data) => {
+            if (data && data.isEmergencyActive) {
                 setInfo(data);
             }
         });
@@ -42,11 +42,11 @@ export const EmergencyAlert = () => {
                     緊急・重要
                 </span>
                 <p className="text-red-800 text-sm md:text-base font-bold flex-1 truncate">
-                    {info.message}
+                    {info.emergencyMessage}
                 </p>
-                {info.linkUrl && (
-                    <Link href={info.linkUrl} className="hidden md:flex items-center text-red-600 font-bold text-xs md:text-sm hover:underline shrink-0">
-                        {info.linkLabel || '詳細を見る'}
+                {info.emergencyLinkUrl && (
+                    <Link href={info.emergencyLinkUrl} className="hidden md:flex items-center text-red-600 font-bold text-xs md:text-sm hover:underline shrink-0">
+                        {info.emergencyLinkLabel || '詳細を見る'}
                         <ChevronRight size={16} />
                     </Link>
                 )}

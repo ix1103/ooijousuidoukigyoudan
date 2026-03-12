@@ -1,0 +1,8 @@
+{
+  "isEmergencyActive": false,
+  "emergencyMessage": "現在、緊急のお知らせはありません。",
+  "emergencyLinkUrl": "",
+  "emergencyLinkLabel": "",
+  "isWaterOutage": false,
+  "waterOutageSituation": "現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。"
+}

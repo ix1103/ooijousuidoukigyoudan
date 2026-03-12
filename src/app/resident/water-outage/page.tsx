@@ -5,14 +5,14 @@ import { AlertTriangle, Radio, Phone, Clock, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
-import { getWaterOutageInfo, WaterOutage } from '@/lib/microcms';
+import { getSiteStatus, SiteStatus } from '@/lib/microcms';
 
 export default function WaterOutagePage() {
-    const [outageInfo, setOutageInfo] = useState<WaterOutage | null>(null);
+    const [outageInfo, setOutageInfo] = useState<SiteStatus | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getWaterOutageInfo().then((data) => {
+        getSiteStatus().then((data) => {
             setOutageInfo(data);
             setLoading(false);
         });
@@ -47,22 +47,22 @@ export default function WaterOutagePage() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
                         className={`border rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-sm transition-colors duration-500 ${
-                            outageInfo?.isOutage
+                            outageInfo?.isWaterOutage
                                 ? 'bg-gradient-to-br from-red-50 to-rose-50 border-red-200/40'
                                 : 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200/40'
                         }`}
                     >
                         <div className="flex items-start gap-4 md:gap-6">
                             <div className="bg-white p-3 md:p-4 rounded-xl md:rounded-2xl shadow-sm shrink-0">
-                                {outageInfo?.isOutage ? (
+                                {outageInfo?.isWaterOutage ? (
                                     <AlertTriangle className="w-7 h-7 md:w-8 md:h-8 text-red-500" />
                                 ) : (
                                     <Radio className="w-7 h-7 md:w-8 md:h-8 text-green-500" />
                                 )}
                             </div>
                             <div className="flex-1">
-                                <h2 className={`text-lg md:text-2xl font-black mb-2 ${outageInfo?.isOutage ? 'text-red-700' : 'text-primary-deep'}`}>
-                                    {outageInfo?.isOutage ? '断水が発生しています' : '現在の断水状況'}
+                                <h2 className={`text-lg md:text-2xl font-black mb-2 ${outageInfo?.isWaterOutage ? 'text-red-700' : 'text-primary-deep'}`}>
+                                    {outageInfo?.isWaterOutage ? '断水が発生しています' : '現在の断水状況'}
                                 </h2>
                                 
                                 {loading ? (
@@ -72,7 +72,7 @@ export default function WaterOutagePage() {
                                     </div>
                                 ) : (
                                     <p className="text-text-sub text-sm md:text-base mb-4 whitespace-pre-wrap leading-relaxed">
-                                        {outageInfo?.situationInfo || '現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。'}
+                                        {outageInfo?.waterOutageSituation || '現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。'}
                                     </p>
                                 )}
                                 
