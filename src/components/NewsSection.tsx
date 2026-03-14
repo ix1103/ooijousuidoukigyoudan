@@ -1,14 +1,14 @@
 "use client";
 
 import React from 'react';
-import { getNewsList, Post } from '@/lib/microcms';
+import { getNewsList, News } from '@/lib/microcms';
 import { Calendar, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Skeleton } from './Skeleton';
 
 export const NewsSection = () => {
-    const [news, setNews] = React.useState<Post[]>([]);
+    const [news, setNews] = React.useState<News[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
@@ -28,7 +28,7 @@ export const NewsSection = () => {
         { id: 'demo-1', title: '【重要】令和8年度の水道料金改定に関するお知らせ', publishedAt: new Date().toISOString(), category: ['重要'] },
         { id: 'demo-2', title: '水道管清掃作業に伴う断水のご協力について', publishedAt: new Date().toISOString(), category: ['お知らせ'] },
         { id: 'demo-3', title: '令和7年度 第1回 大井上水道企業団議会の開催について', publishedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), category: ['議会情報'] }
-    ] as Post[];
+    ] as News[];
 
     const displayNews = news.length > 0 ? news : fallbackNews;
 

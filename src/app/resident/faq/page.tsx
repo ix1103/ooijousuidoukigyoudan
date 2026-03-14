@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Phone, Search, X, Filter, Info, Trash2 } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { Skeleton } from '@/components/Skeleton';
-import { getFaqList, Post } from '@/lib/microcms';
+import { getFaqList, Faq } from '@/lib/microcms';
 
 type FaqItem = {
     q: string;
@@ -146,9 +146,9 @@ export default function FaqPage() {
                 if (list && list.length > 0) {
                     const groups: Record<string, FaqItem[]> = {};
                     list.forEach(item => {
-                        const cat = (item.category && item.category.length > 0) ? item.category[0] : 'その他';
+                        const cat = item.category || 'その他';
                         if (!groups[cat]) groups[cat] = [];
-                        groups[cat].push({ q: item.title, a: item.answer || '' });
+                        groups[cat].push({ q: item.title, a: item.answer });
                     });
 
                     const formatted = Object.keys(groups).map(key => ({

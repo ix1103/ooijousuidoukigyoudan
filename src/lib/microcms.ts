@@ -10,119 +10,122 @@ export const client = createClient({
   apiKey: process.env.NEXT_PUBLIC_MICROCMS_API_KEY || 'xxx', // プレースホルダー
 });
 
-// 【統合API 1】記事・コンテンツ汎用型（お知らせ、FAQ、入札情報など）
-export type Post = {
+// --- 型定義 ---
+
+// 1. お知らせ・入札情報（リスト型: endpoint='news'）
+export type News = {
   id: string;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
   revisedAt: string;
-  title: string;           // タイトル
-  category: string[];      // カテゴリ（'お知らせ', '入札情報', 'FAQ'など）
-  content?: string;        // 本文（リッチエディタまたはテキスト）
-  answer?: string;         // FAQの回答用
-  fiscalYear?: string;     // 年度（入札情報などで使用）
-  price?: string;          // 金額（入札情報などで使用）
-  pdfUrl?: string;         // 関連URL（省略可能）
+  title: string;
+  category: string[];      // ['お知らせ', '入札結果'など]
+  content?: string;        // 本文（リッチエディタ）
+  fiscalYear?: string;     // 年度（入札用）
+  price?: string;          // 金額（入札用）
+  pdfUrl?: string;         // PDFリンク
 };
 
-// 【統合API 2】各種公表PDF・名簿等の汎用型定義（リスト型）
-export type PublicDocument = {
+// 2. よくある質問（リスト型: endpoint='faq'）
+export type Faq = {
   id: string;
   createdAt: string;
+  updatedAt: string;
   publishedAt: string;
-  title: string;           // タイトル
-  category: string[];      // カテゴリ（'指定工事店', '水質検査計画', '予算' など）
-  pdfFile?: { url: string };// microCMSのファイルフィールド
-  pdfUrl?: string;         // 外部リンクベタ書き用
-  fiscalYear?: string;     // 年度（'令和7年度' など）
-  isLatest?: boolean;      // 最新版としてハイライトするかどうか
+  revisedAt: string;
+  title: string;           // 質問
+  category?: string;       // カテゴリ
+  answer: string;          // 回答
 };
 
-// 【統合API 3】サイト全体のステータス／緊急情報（シングルコンテンツ型）
+// 3. サイト資料メンバ（SiteStatus内の繰り返しフィールド用）
+export type PublicDocument = {
+  id?: string;
+  title: string;
+  category: string[];
+  pdfFile?: { url: string };
+  pdfUrl?: string;
+  fiscalYear?: string;
+  isLatest?: boolean;
+  publishedAt?: string;
+  createdAt?: string;
+};
+
+// 4. サイト全体のステータス（シングル型: endpoint='status'）
 export type SiteStatus = {
   id: string;
-  // 緊急バナー関連
-  isEmergencyActive: boolean; 
-  emergencyMessage?: string;   
-  emergencyLinkUrl?: string;  
+  // 緊急バナー
+  isEmergencyActive: boolean;
+  emergencyMessage?: string;
+  emergencyLinkUrl?: string;
   emergencyLinkLabel?: string;
-  // 断水情報関連
-  isWaterOutage: boolean;     
-  waterOutageSituation?: string; 
+  // 断水状況
+  isWaterOutage: boolean;
+  waterOutageSituation?: string;
+  // 資料リストの統合（繰り返しフィールド）
+  documents?: PublicDocument[];
 };
 
-// ==========================================
-// 統合API用フェッチ関数
-// ==========================================
+// --- フェッチ関数 ---
 
-// 1. Post（記事・コンテンツ）取得用
-export const getPosts = async (categoryFilter?: string, limit = 100) => {
+// News（お知らせ・入札）取得
+export const getNewsList = async (limit = 10, category?: string) => {
   try {
-    const queries: any = { limit: limit, orders: '-publishedAt' };
-    if (categoryFilter) {
-      queries.filters = `category[contains]${categoryFilter}`;
+    const queries: any = { limit, orders: '-publishedAt' };
+    if (category) {
+      queries.filters = `category[contains]${category}`;
     }
-    const data = await client.get({
-      endpoint: 'posts',
-      queries: queries,
-    });
-    return data.contents as Post[];
+    const data = await client.get({ endpoint: 'news', queries });
+    return data.contents as News[];
   } catch (error) {
-    console.error(`Failed to fetch posts for category ${categoryFilter}:`, error);
+    console.error('Failed to fetch news:', error);
     return [];
   }
 };
 
-export const getPostDetail = async (contentId: string) => {
+export const getNewsDetail = async (contentId: string) => {
   try {
-    const detail = await client.get({
-      endpoint: 'posts',
-      contentId: contentId,
-    });
-    return detail as Post;
+    return await client.get({ endpoint: 'news', contentId }) as News;
   } catch (error) {
-    console.error(`Failed to fetch post detail for ${contentId}:`, error);
+    console.error('Failed to fetch news detail:', error);
     return null;
   }
 };
 
-// 2. PublicDocument（PDF資料）取得用
-export const getPublicDocuments = async (categoryFilter?: string, limit = 100) => {
+// FAQ 取得
+export const getFaqList = async (limit = 100) => {
   try {
-    const queries: any = { limit: limit, orders: '-publishedAt' };
-    if (categoryFilter) {
-      queries.filters = `category[contains]${categoryFilter}`;
-    }
-    const data = await client.get({
-      endpoint: 'documents',
-      queries: queries,
-    });
-    return data.contents as PublicDocument[];
+    const data = await client.get({ endpoint: 'faq', queries: { limit } });
+    return data.contents as Faq[];
   } catch (error) {
-    console.error(`Failed to fetch documents for category ${categoryFilter}:`, error);
+    console.error('Failed to fetch FAQ:', error);
     return [];
   }
 };
 
-// 3. SiteStatus（緊急バナー＆断水状況）取得用
+// サイトステータス（緊急・断水・PDF資料）取得
+// ※インポート機能（JSON）を利用するため、リスト型として作成し最初の1件を使用します
 export const getSiteStatus = async (): Promise<SiteStatus | null> => {
   try {
-    const data = await client.get({
+    const data = await client.get<{ contents: SiteStatus[] }>({
       endpoint: 'status',
+      queries: { limit: 1 }
     });
-    return data as SiteStatus;
+    return data.contents[0] || null;
   } catch (error) {
-    console.error('Failed to fetch site status:', error);
+    console.warn('Failed to fetch site status:', error);
     return null;
   }
 };
 
-// ==========================================
-// 下位互換用ヘルパー関数（既存コードの修正量を減らすため）
-// ==========================================
+// 下位互換用：入札情報の取得
+export const getBiddingList = (limit = 20) => getNewsList(limit, '入札');
 
-export const getNewsList = async (limit = 3) => getPosts('お知らせ', limit);
-export const getNewsDetail = getPostDetail;
-export const getFaqList = async (limit = 100) => getPosts('FAQ', limit);
-export const getBiddingList = async (limit = 20) => getPosts('入札情報', limit);
+// 下位互換用：旧 getPublicDocuments は SiteStatus 経由で取得するように
+export const getPublicDocuments = async (categoryFilter?: string): Promise<PublicDocument[]> => {
+  const status = await getSiteStatus();
+  if (!status || !status.documents) return [];
+  if (!categoryFilter) return status.documents;
+  return status.documents.filter(doc => doc.category?.includes(categoryFilter));
+};

@@ -103,7 +103,7 @@ export default function DesignatedShopsPage() {
                                                         {doc.title}
                                                     </p>
                                                     <p className="text-xs text-slate-400 mt-0.5">
-                                                        PDF　更新：{new Date(doc.publishedAt || doc.createdAt).toLocaleDateString('ja-JP')}
+                                                        PDF　更新：{new Date(doc.publishedAt || doc.createdAt || Date.now()).toLocaleDateString('ja-JP')}
                                                         {!isLatest && '　※最新版ではありません'}
                                                     </p>
                                                 </div>

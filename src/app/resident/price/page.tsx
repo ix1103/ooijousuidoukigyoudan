@@ -233,35 +233,53 @@ export default function PricePage() {
                             水道料金表（2ヶ月につき・消費税10%込）
                         </h3>
                         <div className="overflow-x-auto rounded-xl border border-slate-100 mb-4">
-                            <table className="w-full text-sm border-collapse min-w-[500px]">
-                                <thead>
+                            <table className="w-full text-sm border-collapse min-w-full">
+                                <thead className="hidden md:table-header-group">
                                     <tr className="bg-slate-50 border-b border-slate-100">
                                         <th className="py-4 px-5 text-left font-black text-primary-deep">口径</th>
-                                        <th className="py-4 px-5 text-left font-black text-primary-deep">基本料金<span className="block font-normal text-text-sub text-xs mt-1">（基本水量分含む）</span></th>
-                                        <th className="py-4 px-5 text-left font-black text-primary-deep">超過料金<span className="block font-normal text-text-sub text-xs mt-1">（1m³あたり）</span></th>
+                                        <th className="py-4 px-5 text-left font-black text-primary-deep">基本料金<span className="md:block font-normal text-text-sub text-xs mt-1 ml-2 md:ml-0 inline-block">（基本水量分含む）</span></th>
+                                        <th className="py-4 px-5 text-left font-black text-primary-deep">超過料金<span className="md:block font-normal text-text-sub text-xs mt-1 ml-2 md:ml-0 inline-block">（1m³あたり）</span></th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-text-sub">
+                                <tbody className="text-text-sub block md:table-row-group">
                                     {rateTable.map((row, i) => (
-                                        <tr key={i} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                                            <td className="py-4 px-5 font-black text-primary-deep">{row.size}</td>
-                                            <td className="py-4 px-5 font-bold space-x-1">
-                                                <span className="text-[15px]">{row.base}</span>
-                                                <span className="text-xs text-slate-400">{row.baseNote}</span>
+                                        <tr key={i} className="block md:table-row bg-white border border-slate-100 md:border-0 md:border-b mb-4 md:mb-0 rounded-xl md:rounded-none overflow-hidden hover:bg-slate-50/50 transition-colors shadow-sm md:shadow-none">
+                                            <td className="block md:table-cell py-3 px-4 md:py-4 md:px-5 font-black text-primary-deep bg-slate-50 md:bg-transparent border-b border-slate-100 md:border-0">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal mr-2">口径:</span>
+                                                {row.size}
                                             </td>
-                                            <td className="py-4 px-5 font-bold">{row.unit}</td>
+                                            <td className="block md:table-cell py-3 px-4 md:py-4 md:px-5 font-bold space-x-1 border-b border-slate-50 md:border-0 flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal">基本料金:</span>
+                                                <div>
+                                                    <span className="text-[15px]">{row.base}</span>
+                                                    <span className="text-xs text-slate-400 block md:inline md:ml-1 text-right md:text-left">{row.baseNote}</span>
+                                                </div>
+                                            </td>
+                                            <td className="block md:table-cell py-3 px-4 md:py-4 md:px-5 font-bold flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal">超過料金:</span>
+                                                <span>{row.unit}</span>
+                                            </td>
                                         </tr>
                                     ))}
-                                    <tr>
-                                        <td colSpan={3} className="py-2.5 px-5 text-xs text-slate-500 bg-slate-50/80">
+                                    <tr className="block md:table-row mb-2 md:mb-0">
+                                        <td colSpan={3} className="block md:table-cell py-2.5 px-5 text-xs text-slate-500 bg-slate-50/80 rounded-xl md:rounded-none border-b border-slate-100">
                                             ※ 30mm以上は基本料金に使用分を含まない（0m³から有料）
                                         </td>
                                     </tr>
                                     {largePipes.map((row, i) => (
-                                        <tr key={i} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors text-[13px]">
-                                            <td className="py-3 px-5 font-black text-primary-deep/80">{row.size}</td>
-                                            <td className="py-3 px-5 font-bold">{row.price}</td>
-                                            <td className="py-3 px-5 font-bold">155.1円</td>
+                                        <tr key={i} className="block md:table-row bg-white border border-slate-100 md:border-0 md:border-b text-[13px] mb-3 md:mb-0 rounded-xl md:rounded-none overflow-hidden hover:bg-slate-50/30 transition-colors shadow-sm md:shadow-none">
+                                            <td className="block md:table-cell py-2.5 px-4 md:py-3 md:px-5 font-black text-primary-deep/80 bg-slate-50 md:bg-transparent border-b border-slate-50 md:border-0 flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal mr-2">口径:</span>
+                                                {row.size}
+                                            </td>
+                                            <td className="block md:table-cell py-2.5 px-4 md:py-3 md:px-5 font-bold border-b border-slate-50 md:border-0 flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal mr-2">基本料金:</span>
+                                                {row.price}
+                                            </td>
+                                            <td className="block md:table-cell py-2.5 px-4 md:py-3 md:px-5 font-bold text-slate-500 flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-slate-500 font-normal mr-2">超過料金:</span>
+                                                155.1円
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

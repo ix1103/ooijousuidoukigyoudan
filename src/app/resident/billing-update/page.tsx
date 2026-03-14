@@ -107,8 +107,8 @@ export default function BillingUpdatePage() {
                             <h2 className="text-xl md:text-2xl font-black text-primary-deep">主な改定内容（2ヶ月あたり・税込）</h2>
                         </div>
                         <div className="overflow-x-auto rounded-xl border border-slate-100">
-                            <table className="w-full text-sm">
-                                <thead>
+                            <table className="w-full text-sm block md:table">
+                                <thead className="hidden md:table-header-group">
                                     <tr className="bg-primary-deep text-white">
                                         <th className="text-left px-4 py-3 font-black text-xs md:text-sm">区分</th>
                                         <th className="text-center px-4 py-3 font-black text-xs md:text-sm">改定前</th>
@@ -116,16 +116,24 @@ export default function BillingUpdatePage() {
                                         <th className="text-center px-4 py-3 font-black text-xs md:text-sm text-secondary-vibrant">差額</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="block md:table-row-group">
                                     {rateComparison.map((row, i) => (
-                                        <tr key={i} className={`border-t border-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
-                                            <td className="px-4 py-4 font-bold text-primary-deep text-xs md:text-sm">
+                                        <tr key={i} className={`block md:table-row border-b border-slate-100 md:border-t md:border-b-0 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} mb-4 md:mb-0 rounded-xl md:rounded-none overflow-hidden shadow-sm md:shadow-none`}>
+                                            <td className="block md:table-cell px-4 py-3 md:py-4 font-bold text-primary-deep text-xs md:text-sm bg-primary-deep/5 md:bg-transparent border-b border-primary-deep/10 md:border-0">
+                                                <span className="md:hidden text-xs text-primary-main/80 font-black mr-2">区分:</span>
                                                 {row.label}
-                                                {row.oldNote && <span className="block text-[10px] text-slate-400 font-normal mt-0.5">{row.oldNote}</span>}
+                                                {row.oldNote && <span className="md:block text-[10px] text-slate-400 font-normal mt-0.5 ml-2 md:ml-0 inline-block">{row.oldNote}</span>}
                                             </td>
-                                            <td className="px-4 py-4 text-center text-slate-500 text-xs md:text-sm line-through decoration-slate-400">{row.oldRate}</td>
-                                            <td className="px-4 py-4 text-center font-black text-primary-deep text-xs md:text-sm">{row.newRate}</td>
-                                            <td className="px-4 py-4 text-center">
+                                            <td className="block md:table-cell px-4 py-2.5 md:py-4 text-right md:text-center text-slate-500 text-xs md:text-sm flex justify-between md:table-cell items-center border-b border-slate-50 md:border-0">
+                                                <span className="md:hidden text-xs text-slate-400 font-bold">改定前:</span>
+                                                <span className="line-through decoration-slate-400">{row.oldRate}</span>
+                                            </td>
+                                            <td className="block md:table-cell px-4 py-2.5 md:py-4 text-right md:text-center font-black text-primary-deep text-xs md:text-sm flex justify-between md:table-cell items-center border-b border-slate-50 md:border-0">
+                                                <span className="md:hidden text-xs text-slate-400 font-bold">改定後:</span>
+                                                {row.newRate}
+                                            </td>
+                                            <td className="block md:table-cell px-4 py-3 md:py-4 text-right md:text-center flex justify-between md:table-cell items-center bg-amber-50/30 md:bg-transparent">
+                                                <span className="md:hidden text-xs text-amber-600 font-bold">差額:</span>
                                                 <span className="bg-amber-100 text-amber-700 font-black text-xs px-2 py-0.5 rounded-full">{row.diff}</span>
                                             </td>
                                         </tr>

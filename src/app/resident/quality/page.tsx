@@ -112,20 +112,27 @@ export default function WaterQualityPage() {
 
                     <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead>
+                            <table className="w-full text-left block md:table">
+                                <thead className="hidden md:table-header-group">
                                     <tr className="bg-primary-deep text-white">
                                         <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">検査項目</th>
                                         <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">基準値</th>
                                         <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">分類</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="block md:table-row-group">
                                     {qualityStandards.map((row, idx) => (
-                                        <tr key={idx} className={`border-b border-slate-50 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
-                                            <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-primary-deep">{row.item}</td>
-                                            <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm text-text-sub">{row.standard}</td>
-                                            <td className="px-4 md:px-6 py-3 md:py-4">
+                                        <tr key={idx} className={`block md:table-row border-b md:border-t md:border-b-0 border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} mb-4 md:mb-0 rounded-xl md:rounded-none overflow-hidden shadow-sm md:shadow-none`}>
+                                            <td className="block md:table-cell px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-primary-deep bg-primary-deep/5 md:bg-transparent border-b border-primary-deep/10 md:border-0 md:border-b-slate-50">
+                                                <span className="md:hidden text-xs text-primary-main/80 font-black mr-2">検査項目:</span>
+                                                {row.item}
+                                            </td>
+                                            <td className="block md:table-cell px-4 md:px-6 py-2.5 md:py-4 text-xs md:text-sm text-text-sub font-bold flex justify-between md:table-cell items-center border-b border-slate-50 md:border-0">
+                                                <span className="md:hidden text-xs text-slate-400 font-normal">基準値:</span>
+                                                {row.standard}
+                                            </td>
+                                            <td className="block md:table-cell px-4 md:px-6 py-3 md:py-4 flex justify-between md:table-cell items-center bg-slate-50/30 md:bg-transparent border-b md:border-b-slate-50">
+                                                <span className="md:hidden text-xs text-slate-400 font-normal">分類:</span>
                                                 <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full ${row.category === '健康' ? 'bg-red-50 text-red-600' :
                                                     row.category === '性状' ? 'bg-blue-50 text-blue-600' :
                                                         'bg-green-50 text-green-600'

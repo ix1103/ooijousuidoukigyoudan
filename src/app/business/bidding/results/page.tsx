@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { motion } from 'framer-motion';
 import {  ClipboardList, Calendar, Info, Loader2, ArrowUpRight, TrendingUp, Building2, Search , Phone } from 'lucide-react';
-import { Post, getBiddingList } from '@/lib/microcms';
+import { News, getBiddingList } from '@/lib/microcms';
 
 /**
  * 入札・見積結果公表ページ (/business/bidding/results)
@@ -12,25 +12,25 @@ import { Post, getBiddingList } from '@/lib/microcms';
  */
 
 // 旧サイトから抽出した初期データ（フォールバック）
-const FALLBACK_RESULTS: Post[] = [
+const FALLBACK_RESULTS: News[] = [
     // 令和7年度
-    { id: 'r7-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '金谷水源地新受水池築造工事', category: ['落札結果'], fiscalYear: '令和7年度', price: '12,700,000円' },
-    { id: 'r7-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '深井戸用水中モーターポンプ予備機購入', category: ['見積結果'], fiscalYear: '令和7年度', price: '1,673,000円' },
-    { id: 'r7-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '島田市竹下地内配水管切廻工事', category: ['見積結果'], fiscalYear: '令和7年度', price: '390,000円' },
+    { id: 'r7-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '金谷水源地新受水池築造工事', category: ['落札結果', '入札'], fiscalYear: '令和7年度', price: '12,700,000円' },
+    { id: 'r7-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '深井戸用水中モーターポンプ予備機購入', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '1,673,000円' },
+    { id: 'r7-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '島田市竹下地内配水管切廻工事', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '390,000円' },
     // 令和6年度
-    { id: 'r6-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和６年度 水質検査業務委託', category: ['落札結果'], fiscalYear: '令和6年度', price: '2,888,000円' },
-    { id: 'r6-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷水源地直送配水池築造工事（2期工事）', category: ['落札結果'], fiscalYear: '令和6年度', price: '124,630,000円' },
-    { id: 'r6-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事', category: ['落札結果'], fiscalYear: '令和6年度', price: '23,670,000円' },
-    { id: 'r6-4', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事に伴う舗装復旧工事', category: ['落札結果'], fiscalYear: '令和6年度', price: '8,460,000円' },
-    { id: 'r6-5', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '第2配水池受水用緊急遮断弁保守点検業務委託', category: ['見積結果'], fiscalYear: '令和6年度', price: '138,000円' },
-    { id: 'r6-6', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷配水池他11箇所自家用電気工作物保安管理業務委託', category: ['見積結果'], fiscalYear: '令和6年度', price: '1,020,000円' },
-    { id: 'r6-7', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷東1丁目地内配水管漏水等修繕工事', category: ['見積結果'], fiscalYear: '令和6年度', price: '2,311,100円' },
-    { id: 'r6-8', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 給水装置工事図面等電子化業務委託', category: ['落札結果'], fiscalYear: '令和6年度', price: '1,490,000円' },
-    { id: 'r6-9', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 薬品購入（次亜塩素酸ナトリウム）', category: ['見積結果'], fiscalYear: '令和6年度', price: '3,330,000円' },
+    { id: 'r6-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和６年度 水質検査業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '2,888,000円' },
+    { id: 'r6-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷水源地直送配水池築造工事（2期工事）', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '124,630,000円' },
+    { id: 'r6-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '23,670,000円' },
+    { id: 'r6-4', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事に伴う舗装復旧工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '8,460,000円' },
+    { id: 'r6-5', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '第2配水池受水用緊急遮断弁保守点検業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '138,000円' },
+    { id: 'r6-6', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷配水池他11箇所自家用電気工作物保安管理業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '1,020,000円' },
+    { id: 'r6-7', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷東1丁目地内配水管漏水等修繕工事', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '2,311,100円' },
+    { id: 'r6-8', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 給水装置工事図面等電子化業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '1,490,000円' },
+    { id: 'r6-9', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 薬品購入（次亜塩素酸ナトリウム）', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '3,330,000円' },
 ];
 
 export default function BiddingResultsPage() {
-    const [items, setItems] = useState<Post[]>([]);
+    const [items, setItems] = useState<News[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedYear, setSelectedYear] = useState<string>('all');
     const [selectedType, setSelectedType] = useState<string>('all');
@@ -142,8 +142,8 @@ export default function BiddingResultsPage() {
                 {/* 結果テーブル */}
                 <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
+                        <table className="w-full text-left border-collapse block md:table">
+                            <thead className="hidden md:table-header-group">
                                 <tr className="bg-slate-50 border-b border-slate-100">
                                     <th className="px-6 py-5 text-xs font-bold text-primary-main uppercase tracking-widest slice">執行日 / 年度</th>
                                     <th className="px-6 py-5 text-xs font-bold text-primary-main uppercase tracking-widest">案件区分</th>
@@ -151,7 +151,7 @@ export default function BiddingResultsPage() {
                                     <th className="px-6 py-5 text-xs font-bold text-primary-main uppercase tracking-widest text-right">結果（比較価格等）</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50">
+                            <tbody className="divide-y divide-slate-50 block md:table-row-group">
                                 {filteredItems.length === 0 ? (
                                     <tr>
                                         <td colSpan={4} className="px-6 py-20 text-center text-text-sub/60 italic">
@@ -160,14 +160,16 @@ export default function BiddingResultsPage() {
                                     </tr>
                                 ) : (
                                     filteredItems.map((item) => (
-                                        <tr key={item.id} className="hover:bg-primary-main/[0.02] transition-colors group">
-                                            <td className="px-6 py-6 whitespace-nowrap">
-                                                <div className="flex flex-col">
+                                        <tr key={item.id} className="block md:table-row bg-white hover:bg-primary-main/[0.02] transition-colors group mb-4 md:mb-0 rounded-2xl md:rounded-none border md:border-0 border-slate-100 shadow-sm md:shadow-none overflow-hidden relative">
+                                            <td className="block md:table-cell px-5 md:px-6 py-4 md:py-6 md:whitespace-nowrap border-b border-slate-50 md:border-0 bg-slate-50/50 md:bg-transparent flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-primary-main font-bold">執行日 / 年度</span>
+                                                <div className="flex flex-col md:block text-right md:text-left">
                                                     <span className="text-xs text-text-sub font-bold">{item.fiscalYear || '年度不明'}</span>
                                                     <span className="text-[10px] text-text-sub/50">{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ja-JP') : '-'}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-6 whitespace-nowrap">
+                                            <td className="block md:table-cell px-5 md:px-6 py-3 md:py-6 md:whitespace-nowrap border-b border-slate-50 md:border-0 flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-primary-main font-bold">案件区分</span>
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${item.category?.includes('落札結果')
                                                     ? 'bg-blue-50 text-blue-600'
                                                     : 'bg-emerald-50 text-emerald-600'
@@ -175,7 +177,8 @@ export default function BiddingResultsPage() {
                                                     {item.category?.find(c => c === '落札結果' || c === '見積結果') || '区分なし'}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-6">
+                                            <td className="block md:table-cell px-5 md:px-6 py-4 md:py-6 border-b border-slate-50 md:border-0">
+                                                <div className="md:hidden text-xs text-primary-main font-bold mb-1">案件名</div>
                                                 <div className="flex items-start gap-2">
                                                     <span className="text-sm md:text-base font-bold text-primary-deep leading-snug group-hover:text-primary-main transition-colors">
                                                         {item.title}
@@ -187,8 +190,9 @@ export default function BiddingResultsPage() {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-6 text-right whitespace-nowrap">
-                                                <div className="flex flex-col items-end">
+                                            <td className="block md:table-cell px-5 md:px-6 py-4 md:py-6 md:text-right md:whitespace-nowrap bg-slate-50/30 md:bg-transparent flex justify-between md:table-cell items-center">
+                                                <span className="md:hidden text-xs text-primary-main font-bold">結果（比較価格等）</span>
+                                                <div className="flex flex-col items-end md:items-end">
                                                     <span className="text-sm md:text-lg font-bold text-primary-deep tabular-nums">
                                                         {item.price || '公表なし'}
                                                     </span>

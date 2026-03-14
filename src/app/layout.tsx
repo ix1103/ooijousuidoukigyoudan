@@ -5,7 +5,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EmergencyAlert } from "@/components/EmergencyAlert";
 import { BackToTop } from "@/components/BackToTop";
-import { FloatingContact } from "@/components/FloatingContact";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoJp = Noto_Sans_JP({
@@ -36,8 +35,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body className={`${inter.variable} ${notoJp.variable} ${notoSerifJp.variable} antialiased min-h-screen flex flex-col`}>
+    <html lang="ja" className="overflow-x-hidden">
+      <body className={`${inter.variable} ${notoJp.variable} ${notoSerifJp.variable} antialiased min-h-screen flex flex-col overflow-x-hidden w-full relative`}>
         <div className="fixed top-0 z-50 w-full flex flex-col">
           <EmergencyAlert />
           <Header />
@@ -46,7 +45,6 @@ export default function RootLayout({
           {children}
         </main>
         <BackToTop />
-        <FloatingContact />
         <Footer />
       </body>
     </html>

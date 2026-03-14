@@ -1,0 +1,62 @@
+{
+  "isEmergencyActive": false,
+  "emergencyMessage": "現在、緊急のお知らせはありません。",
+  "emergencyLinkUrl": "",
+  "emergencyLinkLabel": "",
+  "isWaterOutage": false,
+  "waterOutageSituation": "現在、当企業団の管轄区域内において概ね50件以上に影響する断水は発生していません。",
+  "documents": [
+    {
+      "title": "指定給水装置工事事業者名簿（五十音順）",
+      "category": ["指定工事店"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/R6siteikoujiten.pdf",
+      "isLatest": true,
+      "publishedAt": "2025-01-14"
+    },
+    {
+      "title": "令和6年度 宅内漏水修理当番店名簿",
+      "category": ["当番店"],
+      "fiscalYear": "令和6年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r6toubanten.pdf",
+      "isLatest": true,
+      "publishedAt": "2024-11-01"
+    },
+    {
+      "title": "令和7年度 水質検査計画",
+      "category": ["水質検査計画", "水質"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r7suishitsukeikaku.pdf",
+      "isLatest": true,
+      "publishedAt": "2025-03-01"
+    },
+    {
+      "title": "令和6年度 上半期 水質検査結果",
+      "category": ["水質検査結果", "水質"],
+      "fiscalYear": "令和6年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/r6suishitukekka.pdf",
+      "isLatest": true,
+      "publishedAt": "2024-10-01"
+    },
+    {
+      "title": "大井上水道ビジョン",
+      "category": ["事業計画・経営戦略", "公表資料"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/water_vision.pdf",
+      "isLatest": true,
+      "publishedAt": "2024-04-01"
+    },
+    {
+      "title": "令和7年度 予算書等",
+      "category": ["予算・決算情報", "公表資料"],
+      "fiscalYear": "令和7年度",
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/FYR7yosansyo.pdf",
+      "isLatest": true,
+      "publishedAt": "2025-03-01"
+    },
+    {
+      "title": "管路の耐震化計画",
+      "category": ["災害・インフラ対策（耐震化）", "公表資料"],
+      "pdfUrl": "http://www.ooijousuidoukigyoudan.or.jp/taisin-R05.pdf",
+      "isLatest": true,
+      "publishedAt": "2023-04-01"
+    }
+  ]
+}

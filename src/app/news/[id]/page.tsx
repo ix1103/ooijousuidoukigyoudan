@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { getNewsDetail, Post } from '@/lib/microcms';
+import { getNewsDetail, News } from '@/lib/microcms';
 import { Calendar, ChevronLeft, Share2, Tag, ArrowLeft, Droplets } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -12,7 +12,7 @@ import { PageHeader } from '@/components/PageHeader';
 export default function NewsDetailPage() {
     const params = useParams();
     const id = params.id as string;
-    const [news, setNews] = React.useState<Post | null>(null);
+    const [news, setNews] = React.useState<News | null>(null);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {

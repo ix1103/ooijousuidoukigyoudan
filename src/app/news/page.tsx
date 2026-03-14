@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { getNewsList, Post } from '@/lib/microcms';
+import { getNewsList, News } from '@/lib/microcms';
 import { Calendar, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { PageHeader } from '@/components/PageHeader';
 
 export default function NewsPage() {
-    const [news, setNews] = React.useState<Post[]>([]);
+    const [news, setNews] = React.useState<News[]>([]);
 
     React.useEffect(() => {
         const fetchNews = async () => {
@@ -25,7 +25,7 @@ export default function NewsPage() {
         { id: 'demo-3', title: '令和7年度 第1回 大井上水道企業団議会の開催について', publishedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), category: ['議会情報'] },
         { id: 'demo-4', title: '年末年始の窓口業務休業について', publishedAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(), category: ['お知らせ'] },
         { id: 'demo-5', title: '水質検査結果（令和6年11月分）の公表', publishedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), category: ['水質情報'] },
-    ] as Post[];
+    ] as News[];
 
     const displayNews = news.length > 0 ? news : fallbackNews;
 
