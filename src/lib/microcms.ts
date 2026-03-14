@@ -19,9 +19,11 @@ export type News = {
   updatedAt: string;
   publishedAt: string;
   revisedAt: string;
-  title: string;
-  category: string[];      // ['お知らせ', '入札結果'など]
-  content?: string;        // 本文（リッチエディタ）
+  title: string;           // タイトル
+  news_title?: string;     // 別名候補1
+  title_text?: string;     // 別名候補2
+  content: string;         // 本文
+  category?: string | string[]; // カテゴリ（配列または文字列）
   fiscalYear?: string;     // 年度（入札用）
   price?: string;          // 金額（入札用）
   pdfUrl?: string;         // PDFリンク

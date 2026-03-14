@@ -126,9 +126,9 @@ export const NewsSection = () => {
                                                 )}
                                             </div>
 
-                                            {item.category && item.category.length > 0 && (
+                                            {item.category && (
                                                 <div className="flex gap-2">
-                                                    {item.category.map((cat: string, i: number) => (
+                                                    {(Array.isArray(item.category) ? item.category : [item.category]).map((cat: string, i: number) => (
                                                         <span
                                                             key={i}
                                                             className="bg-gradient-to-r from-primary-main/5 to-secondary-vibrant/10 text-primary-main text-[9px] md:text-[10px] font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full uppercase tracking-widest border border-primary-main/5"
@@ -140,7 +140,7 @@ export const NewsSection = () => {
                                             )}
 
                                             <h3 className="text-sm md:text-base font-bold text-primary-deep group-hover:text-primary-main transition-colors leading-snug">
-                                                {item.title}
+                                                {item.title || item.news_title || item.title_text || ''}
                                             </h3>
                                         </div>
 

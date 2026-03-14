@@ -79,9 +79,9 @@ export default function NewsPage() {
                                             )}
                                         </div>
 
-                                        {item.category && item.category.length > 0 && (
+                                        {item.category && (
                                             <div className="flex gap-2">
-                                                {item.category.map((cat: string, i: number) => (
+                                                {(Array.isArray(item.category) ? item.category : [item.category]).map((cat: string, i: number) => (
                                                     <span
                                                         key={i}
                                                         className="bg-slate-50 text-slate-500 text-[9px] md:text-[10px] font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full uppercase tracking-widest border border-slate-100"
@@ -93,7 +93,7 @@ export default function NewsPage() {
                                         )}
 
                                         <h2 className="text-base md:text-xl font-bold text-primary-deep group-hover:text-primary-main transition-colors leading-snug">
-                                            {item.title}
+                                            {item.title || item.news_title || item.title_text || ''}
                                         </h2>
                                     </div>
 

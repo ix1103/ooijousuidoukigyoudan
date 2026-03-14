@@ -85,7 +85,7 @@ export default function NewsDetailPage() {
                             <Calendar size={16} className="text-primary-main/40" />
                             <span>{formatDate(news.publishedAt)}</span>
                         </div>
-                        {news.category?.map((cat: string, i: number) => (
+                        {news.category && (Array.isArray(news.category) ? news.category : [news.category]).map((cat: string, i: number) => (
                             <div key={i} className="flex items-center space-x-2 text-secondary-vibrant font-black text-[10px] uppercase tracking-[0.2em] border border-secondary-vibrant/20 px-5 py-2 rounded-full">
                                 <Tag size={12} />
                                 <span>{cat}</span>
@@ -94,7 +94,7 @@ export default function NewsDetailPage() {
                     </div>
 
                     <h1 className="text-3xl md:text-5xl font-black text-primary-deep leading-[1.3] mb-8">
-                        {news.title}
+                        {news.title || news.news_title || news.title_text || ''}
                     </h1>
 
                     <div className="w-20 h-2 bg-secondary-vibrant rounded-full" />
