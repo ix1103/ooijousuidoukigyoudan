@@ -34,8 +34,9 @@ export type Faq = {
   updatedAt: string;
   publishedAt: string;
   revisedAt: string;
-  title: string;           // 質問
-  category?: string;       // カテゴリ
+  title: string;           // 旧：質問（互換性のため維持）
+  question?: string;        // 新：質問（microCMS側のフィールド名）
+  category?: string | string[]; // カテゴリ（配列または文字列）
   answer: string;          // 回答
 };
 
@@ -114,7 +115,8 @@ export const getSiteStatus = async (): Promise<SiteStatus | null> => {
     });
     return data.contents[0] || null;
   } catch (error) {
-    console.warn('Failed to fetch site status:', error);
+    // endpointが存在しない場合などは警告のみにする
+    // console.warn('Failed to fetch site status:', error);
     return null;
   }
 };

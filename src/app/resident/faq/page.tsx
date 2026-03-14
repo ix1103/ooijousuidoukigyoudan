@@ -144,18 +144,23 @@ export default function FaqPage() {
             try {
                 const list = await getFaqList();
                 if (list && list.length > 0) {
-                    const groups: Record<string, FaqItem[]> = {};
+                    const groups: Record<string, (FaqItem & { id: string })[]> = {};
                     list.forEach(item => {
-                        const cat = item.category || 'その他';
+                        // 文字列配列の場合があるため調整
+                        const cat = Array.isArray(item.category) ? item.category[0] : (item.category || 'その他');
                         if (!groups[cat]) groups[cat] = [];
-                        groups[cat].push({ q: item.title, a: item.answer });
+                        groups[cat].push({ 
+                            id: item.id,
+                            q: item.question || item.title || '', 
+                            a: item.answer 
+                        });
                     });
 
                     const formatted = Object.keys(groups).map(key => ({
                         category: key,
                         items: groups[key]
                     }));
-                    setFaqGroups(formatted);
+                    setFaqGroups(formatted as any);
                 } else {
                     setFaqGroups([]);
                 }
@@ -291,8 +296,8 @@ export default function FaqPage() {
                                         </div>
                                         <div className="grid grid-cols-1 gap-4">
                                             <AnimatePresence mode="popLayout">
-                                                {group.items.map((item, i) => (
-                                                    <FaqItemComponent key={item.q} item={item} index={i} />
+                                                {group.items.map((item: any, i) => (
+                                                    <FaqItemComponent key={item.id || `faq-${i}`} item={item} index={i} />
                                                 ))}
                                             </AnimatePresence>
                                         </div>
