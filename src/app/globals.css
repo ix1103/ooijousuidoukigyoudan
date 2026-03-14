@@ -331,3 +331,110 @@
     }
   }
 }
+/* ===== microCMS リッチテキスト用（固定ページ本文） ===== */
+.rich-text-content {
+  font-family: inherit;
+  color: var(--color-primary-deep); /* 全体的に深みのある色に */
+  letter-spacing: -0.01em;
+}
+
+.rich-text-content h1 {
+  color: var(--color-primary-deep);
+  font-weight: 900;
+  font-size: 1.85rem;
+  margin-top: 4rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+  padding-left: 3.5rem;
+  display: flex;
+  align-items: center;
+  line-height: 1.3;
+}
+
+.rich-text-content h1::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2.5rem;
+  height: 6px;
+  background-color: var(--color-secondary-vibrant);
+  border-radius: 9999px;
+}
+
+.rich-text-content h2 {
+  color: var(--color-primary-deep);
+  font-weight: 900;
+  font-size: 1.45rem;
+  border-left: 5px solid var(--color-primary-main);
+  padding-left: 1.25rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.75rem;
+  line-height: 1.4;
+}
+
+.rich-text-content h3 {
+  color: var(--color-secondary-vibrant);
+  font-weight: 900;
+  font-size: 0.875rem; /* 小さめにして英字見出しっぽく */
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rich-text-content h3::before {
+  content: "";
+  width: 2rem; /* 横棒の長さ */
+  height: 6px;
+  background-color: var(--color-secondary-vibrant);
+  border-radius: 9999px;
+  display: block;
+}
+
+.rich-text-content p {
+  line-height: 2; /* ゆったりとした行間でプレミアム感を演出 */
+  color: #2D4C61; /* text-subより少し深い色で可読性向上 */
+  margin-bottom: 1.75rem;
+  font-weight: 500;
+}
+
+.rich-text-content strong {
+  font-weight: 900;
+  color: var(--color-primary-deep);
+}
+
+.rich-text-content ul, 
+.rich-text-content ol {
+  margin-bottom: 2rem;
+  padding-left: 1.5rem;
+}
+
+.rich-text-content li {
+  margin-bottom: 0.75rem;
+  line-height: 1.8;
+  color: #2D4C61;
+  font-weight: 500;
+}
+
+.rich-text-content h4,
+.rich-text-content h5,
+.rich-text-content h6 {
+  color: var(--color-primary-deep);
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.rich-text-content img {
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px -10px rgba(0, 119, 182, 0.15);
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  border: 1px solid rgba(0, 119, 182, 0.05);
+}
+

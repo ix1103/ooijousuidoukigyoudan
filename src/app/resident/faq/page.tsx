@@ -80,11 +80,16 @@ const FALLBACK_FAQ: GroupedFaq[] = [
     },
 ];
 
-const FaqItemComponent: React.FC<{ item: FaqItem; index: number }> = ({ item, index }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const FaqItemComponent: React.FC<{ item: FaqItem & { id?: string }; index: number; defaultOpen?: boolean }> = ({ item, index, defaultOpen = false }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+
+    React.useEffect(() => {
+        if (defaultOpen) setIsOpen(true);
+    }, [defaultOpen]);
 
     return (
         <motion.div
+            id={item.id}
             layout
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -138,6 +143,7 @@ export default function FaqPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('すべて');
+    const [targetFaqId, setTargetFaqId] = useState<string | null>(null);
 
     React.useEffect(() => {
         const fetchFaq = async () => {
@@ -146,7 +152,6 @@ export default function FaqPage() {
                 if (list && list.length > 0) {
                     const groups: Record<string, (FaqItem & { id: string })[]> = {};
                     list.forEach(item => {
-                        // 文字列配列の場合があるため調整
                         const cat = Array.isArray(item.category) ? item.category[0] : (item.category || 'その他');
                         if (!groups[cat]) groups[cat] = [];
                         groups[cat].push({ 
@@ -170,6 +175,21 @@ export default function FaqPage() {
                 setLoading(false);
             }
         };
+
+        // URLパラメータからIDを取得してアンカー設定
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (id) {
+            setTargetFaqId(id);
+            // データ取得後にスクロール
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 1000);
+        }
+
         fetchFaq();
     }, []);
 
@@ -297,7 +317,12 @@ export default function FaqPage() {
                                         <div className="grid grid-cols-1 gap-4">
                                             <AnimatePresence mode="popLayout">
                                                 {group.items.map((item: any, i) => (
-                                                    <FaqItemComponent key={item.id || `faq-${i}`} item={item} index={i} />
+                                                    <FaqItemComponent 
+                                                        key={item.id || `faq-${i}`} 
+                                                        item={item} 
+                                                        index={i} 
+                                                        defaultOpen={item.id === targetFaqId}
+                                                    />
                                                 ))}
                                             </AnimatePresence>
                                         </div>

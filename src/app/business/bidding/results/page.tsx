@@ -11,22 +11,21 @@ import { News, getBiddingList } from '@/lib/microcms';
  * 旧サイト (newpage1.html) の情報を反映し、microCMSでの管理にも対応します。
  */
 
-// 旧サイトから抽出した初期データ（フォールバック）
 const FALLBACK_RESULTS: News[] = [
     // 令和7年度
-    { id: 'r7-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '金谷水源地新受水池築造工事', category: ['落札結果', '入札'], fiscalYear: '令和7年度', price: '12,700,000円' },
-    { id: 'r7-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '深井戸用水中モーターポンプ予備機購入', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '1,673,000円' },
-    { id: 'r7-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '島田市竹下地内配水管切廻工事', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '390,000円' },
+    { id: 'r7-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '金谷水源地新受水池築造工事', category: ['落札結果', '入札'], fiscalYear: '令和7年度', price: '12,700,000円', content: '' },
+    { id: 'r7-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '深井戸用水中モーターポンプ予備機購入', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '1,673,000円', content: '' },
+    { id: 'r7-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2025-04-01', title: '島田市竹下地内配水管切廻工事', category: ['見積結果', '入札'], fiscalYear: '令和7年度', price: '390,000円', content: '' },
     // 令和6年度
-    { id: 'r6-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和６年度 水質検査業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '2,888,000円' },
-    { id: 'r6-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷水源地直送配水池築造工事（2期工事）', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '124,630,000円' },
-    { id: 'r6-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '23,670,000円' },
-    { id: 'r6-4', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事に伴う舗装復旧工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '8,460,000円' },
-    { id: 'r6-5', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '第2配水池受水用緊急遮断弁保守点検業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '138,000円' },
-    { id: 'r6-6', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷配水池他11箇所自家用電気工作物保安管理業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '1,020,000円' },
-    { id: 'r6-7', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷東1丁目地内配水管漏水等修繕工事', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '2,311,100円' },
-    { id: 'r6-8', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 給水装置工事図面等電子化業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '1,490,000円' },
-    { id: 'r6-9', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 薬品購入（次亜塩素酸ナトリウム）', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '3,330,000円' },
+    { id: 'r6-1', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和６年度 水質検査業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '2,888,000円', content: '' },
+    { id: 'r6-2', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷水源地直送配水池築造工事（2期工事）', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '124,630,000円', content: '' },
+    { id: 'r6-3', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '23,670,000円', content: '' },
+    { id: 'r6-4', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '市道三代島3号線配水管布設替工事に伴う舗装復旧工事', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '8,460,000円', content: '' },
+    { id: 'r6-5', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '第2配水池受水用緊急遮断弁保守点検業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '138,000円', content: '' },
+    { id: 'r6-6', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷配水池他11箇所自家用電気工作物保安管理業務委託', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '1,020,000円', content: '' },
+    { id: 'r6-7', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '金谷東1丁目地内配水管漏水等修繕工事', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '2,311,100円', content: '' },
+    { id: 'r6-8', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 給水装置工事図面等電子化業務委託', category: ['落札結果', '入札'], fiscalYear: '令和6年度', price: '1,490,000円', content: '' },
+    { id: 'r6-9', createdAt: '', updatedAt: '', revisedAt: '', publishedAt: '2024-04-01', title: '令和6年度 薬品購入（次亜塩素酸ナトリウム）', category: ['見積結果', '入札'], fiscalYear: '令和6年度', price: '3,330,000円', content: '' },
 ];
 
 export default function BiddingResultsPage() {
@@ -40,9 +39,12 @@ export default function BiddingResultsPage() {
             try {
                 const cmsData = await getBiddingList(100);
                 // categoryに '落札結果' または '見積結果' を含むものだけを抽出
-                const filteredData = cmsData.filter(item =>
-                    item.category?.includes('落札結果') || item.category?.includes('見積結果')
-                );
+                const filteredData = cmsData.filter(item => {
+                    if (Array.isArray(item.category)) {
+                        return item.category.some(c => c === '落札結果' || c === '見積結果');
+                    }
+                    return item.category === '落札結果' || item.category === '見積結果';
+                });
 
                 if (filteredData.length > 0) {
                     setItems(filteredData);
@@ -62,7 +64,11 @@ export default function BiddingResultsPage() {
     // 年度と案件区分でフィルタリング
     const filteredItems = items.filter(item => {
         const yearMatch = selectedYear === 'all' || item.fiscalYear === selectedYear;
-        const typeMatch = selectedType === 'all' || item.category?.includes(selectedType);
+        const typeMatch = selectedType === 'all' || (
+            Array.isArray(item.category) 
+                ? item.category.includes(selectedType) 
+                : item.category === selectedType
+        );
         return yearMatch && typeMatch;
     });
 
@@ -170,11 +176,18 @@ export default function BiddingResultsPage() {
                                             </td>
                                             <td className="block md:table-cell px-5 md:px-6 py-3 md:py-6 md:whitespace-nowrap border-b border-slate-50 md:border-0 flex justify-between md:table-cell items-center">
                                                 <span className="md:hidden text-xs text-primary-main font-bold">案件区分</span>
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${item.category?.includes('落札結果')
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${(
+                                                    Array.isArray(item.category) 
+                                                        ? item.category.includes('落札結果') 
+                                                        : item.category === '落札結果'
+                                                    )
                                                     ? 'bg-blue-50 text-blue-600'
                                                     : 'bg-emerald-50 text-emerald-600'
                                                     }`}>
-                                                    {item.category?.find(c => c === '落札結果' || c === '見積結果') || '区分なし'}
+                                                    {Array.isArray(item.category) 
+                                                        ? item.category.find(c => c === '落札結果' || c === '見積結果') 
+                                                        : (item.category === '落札結果' || item.category === '見積結果' ? item.category : '区分なし')}
+                                                    {!item.category && '区分なし'}
                                                 </span>
                                             </td>
                                             <td className="block md:table-cell px-5 md:px-6 py-4 md:py-6 border-b border-slate-50 md:border-0">

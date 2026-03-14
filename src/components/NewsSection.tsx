@@ -1,42 +1,33 @@
 "use client";
 
 import React from 'react';
-import { getNewsList, News } from '@/lib/microcms';
-import { Calendar, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { getMergedAnnouncements, Announcement } from '@/lib/microcms';
+import { Calendar, ChevronRight, ArrowUpRight, Sparkles, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Skeleton } from './Skeleton';
 
 export const NewsSection = () => {
-    const [news, setNews] = React.useState<News[]>([]);
+    const [announcements, setAnnouncements] = React.useState<Announcement[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        const fetchNews = async () => {
+        const fetchAnnouncements = async () => {
             try {
-                const newsItems = await getNewsList(3);
-                setNews(newsItems);
+                const items = await getMergedAnnouncements(3);
+                setAnnouncements(items);
             } finally {
                 setLoading(false);
             }
         };
-        fetchNews();
+        fetchAnnouncements();
     }, []);
-
-    // フォールバックデモデータ
-    const fallbackNews = [
-        { id: 'demo-1', title: '【重要】令和8年度の水道料金改定に関するお知らせ', publishedAt: new Date().toISOString(), category: ['重要'] },
-        { id: 'demo-2', title: '水道管清掃作業に伴う断水のご協力について', publishedAt: new Date().toISOString(), category: ['お知らせ'] },
-        { id: 'demo-3', title: '令和7年度 第1回 大井上水道企業団議会の開催について', publishedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), category: ['議会情報'] }
-    ] as News[];
-
-    const displayNews = news.length > 0 ? news : fallbackNews;
 
     // 14日以内をNEWコンテンツと判定する関数
     const isNewArticle = (dateString: string) => {
-        const publishedDate = new Date(dateString).getTime();
+        const date = new Date(dateString).getTime();
         const now = Date.now();
-        const diffDays = (now - publishedDate) / (1000 * 60 * 60 * 24);
+        const diffDays = (now - date) / (1000 * 60 * 60 * 24);
         return diffDays <= 14;
     };
 
@@ -92,59 +83,76 @@ export const NewsSection = () => {
                             </div>
                         ))
                     ) : (
-                        displayNews.map((item, idx) => {
-                            const isNew = isNewArticle(item.publishedAt);
+                        announcements.map((item, idx) => {
+                            const isNew = isNewArticle(item.date);
+                            const isFaq = item.type === 'faq';
                             return (
                                 <motion.div
-                                    key={item.id}
+                                    key={`${item.type}-${item.id}`}
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.5, delay: idx * 0.1 }}
                                 >
                                     <Link
-                                        href={`/news/${item.id}`}
-                                        className={`bg-white p-5 md:p-8 rounded-2xl md:rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border shadow-sm hover:shadow-glow transition-all duration-500 group active:scale-[0.99] relative overflow-hidden ${isNew ? 'border-secondary-vibrant/20' : 'border-slate-100/80'
-                                            }`}
+                                        href={item.url}
+                                        className={`bg-white p-5 md:p-8 rounded-2xl md:rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border shadow-sm hover:shadow-glow transition-all duration-500 group active:scale-[0.99] relative overflow-hidden ${
+                                            isNew ? (isFaq ? 'border-amber-400/20' : 'border-secondary-vibrant/20') : 'border-slate-100/80'
+                                        }`}
                                     >
                                         {/* グラデーション左ボーダー */}
-                                        <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl md:rounded-l-3xl ${isNew ? 'bg-gradient-to-b from-red-400 via-red-500 to-red-600' : 'bg-gradient-to-b from-secondary-vibrant to-primary-main opacity-0 group-hover:opacity-100 transition-opacity duration-500'
-                                            }`} />
+                                        <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl md:rounded-l-3xl ${
+                                            isNew 
+                                                ? (isFaq ? 'bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600' : 'bg-gradient-to-b from-red-400 via-red-500 to-red-600')
+                                                : 'bg-gradient-to-b from-secondary-vibrant to-primary-main opacity-0 group-hover:opacity-100 transition-opacity duration-500'
+                                        }`} />
 
                                         <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 flex-grow pl-3 md:pl-5">
                                             <div className="flex flex-wrap items-center gap-2 md:gap-4">
                                                 <div className="flex items-center space-x-2 text-text-sub font-bold text-xs md:text-sm">
                                                     <Calendar size={14} className="text-primary-main/40" />
-                                                    <span>{new Date(item.publishedAt).toLocaleDateString('ja-JP')}</span>
+                                                    <span>{new Date(item.date).toLocaleDateString('ja-JP')}</span>
                                                 </div>
 
                                                 {isNew && (
-                                                    <span className="flex items-center gap-1 bg-gradient-to-r from-red-50 to-red-100 text-red-600 text-[10px] md:text-xs font-black px-2.5 py-0.5 rounded-full border border-red-200/60">
+                                                    <span className={`flex items-center gap-1 text-[10px] md:text-xs font-black px-2.5 py-0.5 rounded-full border ${
+                                                        isFaq 
+                                                            ? 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 border-amber-200/60'
+                                                            : 'bg-gradient-to-r from-red-50 to-red-100 text-red-600 border-red-200/60'
+                                                    }`}>
                                                         <Sparkles size={11} />
-                                                        NEW
+                                                        {isFaq ? 'UPDATE' : 'NEW'}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            {item.category && (
-                                                <div className="flex gap-2">
-                                                    {(Array.isArray(item.category) ? item.category : [item.category]).map((cat: string, i: number) => (
-                                                        <span
-                                                            key={i}
-                                                            className="bg-gradient-to-r from-primary-main/5 to-secondary-vibrant/10 text-primary-main text-[9px] md:text-[10px] font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full uppercase tracking-widest border border-primary-main/5"
-                                                        >
-                                                            {cat}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
+                                            <div className="flex gap-2">
+                                                {item.category.map((cat: string, i: number) => (
+                                                    <span
+                                                        key={i}
+                                                        className={`${
+                                                            isFaq
+                                                                ? 'bg-gradient-to-r from-amber-500/5 to-amber-600/10 text-amber-600 border-amber-600/10'
+                                                                : 'bg-gradient-to-r from-primary-main/5 to-secondary-vibrant/10 text-primary-main border-primary-main/5'
+                                                        } text-[9px] md:text-[10px] font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full uppercase tracking-widest border`}
+                                                    >
+                                                        {cat}
+                                                    </span>
+                                                ))}
+                                            </div>
 
-                                            <h3 className="text-sm md:text-base font-bold text-primary-deep group-hover:text-primary-main transition-colors leading-snug">
-                                                {item.title || item.news_title || item.title_text || ''}
+                                            <h3 className={`text-sm md:text-base font-bold transition-colors leading-snug ${
+                                                isFaq ? 'text-amber-900 group-hover:text-amber-600' : 'text-primary-deep group-hover:text-primary-main'
+                                            }`}>
+                                                {item.title}
                                             </h3>
                                         </div>
 
-                                        <div className="hidden md:flex items-center justify-center bg-slate-50 p-3 rounded-xl group-hover:bg-gradient-to-br group-hover:from-primary-main group-hover:to-secondary-vibrant group-hover:text-white transition-all duration-500 shrink-0 group-hover:shadow-premium">
+                                        <div className={`hidden md:flex items-center justify-center p-3 rounded-xl transition-all duration-500 shrink-0 group-hover:shadow-premium ${
+                                            isFaq 
+                                                ? 'bg-amber-50 group-hover:bg-gradient-to-br group-hover:from-amber-400 group-hover:to-amber-600 group-hover:text-white'
+                                                : 'bg-slate-50 group-hover:bg-gradient-to-br group-hover:from-primary-main group-hover:to-secondary-vibrant group-hover:text-white'
+                                        }`}>
                                             <ChevronRight size={20} />
                                         </div>
                                     </Link>

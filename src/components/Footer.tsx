@@ -2,9 +2,33 @@
 
 import { MapPin, Phone, Mail, Clock, ChevronRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 import { WaterLogoIcon } from './WaterLogoIcon';
+import { getPagesByMenu } from '@/lib/microcms';
 
 export const Footer = () => {
+    const [customPages, setCustomPages] = React.useState<{resident: any[], business: any[], bidding: any[], outline: any[]}>({ 
+        resident: [], business: [], bidding: [], outline: [] 
+    });
+
+    React.useEffect(() => {
+        const fetchCustomPages = async () => {
+            const [resPages, busPages, bidPages, outPages] = await Promise.all([
+                getPagesByMenu('resident'),
+                getPagesByMenu('business'),
+                getPagesByMenu('bidding'),
+                getPagesByMenu('outline')
+            ]);
+            setCustomPages({
+                resident: resPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, priority: p.priority ?? 9999 })),
+                business: busPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, priority: p.priority ?? 9999 })),
+                bidding: bidPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, priority: p.priority ?? 9999 })),
+                outline: outPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, priority: p.priority ?? 9999 }))
+            });
+        };
+        fetchCustomPages();
+    }, []);
+
     return (
         <footer className="bg-primary-deep text-white relative overflow-hidden">
             {/* 上部アクセントライン */}
@@ -48,14 +72,15 @@ export const Footer = () => {
                         </h3>
                         <nav className="flex flex-col space-y-3">
                             {[
-                                { name: '水道料金・手続き', href: '/resident/price' },
-                                { name: '水道料金改定', href: '/resident/billing-update' },
-                                { name: '断水情報', href: '/resident/water-outage' },
-                                { name: '水道トラブル', href: '/resident/trouble' },
-                                { name: '宅内漏水修理当番店', href: '/resident/repair-shops' },
-                                { name: 'よくある質問', href: '/resident/faq' },
-                                { name: '申請書DL', href: '/resident/downloads' },
-                            ].map((item) => (
+                                ...customPages.resident,
+                                { name: '水道料金・手続き', href: '/resident/price', priority: 1 },
+                                { name: '水道料金改定', href: '/resident/billing-update', priority: 2 },
+                                { name: '断水情報', href: '/resident/water-outage', priority: 3 },
+                                { name: '水道トラブル', href: '/resident/trouble', priority: 4 },
+                                { name: '宅内漏水修理当番店', href: '/resident/repair-shops', priority: 5 },
+                                { name: 'よくある質問', href: '/resident/faq', priority: 6 },
+                                { name: '申請書DL', href: '/resident/downloads', priority: 7 }
+                            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999)).map((item) => (
                                 <Link key={item.href} href={item.href} className="text-white/50 hover:text-white text-xs flex items-center group transition-colors">
                                     <ChevronRight size={10} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-transform group-hover:translate-x-0.5" />
                                     {item.name}
@@ -73,11 +98,12 @@ export const Footer = () => {
                             </h3>
                             <nav className="flex flex-col space-y-3">
                                 {[
-                                    { name: '業者向け情報', href: '/business/contractor' },
-                                    { name: '入札参加資格', href: '/business/bidding' },
-                                    { name: '指定工事店一覧', href: '/business/designated-shops' },
-                                    { name: 'インボイス制度', href: '/business/invoice' },
-                                ].map((item) => (
+                                    ...customPages.business,
+                                    { name: '業者向け情報', href: '/business/contractor', priority: 1 },
+                                    { name: '入札参加資格', href: '/business/bidding', priority: 2 },
+                                    { name: '指定工事店一覧', href: '/business/designated-shops', priority: 3 },
+                                    { name: 'インボイス制度', href: '/business/invoice', priority: 4 }
+                                ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999)).map((item) => (
                                     <Link key={item.href} href={item.href} className="text-white/50 hover:text-white text-xs flex items-center group transition-colors">
                                         <ChevronRight size={10} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-transform group-hover:translate-x-0.5" />
                                         {item.name}
@@ -92,10 +118,11 @@ export const Footer = () => {
                             </h3>
                             <nav className="flex flex-col space-y-3">
                                 {[
-                                    { name: '入札結果', href: '/business/bidding/results' },
-                                    { name: '公表資料', href: '/about/disclosure' },
-                                    { name: '水質情報', href: '/about/water-quality' },
-                                ].map((item) => (
+                                    ...customPages.bidding,
+                                    { name: '入札結果', href: '/business/bidding/results', priority: 1 },
+                                    { name: '公表資料', href: '/about/disclosure', priority: 2 },
+                                    { name: '水質情報', href: '/about/water-quality', priority: 3 }
+                                ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999)).map((item) => (
                                     <Link key={item.href} href={item.href} className="text-white/50 hover:text-white text-xs flex items-center group transition-colors">
                                         <ChevronRight size={10} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-transform group-hover:translate-x-0.5" />
                                         {item.name}
@@ -113,12 +140,13 @@ export const Footer = () => {
                         </h3>
                         <nav className="flex flex-col space-y-3">
                             {[
-                                { name: '概要・アクセス', href: '/about/outline' },
-                                { name: '料金等審議会', href: '/about/council' },
-                                { name: '職員採用', href: '/recruit' },
-                                { name: '議会について', href: '/about/assembly' },
-                                { name: 'パンフレット', href: '/about/brochure' },
-                            ].map((item) => (
+                                ...customPages.outline,
+                                { name: '概要・アクセス', href: '/about/outline', priority: 1 },
+                                { name: '料金等審議会', href: '/about/council', priority: 2 },
+                                { name: '職員採用', href: '/recruit', priority: 3 },
+                                { name: '議会について', href: '/about/assembly', priority: 4 },
+                                { name: 'パンフレット', href: '/about/brochure', priority: 5 }
+                            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999)).map((item) => (
                                 <Link key={item.href} href={item.href} className="text-white/50 hover:text-white text-xs flex items-center group transition-colors">
                                     <ChevronRight size={10} className="mr-2 text-white/20 group-hover:text-secondary-vibrant transition-transform group-hover:translate-x-0.5" />
                                     {item.name}

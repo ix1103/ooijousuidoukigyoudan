@@ -6,11 +6,33 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { WaterLogoIcon } from './WaterLogoIcon';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getPagesByMenu, PageContent } from '@/lib/microcms';
 
 export const Header = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [scrolled, setScrolled] = React.useState(false);
+    const [customPages, setCustomPages] = React.useState<{resident: any[], business: any[], bidding: any[], outline: any[]}>({ 
+        resident: [], business: [], bidding: [], outline: [] 
+    });
     const pathname = usePathname();
+
+    React.useEffect(() => {
+        const fetchCustomPages = async () => {
+            const [resPages, busPages, bidPages, outPages] = await Promise.all([
+                getPagesByMenu('resident'),
+                getPagesByMenu('business'),
+                getPagesByMenu('bidding'),
+                getPagesByMenu('outline')
+            ]);
+            setCustomPages({
+                resident: resPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, desc: '企業団からのお知らせ', priority: p.priority ?? 9999 })),
+                business: busPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, desc: '事業者向け案内', priority: p.priority ?? 9999 })),
+                bidding: bidPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, desc: '公表資料', priority: p.priority ?? 9999 })),
+                outline: outPages.map(p => ({ name: p.title, href: `/pages/${p.slug}`, desc: '組織・あゆみ', priority: p.priority ?? 9999 }))
+            });
+        };
+        fetchCustomPages();
+    }, []);
 
     // ホームへ戻る（同じページならスクロールトップ）
     const handleHomeClick = (e: React.MouseEvent) => {
@@ -43,41 +65,45 @@ export const Header = () => {
         {
             name: '住民の皆様へ',
             items: [
-                { name: '水道料金・手続き', href: '/resident/price', desc: 'お支払い・各種申請' },
-                { name: '水道料金改定のお知らせ', href: '/resident/billing-update', desc: '令和7年度の料金改定について' },
-                { name: '断水情報', href: '/resident/water-outage', desc: '突発・計画断水のお知らせ' },
-                { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法' },
-                { name: '宅内漏水修理当番店', href: '/resident/repair-shops', desc: '修理当番店一覧（年度別PDF）' },
-                { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A' },
-                { name: '各種申請書ダウンロード', href: '/resident/downloads', desc: '誓約書・給水装置申込書等' },
-            ]
+                ...customPages.resident,
+                { name: '水道料金・手続き', href: '/resident/price', desc: 'お支払い・各種申請', priority: 1 },
+                { name: '水道料金改定のお知らせ', href: '/resident/billing-update', desc: '令和7年度の料金改定について', priority: 2 },
+                { name: '断水情報', href: '/resident/water-outage', desc: '突発・計画断水のお知らせ', priority: 3 },
+                { name: '水道トラブル', href: '/resident/trouble', desc: '漏水・断水・凍結の対処法', priority: 4 },
+                { name: '宅内漏水修理当番店', href: '/resident/repair-shops', desc: '修理当番店一覧（年度別PDF）', priority: 5 },
+                { name: 'よくある質問', href: '/resident/faq', desc: '料金・水質のQ&A', priority: 6 },
+                { name: '各種申請書ダウンロード', href: '/resident/downloads', desc: '誓約書・給水装置申込書等', priority: 7 }
+            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999))
         },
         {
             name: '事業者の皆様へ',
             items: [
-                { name: '水道工事等業者向け', href: '/business/contractor', desc: '給水装置工事・様式' },
-                { name: '入札参加資格申請', href: '/business/bidding', desc: '入札参加登録・資格書類' },
-                { name: '指定工事店一覧', href: '/business/designated-shops', desc: '指定給水装置工事事業者一覧' },
-                { name: 'インボイス制度', href: '/business/invoice', desc: '適格請求書等保存方式について' },
-            ]
+                ...customPages.business,
+                { name: '水道工事等業者向け', href: '/business/contractor', desc: '給水装置工事・様式', priority: 1 },
+                { name: '入札参加資格申請', href: '/business/bidding', desc: '入札参加登録・資格書類', priority: 2 },
+                { name: '指定工事店一覧', href: '/business/designated-shops', desc: '指定給水装置工事事業者一覧', priority: 3 },
+                { name: 'インボイス制度', href: '/business/invoice', desc: '適格請求書等保存方式について', priority: 4 }
+            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999))
         },
         {
             name: '公表',
             items: [
-                { name: '入札・見積結果公表', href: '/business/bidding/results', desc: '執行結果の公表' },
-                { name: '公表資料', href: '/about/disclosure', desc: '耐震化計画・各種公表書類' },
-                { name: '水質情報', href: '/about/water-quality', desc: '水質検査計画・検査結果' },
-            ]
+                ...customPages.bidding,
+                { name: '入札・見積結果公表', href: '/business/bidding/results', desc: '執行結果の公表', priority: 1 },
+                { name: '公表資料', href: '/about/disclosure', desc: '耐震化計画・各種公表書類', priority: 2 },
+                { name: '水質情報', href: '/about/water-quality', desc: '水質検査計画・検査結果', priority: 3 }
+            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999))
         },
         {
             name: '企業団について',
             items: [
-                { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内' },
-                { name: '水道料金等審議会', href: '/about/council', desc: '料金審議機関の活動' },
-                { name: '職員採用', href: '/recruit', desc: '採用試験・募集情報' },
-                { name: '議会について', href: '/about/assembly', desc: '議会の組織と活動' },
-                { name: 'パンフレット・広報資料', href: '/about/brochure', desc: '企業団パンフレットPDF' },
-            ]
+                ...customPages.outline,
+                { name: '組織概要・アクセス', href: '/about/outline', desc: '本庁舎の所在地・案内', priority: 1 },
+                { name: '水道料金等審議会', href: '/about/council', desc: '料金審議機関の活動', priority: 2 },
+                { name: '職員採用', href: '/recruit', desc: '採用試験・募集情報', priority: 3 },
+                { name: '議会について', href: '/about/assembly', desc: '議会の組織と活動', priority: 4 },
+                { name: 'パンフレット・広報資料', href: '/about/brochure', desc: '企業団パンフレットPDF', priority: 5 }
+            ].sort((a, b) => (a.priority ?? 9999) - (b.priority ?? 9999))
         },
         { name: 'お知らせ', href: '/news', items: [] },
     ];
