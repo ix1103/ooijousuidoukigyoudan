@@ -207,18 +207,18 @@ export const Header = () => {
                             <div className="ml-4 pl-4 border-l border-current/10 flex items-center space-x-3">
                                 <a
                                     href="tel:0547-46-4130"
-                                    className="flex items-center space-x-2 bg-primary-main text-white px-4 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
+                                    className="flex items-center space-x-2 bg-primary-main text-white px-3.5 py-2 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
                                     title="緊急連絡先"
                                 >
-                                    <Phone size={14} fill="currentColor" />
+                                    <Phone size={13} fill="currentColor" />
                                     <span>緊急連絡</span>
                                 </a>
                                 <a
                                     href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
-                                    className="flex items-center space-x-2 bg-primary-main text-white px-4 py-2.5 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
+                                    className="flex items-center space-x-2 bg-primary-main text-white px-3.5 py-2 rounded-2xl font-black text-xs shadow-lg hover:bg-primary-deep transition-all active:scale-95"
                                     title="メールでお問い合わせ"
                                 >
-                                    <Mail size={14} />
+                                    <Mail size={13} />
                                     <span>メール連絡</span>
                                 </a>
                             </div>
@@ -228,19 +228,19 @@ export const Header = () => {
                         <div className="flex items-center space-x-2 xl:hidden">
                             <a
                                 href="tel:0547-46-4130"
-                                className={`p-2.5 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
+                                className={`p-2 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
                                     }`}
                                 title="緊急連絡先"
                             >
-                                <Phone size={20} />
+                                <Phone size={18} />
                             </a>
                             <a
                                 href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
-                                className={`p-2.5 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
+                                className={`p-2 rounded-xl transition-all ${scrolled ? 'bg-primary-main/10 text-primary-main' : 'bg-white/10 text-white'
                                     }`}
                                 title="メールでお問い合わせ"
                             >
-                                <Mail size={20} />
+                                <Mail size={18} />
                             </a>
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
@@ -333,18 +333,18 @@ export const Header = () => {
                             <div className="grid grid-cols-2 gap-3">
                                 <a
                                     href="tel:0547-46-4130"
-                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
+                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-3.5 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    <Phone size={18} fill="currentColor" />
+                                    <Phone size={16} fill="currentColor" />
                                     <span>緊急電話</span>
                                 </a>
                                 <a
                                     href="mailto:jimukyoku@ooijousuidoukigyoudan.or.jp"
-                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
+                                    className="flex items-center justify-center space-x-2 bg-gradient-to-br from-red-500 to-rose-600 text-white py-3.5 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-transform"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    <Mail size={18} />
+                                    <Mail size={16} />
                                     <span>メール</span>
                                 </a>
                             </div>
