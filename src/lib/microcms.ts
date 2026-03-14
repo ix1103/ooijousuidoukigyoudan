@@ -61,8 +61,9 @@ export type SiteStatus = {
   // 緊急バナー
   isEmergencyActive: boolean;
   emergencyMessage?: string;
-  emergencyLinkUrl?: string;
+  emergencyLinkUrl?: string; // 外部用リンク（任意）
   emergencyLinkLabel?: string;
+  emergencyContent?: string; // ← 新規：緊急情報詳細ページ用の本文
   // 断水状況
   isWaterOutage: boolean;
   waterOutageSituation?: string;
@@ -117,8 +118,6 @@ export const getSiteStatus = async (): Promise<SiteStatus | null> => {
     });
     return data.contents[0] || null;
   } catch (error) {
-    // endpointが存在しない場合などは警告のみにする
-    // console.warn('Failed to fetch site status:', error);
     return null;
   }
 };

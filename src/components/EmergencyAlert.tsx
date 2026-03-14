@@ -44,8 +44,8 @@ export const EmergencyAlert = () => {
                 <p className="text-red-800 text-sm md:text-base font-bold flex-1 truncate">
                     {info.emergencyMessage}
                 </p>
-                {info.emergencyLinkUrl && (
-                    <Link href={info.emergencyLinkUrl} className="hidden md:flex items-center text-red-600 font-bold text-xs md:text-sm hover:underline shrink-0">
+                {(info.emergencyContent || info.emergencyLinkUrl) && (
+                    <Link href={info.emergencyContent ? "/emergency" : (info.emergencyLinkUrl || "#")} className="flex items-center text-red-600 font-bold text-xs md:text-sm hover:underline shrink-0 whitespace-nowrap ml-2 md:ml-0">
                         {info.emergencyLinkLabel || '詳細を見る'}
                         <ChevronRight size={16} />
                     </Link>
