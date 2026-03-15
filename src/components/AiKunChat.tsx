@@ -118,34 +118,34 @@ export const AiKunChat = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] font-sans">
+    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-4 w-[350px] sm:w-[420px] h-[550px] sm:h-[650px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
+            className="mb-4 w-[calc(100vw-1.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
           >
             {/* ヘッダー */}
-            <div className="bg-primary-main p-6 flex items-center justify-between text-white shrink-0 shadow-lg">
+            <div className="bg-primary-main p-5 sm:p-6 flex items-center justify-between text-white shrink-0 shadow-lg">
               <div className="flex items-center gap-3">
-                <div className="relative w-16 h-16 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner">
+                <div className="relative w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner">
                   <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
                 </div>
                 <div>
-                  <h3 className="font-black text-xl leading-tight">アイ君</h3>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v9</p>
+                  <h3 className="font-black text-lg sm:text-xl leading-tight">アイ君</h3>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v11</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1 bg-white/10 rounded-full">
+              <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
                 <X size={20} />
               </button>
             </div>
 
             {/* チャットエリア */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 bg-slate-50/50">
               {messages.map((m) => (
                 <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm md:text-base leading-relaxed ${
+                  <div className={`max-w-[90%] sm:max-w-[85%] p-4 rounded-2xl text-sm md:text-base leading-relaxed ${
                     m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none shadow-glow' : 'bg-white text-primary-deep rounded-tl-none shadow-premium'
                   }`}>
                     {m.content}
@@ -153,7 +153,7 @@ export const AiKunChat = () => {
                   {m.link && (
                     <Link 
                       href={m.link.url}
-                      className="mt-2 flex items-center gap-2 bg-secondary-vibrant text-primary-deep px-4 py-2 rounded-xl text-xs font-black shadow-premium hover:scale-105 transition-all outline-none"
+                      className="mt-2 flex items-center gap-2 bg-secondary-vibrant text-primary-deep px-4 py-2.5 rounded-xl text-xs font-black shadow-premium hover:scale-105 transition-all outline-none"
                     >
                       <ExternalLink size={14} />
                       {m.link.title}を見る
@@ -173,18 +173,18 @@ export const AiKunChat = () => {
             </div>
 
             {/* 入力エリア */}
-            <div className="p-4 bg-white border-t border-slate-100 shrink-0">
+            <div className="p-3 sm:p-4 bg-white border-t border-slate-100 shrink-0">
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
                 <input
                   type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="質問を入力してください..."
-                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-4 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none"
+                  placeholder="質問を入力..."
+                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 sm:py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none"
                 />
                 <button
                   type="submit" disabled={!inputValue.trim() || isTyping}
-                  className="bg-primary-main text-white p-4 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 shadow-glow"
+                  className="bg-primary-main text-white p-3 sm:p-3.5 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 shadow-glow"
                 >
-                  <Send size={20} />
+                  <Send size={18} />
                 </button>
               </form>
             </div>
@@ -195,9 +195,9 @@ export const AiKunChat = () => {
       <motion.button
         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative group bg-white p-2 rounded-full shadow-2xl border-4 border-primary-main"
+        className="relative group bg-white p-1 rounded-full shadow-2xl border-2 sm:border-4 border-primary-main"
       >
-        <div className="w-20 h-20 relative overflow-hidden rounded-full">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 relative overflow-hidden rounded-full font-bold">
            <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0 scale-[1.3]" />
         </div>
       </motion.button>

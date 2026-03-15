@@ -27,6 +27,14 @@ export const metadata: Metadata = {
   description: "大井上水道企業団の公式ウェブサイトです。水道料金、各種手続き、緊急時の対応、水質情報などをお知らせします。",
   icons: {
     icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
   },
 };
 
