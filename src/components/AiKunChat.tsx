@@ -6,12 +6,12 @@ import { X, Send, ExternalLink, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V12, 
+  AI_KUN_KNOWLEDGE_V14, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem 
-} from '@/constants/knowledge-base-v12';
+} from '@/constants/knowledge-base-v14';
 
 interface Message {
   id: string;
@@ -33,13 +33,13 @@ export const AiKunChat = () => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
         const greetings = AI_KUN_PERSONALITY.greetings;
-        addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " どんなことでも気軽に話しかけてね。お水のこと以外でも大歓迎さ！");
+        addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " どんなことでも気軽に話しかけてね。今日の気分はどうだい？");
       }, 500);
       setProactiveMessage(null); // 開いたら吹き出しは消す
     }
   }, [isOpen]);
 
-  // 自律的な話しかけロジック (V13)
+  // 自律的な話しかけロジック (V13/V14)
   useEffect(() => {
     if (!isOpen && !proactiveMessage) {
       proactiveTimerRef.current = setTimeout(() => {
@@ -65,12 +65,12 @@ export const AiKunChat = () => {
   };
 
   /**
-   * 究極スコアリング & 雑談エンジン (V12)
+   * 究極スコアリング & 雑談・雑学エンジン (V14)
    */
   const handleLogic = (query: string): { response: string; link?: { title: string; url: string } } => {
-    const normalizedQuery = query.toLowerCase().replace(/[、。！？!?,.]/g, '');
+    const normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. ]/g, '');
     
-    // 1. 雑談・おしゃべりチェック
+    // 1. 雑談・雑学・おしゃべりチェック (優先)
     let bestChatKey = null;
     let maxChatScore = 0;
     for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
@@ -88,19 +88,23 @@ export const AiKunChat = () => {
       return { response: AI_KUN_CHATTER[bestChatKey].response };
     }
 
-    // 2. 実務知識検索（スコアリング）
+    // 2. 実務知識検索（シノニム対応スコアリング）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V12.forEach(item => {
+    AI_KUN_KNOWLEDGE_V14.forEach(item => {
       let score = 0;
       item.keywords.forEach(kw => {
+        // 直接マッチング
         if (normalizedQuery.includes(kw.word)) score += kw.weight;
+        // シノニムマッチング
         (SYNONYMS[kw.word] || []).forEach(syn => {
-          if (normalizedQuery.includes(syn)) score += kw.weight * 0.9;
+          if (normalizedQuery.includes(syn)) score += kw.weight * 0.95; // ほぼ同等として扱う
         });
       });
-      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) score += 12;
+      
+      // タイトル・IDマッチング (超強力)
+      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) score += 15;
       
       if (score > maxScore) {
         maxScore = score;
@@ -109,13 +113,11 @@ export const AiKunChat = () => {
     });
 
     if (bestItem && maxScore >= 4) {
-      // 語尾のバリエーションと共感
       const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
       const empathy = item.empathy ? `${item.empathy} ` : '';
       let content = item.content;
-      // 文末をアイ君らしく
       if (content.endsWith('。')) content = content.slice(0, -1);
       
       return { 
@@ -124,11 +126,11 @@ export const AiKunChat = () => {
       };
     }
 
-    // 3. ヒットしない場合の「人間味」のある返し
+    // 3. ヒットしない場合の「究極知性」的な返し
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
-      response: `ふむふむ、${query}についてだね。正確なガイドは難しいけれど、私の心に浮かんだのはこれさ。「${philosophy}」 もし水道の具体的な手続き（料金、引越し、漏水など）を知りたいときは、そう教えておくれ！`
+      response: `ほほう、${query}についてだね。私のデータベースを隅々まで探してみたけれど、ぴったりの答えは見つからなかったよ。でも、こんな言葉を贈るさ。「${philosophy}」 具体的な手続きや、水の雑学（歴史や科学など）について聞きたいときは、いつでも教えてね！`
     };
   };
 
@@ -148,7 +150,7 @@ export const AiKunChat = () => {
 
   return (
     <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans flex flex-col items-end">
-      {/* 吹き出し (V13) */}
+      {/* 吹き出し (V13/V14) */}
       <AnimatePresence>
         {!isOpen && proactiveMessage && (
           <motion.div
@@ -187,7 +189,7 @@ export const AiKunChat = () => {
                 </div>
                 <div>
                   <h3 className="font-black text-lg sm:text-xl leading-tight">アイ君</h3>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v12</p>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v14</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
@@ -231,7 +233,7 @@ export const AiKunChat = () => {
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
                 <input
                   type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="アイ君とお話ししましょう..."
+                  placeholder="なんでも話しかけておくれ！"
                   className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 sm:py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none"
                 />
                 <button
@@ -246,6 +248,18 @@ export const AiKunChat = () => {
         )}
       </AnimatePresence>
 
+      <motion.button
+        whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative group bg-white p-1 rounded-full shadow-2xl border-2 sm:border-4 border-primary-main"
+      >
+        <div className="w-12 h-12 sm:w-16 sm:h-16 relative overflow-hidden rounded-full font-bold">
+           <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0 scale-[1.3]" />
+        </div>
+      </motion.button>
+    </div>
+  );
+};
       <motion.button
         whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
