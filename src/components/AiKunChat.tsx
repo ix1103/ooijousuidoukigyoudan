@@ -150,24 +150,25 @@ export const AiKunChat = () => {
 
   return (
     <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans flex flex-col items-end">
-      {/* 吹き出し (V13/V14) */}
+      {/* 吹き出し (V13/V14/V15) */}
       <AnimatePresence>
         {!isOpen && proactiveMessage && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.5, y: 20, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setIsOpen(true)}
-            className="mb-4 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[200px]"
+            className="mb-6 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[200px]"
           >
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-r border-b border-primary-light/20" />
             <div className="flex items-start gap-2">
-              <Sparkles size={16} className="text-secondary-vibrant shrink-0 mt-0.5" />
+              <Sparkles size={16} className="text-secondary-vibrant shrink-0 mt-0.5 animate-pulse" />
               <span>{proactiveMessage}</span>
             </div>
             <button 
               onClick={(e) => { e.stopPropagation(); setProactiveMessage(null); }}
-              className="absolute -top-2 -right-2 bg-slate-200 text-slate-500 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute -top-2 -right-2 bg-slate-200 text-slate-500 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
             >
               <X size={12} />
             </button>
@@ -178,21 +179,35 @@ export const AiKunChat = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-4 w-[calc(100vw-1.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
+            initial={{ opacity: 0, scale: 0.8, y: 40, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 0.8, y: 40, filter: 'blur(10px)' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="mb-4 w-[calc(100vw-1.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col origin-bottom-right"
           >
             {/* ヘッダー */}
-            <div className="bg-primary-main p-5 sm:p-6 flex items-center justify-between text-white shrink-0 shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner">
+            <div className="bg-primary-main p-5 sm:p-6 flex items-center justify-between text-white shrink-0 shadow-lg relative overflow-hidden">
+              {/* 背景の装飾的な波紋 */}
+              <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] border-[20px] border-white rounded-full animate-[spin_20s_linear_infinite]" />
+              </div>
+
+              <div className="flex items-center gap-3 relative">
+                <motion.div 
+                  initial={{ rotate: -10 }} animate={{ rotate: 0 }}
+                  className="relative w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner"
+                >
                   <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
-                </div>
+                </motion.div>
                 <div>
                   <h3 className="font-black text-lg sm:text-xl leading-tight">アイ君</h3>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v14</p>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v15</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full relative z-10"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -200,7 +215,12 @@ export const AiKunChat = () => {
             {/* チャットエリア */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6 bg-slate-50/50">
               {messages.map((m) => (
-                <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <motion.div 
+                  key={m.id} 
+                  initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
+                >
                   <div className={`max-w-[90%] sm:max-w-[85%] p-4 rounded-2xl text-sm md:text-base leading-relaxed ${
                     m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none shadow-glow' : 'bg-white text-primary-deep rounded-tl-none shadow-premium'
                   }`}>
@@ -219,11 +239,19 @@ export const AiKunChat = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-premium flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-primary-main/30 rounded-full animate-bounce" />
-                    <span className="w-1.5 h-1.5 bg-primary-main/30 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 bg-primary-main/30 rounded-full animate-bounce [animation-delay:0.4s]" />
-                  </div>
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+                    className="bg-white p-4 rounded-2xl rounded-tl-none shadow-premium flex gap-1.5"
+                  >
+                    {[0, 0.2, 0.4].map((delay, i) => (
+                      <motion.span 
+                        key={i}
+                        animate={{ y: [0, -6, 0] }}
+                        transition={{ repeat: Infinity, duration: 0.6, delay }}
+                        className="w-2 h-2 bg-primary-main/30 rounded-full" 
+                      />
+                    ))}
+                  </motion.div>
                 </div>
               )}
             </div>
@@ -234,14 +262,16 @@ export const AiKunChat = () => {
                 <input
                   type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
                   placeholder="なんでも話しかけておくれ！"
-                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 sm:py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none"
+                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 sm:py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none transition-all"
                 />
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="submit" disabled={!inputValue.trim() || isTyping}
-                  className="bg-primary-main text-white p-3 sm:p-3.5 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 shadow-glow"
+                  className="bg-primary-main text-white p-3 sm:p-3.5 rounded-xl disabled:opacity-50 shadow-glow"
                 >
                   <Send size={18} />
-                </button>
+                </motion.button>
               </form>
             </div>
           </motion.div>
@@ -249,12 +279,32 @@ export const AiKunChat = () => {
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+        animate={!isOpen ? {
+          y: [0, -10, 0],
+          transition: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        } : { y: 0 }}
+        whileHover={{ scale: 1.1, rotate: 5 }} 
+        whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         className="relative group bg-white p-1 rounded-full shadow-2xl border-2 sm:border-4 border-primary-main"
       >
+        {/* 背景のパルス波紋 (V15) */}
+        {!isOpen && (
+          <div className="absolute inset-0 -z-10 bg-primary-main/20 rounded-full animate-ping opacity-75" />
+        )}
+        
         <div className="w-12 h-12 sm:w-16 sm:h-16 relative overflow-hidden rounded-full font-bold">
-           <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0 scale-[1.3]" />
+           <motion.div
+             animate={!isOpen ? { scale: [1.3, 1.4, 1.3] } : { scale: 1.3 }}
+             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+             className="w-full h-full relative"
+           >
+             <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0" />
+           </motion.div>
         </div>
       </motion.button>
     </div>
