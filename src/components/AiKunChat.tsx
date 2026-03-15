@@ -149,8 +149,8 @@ export const AiKunChat = () => {
   };
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans flex flex-col items-end">
-      {/* 吹き出し (V13/V14/V15) */}
+    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 sm:bottom-4 sm:right-4 z-[9999] font-sans flex flex-col items-end">
+      {/* 吹き出し (V13/V14/V15/V16) */}
       <AnimatePresence>
         {!isOpen && proactiveMessage && (
           <motion.div
@@ -159,7 +159,7 @@ export const AiKunChat = () => {
             exit={{ opacity: 0, scale: 0.5, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setIsOpen(true)}
-            className="mb-6 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[200px]"
+            className="mb-8 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[180px] sm:max-w-[200px] mr-2"
           >
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-r border-b border-primary-light/20" />
             <div className="flex items-start gap-2">
@@ -183,7 +183,7 @@ export const AiKunChat = () => {
             animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 0.8, y: 40, filter: 'blur(10px)' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="mb-4 w-[calc(100vw-1.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col origin-bottom-right"
+            className="mb-4 w-[calc(100vw-2.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col origin-bottom-right"
           >
             {/* ヘッダー */}
             <div className="bg-primary-main p-5 sm:p-6 flex items-center justify-between text-white shrink-0 shadow-lg relative overflow-hidden">
@@ -201,7 +201,7 @@ export const AiKunChat = () => {
                 </motion.div>
                 <div>
                   <h3 className="font-black text-lg sm:text-xl leading-tight">アイ君</h3>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v15</p>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v16</p>
                 </div>
               </div>
               <button 

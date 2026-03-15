@@ -35,7 +35,7 @@ export const BackToTop = () => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.5, y: 20 }}
                     onClick={scrollToTop}
-                    className="fixed bottom-8 right-8 z-[60] w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-md text-primary-main rounded-full shadow-glow border border-primary-main/10 flex items-center justify-center group hover:bg-primary-main hover:text-white transition-all duration-300 active:scale-90 overflow-hidden"
+                    className="fixed bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4.5rem))] right-6 sm:bottom-8 sm:right-8 z-[60] w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-md text-primary-main rounded-full shadow-glow border border-primary-main/10 flex items-center justify-center group hover:bg-primary-main hover:text-white transition-all duration-300 active:scale-90 overflow-hidden"
                     aria-label="ページトップへ戻る"
                 >
                     {/* 波紋演出 */}
