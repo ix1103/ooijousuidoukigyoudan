@@ -5,7 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AI_KUN_KNOWLEDGE_V9, SYNONYMS, AI_KUN_PERSONALITY, KnowledgeItem } from '@/constants/knowledge-base-v9';
+import { 
+  AI_KUN_KNOWLEDGE_V12, 
+  SYNONYMS, 
+  AI_KUN_PERSONALITY, 
+  AI_KUN_CHATTER,
+  KnowledgeItem 
+} from '@/constants/knowledge-base-v12';
 
 interface Message {
   id: string;
@@ -25,7 +31,7 @@ export const AiKunChat = () => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
         const greetings = AI_KUN_PERSONALITY.greetings;
-        addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " サイト内の手続き、料金改定、水道のトラブルなど、何でも詳しく教えるよ。どんなことにお困りかな？");
+        addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " どんなことでも気軽に話しかけてね。お水のこと以外でも大歓迎さ！");
       }, 500);
     }
   }, [isOpen]);
@@ -42,43 +48,70 @@ export const AiKunChat = () => {
   };
 
   /**
-   * 高精度スコアリング検索エンジン (V9)
+   * 究極スコアリング & 雑談エンジン (V12)
    */
-  const findBestMatch = (query: string): { item: KnowledgeItem | null; score: number } => {
+  const handleLogic = (query: string): { response: string; link?: { title: string; url: string } } => {
     const normalizedQuery = query.toLowerCase().replace(/[、。！？!?,.]/g, '');
+    
+    // 1. 雑談・おしゃべりチェック
+    let bestChatKey = null;
+    let maxChatScore = 0;
+    for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
+      let chatScore = 0;
+      chat.keywords.forEach(kw => {
+        if (normalizedQuery.includes(kw)) chatScore += chat.weight;
+      });
+      if (chatScore > maxChatScore) {
+        maxChatScore = chatScore;
+        bestChatKey = key;
+      }
+    }
+
+    if (bestChatKey && maxChatScore >= 3) {
+      return { response: AI_KUN_CHATTER[bestChatKey].response };
+    }
+
+    // 2. 実務知識検索（スコアリング）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V9.forEach(item => {
+    AI_KUN_KNOWLEDGE_V12.forEach(item => {
       let score = 0;
-
-      // 1. キーワードマッチ（重み付け）
       item.keywords.forEach(kw => {
-        if (normalizedQuery.includes(kw.word)) {
-          score += kw.weight;
-        }
-
-        // 2. 類義語（シノニム）マッチ
-        const synonyms = SYNONYMS[kw.word] || [];
-        synonyms.forEach(syn => {
-          if (normalizedQuery.includes(syn)) {
-            score += kw.weight * 0.8; // シノニムは少し重みを下げる
-          }
+        if (normalizedQuery.includes(kw.word)) score += kw.weight;
+        (SYNONYMS[kw.word] || []).forEach(syn => {
+          if (normalizedQuery.includes(syn)) score += kw.weight * 0.9;
         });
       });
-
-      // 3. タイトル一致ボーナス
-      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) {
-        score += 10;
-      }
-
+      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) score += 12;
+      
       if (score > maxScore) {
         maxScore = score;
         bestItem = item;
       }
     });
 
-    return { item: bestItem, score: maxScore };
+    if (bestItem && maxScore >= 4) {
+      // 語尾のバリエーションと共感
+      const endings = AI_KUN_PERSONALITY.endings;
+      const ending = endings[Math.floor(Math.random() * endings.length)];
+      const empathy = bestItem.empathy ? `${bestItem.empathy} ` : '';
+      let content = bestItem.content;
+      // 文末をアイ君らしく
+      if (content.endsWith('。')) content = content.slice(0, -1);
+      
+      return { 
+        response: `${empathy}${bestItem.title}について教えるよ。${content}${ending}`,
+        link: bestItem.url ? { title: bestItem.title, url: bestItem.url } : undefined
+      };
+    }
+
+    // 3. ヒットしない場合の「人間味」のある返し
+    const philosophies = AI_KUN_PERSONALITY.philosophies;
+    const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
+    return { 
+      response: `ふむふむ、${query}についてだね。正確なガイドは難しいけれど、私の心に浮かんだのはこれさ。「${philosophy}」 もし水道の具体的な手続き（料金、引越し、漏水など）を知りたいときは、そう教えておくれ！`
+    };
   };
 
   const handleSend = async () => {
@@ -89,31 +122,9 @@ export const AiKunChat = () => {
     setIsTyping(true);
 
     setTimeout(() => {
-      const query = userMessage.content;
-      const { item, score } = findBestMatch(query);
-
-      let response = "";
-      let foundLink = undefined;
-
-      // 閾値（スコア3以上でヒットとみなす）
-      if (item && score >= 3) {
-        response = `${item.title}について教えるよ。${item.content}`;
-        if (item.url) foundLink = { title: item.title, url: item.url };
-      } else {
-        // ヒットしない場合は水の雑学やおしゃべり
-        if (query.includes('こんにちは') || query.includes('おはよう') || query.includes('こんばんは')) {
-          response = "やあ！今日もいい日になるといいね。何かお手伝いできることはあるかな？";
-        } else if (query.includes('だれ') || query.includes('君は')) {
-          response = "私はアイ君。大井上水道企業団のグランド・コンシェルジュさ！";
-        } else {
-          const tips = AI_KUN_PERSONALITY.random_tips;
-          const quote = AI_KUN_PERSONALITY.philosophies[Math.floor(Math.random() * AI_KUN_PERSONALITY.philosophies.length)];
-          response = `ふむ、それについては勉強不足で答えられないかもしれない。${quote} もしかしたら「料金改定」「漏水」「引越し」「メーター交換」といったキーワードで聞いてもらえると、詳しく答えられるかもしれないよ。`;
-        }
-      }
-
+      const { response, link } = handleLogic(userMessage.content);
       setIsTyping(false);
-      addAssistantMessage(response, foundLink);
+      addAssistantMessage(response, link);
     }, 800);
   };
 
@@ -133,7 +144,7 @@ export const AiKunChat = () => {
                 </div>
                 <div>
                   <h3 className="font-black text-lg sm:text-xl leading-tight">アイ君</h3>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v11</p>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v12</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
@@ -177,7 +188,7 @@ export const AiKunChat = () => {
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
                 <input
                   type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="質問を入力..."
+                  placeholder="アイ君とお話ししましょう..."
                   className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 sm:py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none"
                 />
                 <button
