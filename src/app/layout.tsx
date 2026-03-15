@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EmergencyAlert } from "@/components/EmergencyAlert";
 import { BackToTop } from "@/components/BackToTop";
+import { AiKunChat } from "@/components/AiKunChat";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoJp = Noto_Sans_JP({
@@ -46,6 +47,7 @@ export default function RootLayout({
         </main>
         <BackToTop />
         <Footer />
+        <AiKunChat />
       </body>
     </html>
   );

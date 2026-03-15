@@ -1,14 +1,40 @@
 "use client";
 
-import React from 'react';
-import { Droplets, Shield, ClipboardCheck, Building2, ChevronRight, AlertTriangle, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Droplets, Shield, ClipboardCheck, Building2, ChevronRight, AlertTriangle, CheckCircle2, ArrowUpRight, FileText, Download, FlaskConical } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import { getPublicDocuments, PublicDocument } from '@/lib/microcms';
+import { ROUTES } from '@/constants/routes';
 
 export default function WaterQualityPage() {
-    // 主な水質基準項目（代表的なもの）
+    const [documents, setDocuments] = useState<PublicDocument[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getPublicDocuments('水質').then((data) => {
+            setDocuments(data);
+            setLoading(false);
+        });
+    }, []);
+
+    const plansFallback = [
+        { label: '令和8年度 水質検査計画（案）', href: 'http://www.ooijousuidoukigyoudan.or.jp/r8suisitukeikakuan.pdf' },
+        { label: '令和7年度 水質検査計画', href: 'http://www.ooijousuidoukigyoudan.or.jp/r7suishitsukeikaku.pdf' },
+    ];
+
+    const standardResultsFallback = [
+        { year: '令和7年度上半期', href: 'http://www.ooijousuidoukigyoudan.or.jp/r7suisitukensakekkakamiki.pdf' },
+        { year: '令和6年度', href: 'http://www.ooijousuidoukigyoudan.or.jp/r6suishitukekka.pdf' },
+        { year: '令和5年度', href: 'http://www.ooijousuidoukigyoudan.or.jp/r5suishitukekka.pdf' },
+    ];
+
+    const plans = loading ? [] : (documents.filter(d => d.category.includes('水質検査計画')).length > 0 ? documents.filter(d => d.category.includes('水質検査計画')) : plansFallback);
+    const standardResults = loading ? [] : (documents.filter(d => d.category.includes('水質検査結果')).length > 0 ? documents.filter(d => d.category.includes('水質検査結果')) : standardResultsFallback);
+
+    // 主な水質基準項目
     const qualityStandards = [
         { item: '一般細菌', standard: '100個/mL以下', category: '健康' },
         { item: '大腸菌', standard: '検出されないこと', category: '健康' },
@@ -24,26 +50,11 @@ export default function WaterQualityPage() {
         { item: '残留塩素', standard: '0.1mg/L以上', category: '管理' },
     ];
 
-    // 毎日検査項目
-    const dailyItems = [
-        { item: '色', description: '水に異常な色がないか確認します。' },
-        { item: '濁り', description: '水に濁りがないか確認します。' },
-        { item: '残留塩素', description: '消毒効果が維持されているか確認します。' },
-    ];
-
-    // 受水槽管理のポイント
-    const tankManagement = [
-        { title: '定期清掃', desc: '1年に1回以上、受水槽の清掃を行ってください。' },
-        { title: '定期検査', desc: '簡易専用水道（10㎥超）は年1回の法定検査が必要です。' },
-        { title: '水質確認', desc: '色・濁り・臭い・味・残留塩素を定期的に確認してください。' },
-        { title: '届出', desc: '設置・変更・廃止の際は企業団への届出が必要です。' },
-    ];
-
     return (
         <div className="min-h-screen pt-20">
             <PageHeader
                 title="水質情報"
-                subtitle={<>51項目の厳しい水質基準に適合した<br className="md:hidden" />安全な水をお届けしています。</>}
+                subtitle="大井上水道企業団では、厳しい水質基準に基づき、毎日安全な水をお届けしています。"
                 enTitle="Water Quality"
             />
 
@@ -74,30 +85,75 @@ export default function WaterQualityPage() {
                     ))}
                 </section>
 
-                {/* 毎日検査項目 */}
-                <section>
-                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
-                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Daily Inspection</span>
+                {/* 公表資料ダウンロード (旧 /about/water-quality の機能) */}
+                <section className="bg-slate-50 p-8 md:p-16 rounded-[2rem] md:rounded-[3.5rem] border border-slate-100 shadow-soft-xl">
+                    <div className="text-center mb-12 md:mb-16">
+                        <h2 className="text-2xl md:text-4xl font-black text-primary-deep mb-4">水質検査資料</h2>
+                        <p className="text-text-sub text-sm md:text-base">
+                            「水質検査計画」や「水質検査結果」のPDFファイルを公開しています。
+                        </p>
                     </div>
-                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-8 md:mb-12">毎日行っている検査</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                        {dailyItems.map((item, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-primary-main/5 p-6 md:p-8 rounded-2xl border border-primary-main/10"
-                            >
-                                <div className="flex items-center space-x-3 mb-3">
-                                    <CheckCircle2 size={20} className="text-green-500" />
-                                    <h3 className="text-lg md:text-xl font-black text-primary-deep">{item.item}</h3>
-                                </div>
-                                <p className="text-text-sub text-xs md:text-sm leading-relaxed">{item.description}</p>
-                            </motion.div>
-                        ))}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                        <div>
+                            <h3 className="text-xl md:text-2xl font-black text-primary-deep mb-6 flex items-center gap-3">
+                                <FileText className="text-secondary-vibrant" size={28} />
+                                水質検査計画
+                            </h3>
+                            <div className="space-y-3">
+                                {loading ? (
+                                    <div className="h-16 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                ) : plans.map((plan: any, idx) => (
+                                    <a
+                                        key={plan.id || idx}
+                                        href={(plan as PublicDocument).pdfFile?.url || plan.pdfUrl || plan.href || '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-primary-main/30 transition-all duration-300 gap-3"
+                                    >
+                                        <div className="flex items-center gap-3 w-full sm:w-auto overflow-hidden">
+                                            <div className="w-10 h-10 shrink-0 rounded-full bg-primary-main/5 flex items-center justify-center text-primary-main group-hover:bg-primary-main group-hover:text-white transition-colors">
+                                                <Download size={18} />
+                                            </div>
+                                            <span className="font-bold text-primary-deep group-hover:text-primary-main transition-colors text-sm md:text-base truncate">
+                                                {plan.title || plan.label}
+                                            </span>
+                                        </div>
+                                        <ChevronRight className="hidden sm:block text-slate-300 group-hover:text-primary-main group-hover:translate-x-1 transition-all shrink-0" size={20} />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl md:text-2xl font-black text-primary-deep mb-6 flex items-center gap-3">
+                                <FileText className="text-secondary-vibrant" size={28} />
+                                水質基準項目 検査結果
+                            </h3>
+                            <div className="space-y-3">
+                                {loading ? (
+                                    <div className="h-16 bg-slate-100/50 animate-pulse rounded-2xl"></div>
+                                ) : standardResults.map((doc: any, idx) => (
+                                    <a
+                                        key={doc.id || idx}
+                                        href={(doc as PublicDocument).pdfFile?.url || doc.pdfUrl || doc.href || '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-primary-main/30 transition-all duration-300 gap-3"
+                                    >
+                                        <div className="flex items-center gap-3 w-full sm:w-auto overflow-hidden">
+                                            <div className="w-10 h-10 shrink-0 rounded-full bg-secondary-vibrant/10 flex items-center justify-center text-secondary-vibrant group-hover:bg-secondary-vibrant group-hover:text-primary-deep transition-colors">
+                                                <Download size={18} />
+                                            </div>
+                                            <span className="font-bold text-primary-deep group-hover:text-primary-main transition-colors text-sm md:text-base truncate">
+                                                {doc.title || `${doc.year} 検査結果`}
+                                            </span>
+                                        </div>
+                                        <ChevronRight className="hidden sm:block text-slate-300 group-hover:text-primary-main group-hover:translate-x-1 transition-all shrink-0" size={20} />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -112,27 +168,20 @@ export default function WaterQualityPage() {
 
                     <div className="bg-white rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left block md:table">
-                                <thead className="hidden md:table-header-group">
+                            <table className="w-full text-left">
+                                <thead>
                                     <tr className="bg-primary-deep text-white">
-                                        <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">検査項目</th>
-                                        <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">基準値</th>
-                                        <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-black">分類</th>
+                                        <th className="px-6 py-4 text-sm font-black">検査項目</th>
+                                        <th className="px-6 py-4 text-sm font-black">基準値</th>
+                                        <th className="px-6 py-4 text-sm font-black">分類</th>
                                     </tr>
                                 </thead>
-                                <tbody className="block md:table-row-group">
+                                <tbody>
                                     {qualityStandards.map((row, idx) => (
-                                        <tr key={idx} className={`block md:table-row border-b md:border-t md:border-b-0 border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} mb-4 md:mb-0 rounded-xl md:rounded-none overflow-hidden shadow-sm md:shadow-none`}>
-                                            <td className="block md:table-cell px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-primary-deep bg-primary-deep/5 md:bg-transparent border-b border-primary-deep/10 md:border-0 md:border-b-slate-50">
-                                                <span className="md:hidden text-xs text-primary-main/80 font-black mr-2">検査項目:</span>
-                                                {row.item}
-                                            </td>
-                                            <td className="block md:table-cell px-4 md:px-6 py-2.5 md:py-4 text-xs md:text-sm text-text-sub font-bold flex justify-between md:table-cell items-center border-b border-slate-50 md:border-0">
-                                                <span className="md:hidden text-xs text-slate-400 font-normal">基準値:</span>
-                                                {row.standard}
-                                            </td>
-                                            <td className="block md:table-cell px-4 md:px-6 py-3 md:py-4 flex justify-between md:table-cell items-center bg-slate-50/30 md:bg-transparent border-b md:border-b-slate-50">
-                                                <span className="md:hidden text-xs text-slate-400 font-normal">分類:</span>
+                                        <tr key={idx} className={`border-b border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
+                                            <td className="px-6 py-4 text-sm font-bold text-primary-deep">{row.item}</td>
+                                            <td className="px-6 py-4 text-sm text-text-sub font-bold">{row.standard}</td>
+                                            <td className="px-6 py-4">
                                                 <span className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full ${row.category === '健康' ? 'bg-red-50 text-red-600' :
                                                     row.category === '性状' ? 'bg-blue-50 text-blue-600' :
                                                         'bg-green-50 text-green-600'
@@ -146,18 +195,6 @@ export default function WaterQualityPage() {
                             </table>
                         </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-                        <p className="text-text-sub/60 text-xs text-center sm:text-left">※ 検査結果の詳細は毎年10月と4月に公表しています。</p>
-                        <a
-                            href="http://www.ooijousuidoukigyoudan.or.jp/suisitu-jyouhou.html"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-primary-main font-bold text-sm hover:underline"
-                        >
-                            <ArrowUpRight size={16} />
-                            水質検査計画・過去の検査結果（公式サイト）
-                        </a>
-                    </div>
                 </section>
 
                 {/* 受水槽の管理 */}
@@ -168,40 +205,42 @@ export default function WaterQualityPage() {
                     </div>
                     <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-4 md:mb-6">受水槽の管理について</h2>
                     <p className="text-text-sub text-sm md:text-base mb-8 md:mb-12">
-                        マンションやビルなどで受水槽（貯水槽）を設置している場合、<br className="hidden md:block" />
-                        施設の所有者が適切な管理を行う必要があります。
+                        マンションやビルなどで受水槽を設置している場合、設置者による適切な管理が必要です。
                     </p>
 
-                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 md:p-8 mb-8">
-                        <div className="flex items-start space-x-3">
-                            <AlertTriangle size={24} className="text-amber-600 shrink-0 mt-0.5" />
-                            <div>
-                                <p className="font-black text-amber-800 text-sm md:text-base mb-1">簡易専用水道（10㎥超）をご利用の方へ</p>
-                                <p className="text-amber-700 text-xs md:text-sm leading-relaxed">
-                                    有効容量が10立方メートルを超える受水槽は「簡易専用水道」に該当し、<br className="hidden md:block" />
-                                    維持管理は施設所有者の責任となります。年1回の法定検査が義務づけられています。
-                                </p>
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 className="text-lg font-black text-primary-deep mb-4 flex items-center gap-2">
+                                <Building2 size={24} className="text-primary-main" />
+                                設置者の義務
+                            </h3>
+                            <ul className="space-y-3 text-sm text-text-sub">
+                                <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-primary-main rounded-full mt-1.5 shrink-0" />
+                                    <span>受水槽の掃除（1年以内ごとに1回）</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-primary-main rounded-full mt-1.5 shrink-0" />
+                                    <span>水槽の点検（蓋の施錠、有害物の混入防止）</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 bg-primary-main rounded-full mt-1.5 shrink-0" />
+                                    <span>水質の点検（蛇口の水の異常確認）</span>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                        {tankManagement.map((item, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-white p-5 md:p-8 rounded-2xl border border-slate-100 shadow-sm"
-                            >
-                                <div className="flex items-center space-x-3 mb-3">
-                                    <Building2 size={20} className="text-primary-main" />
-                                    <h3 className="text-base md:text-lg font-black text-primary-deep">{item.title}</h3>
-                                </div>
-                                <p className="text-text-sub text-xs md:text-sm leading-relaxed">{item.desc}</p>
-                            </motion.div>
-                        ))}
+                        <div className="bg-amber-50 p-8 rounded-2xl border border-amber-100">
+                            <h3 className="text-lg font-black text-amber-900 mb-4 flex items-center gap-2">
+                                <AlertTriangle size={24} className="text-amber-600" />
+                                法定検査
+                            </h3>
+                            <p className="text-sm text-amber-800 leading-relaxed mb-4">
+                                有効容量が10立方メートルを超える受水槽（簡易専用水道）は、水道法により年1回の定期検査が義務付けられています。
+                            </p>
+                            <Link href={ROUTES.RESIDENT.PROCEDURE} className="text-amber-900 font-bold text-sm underline hover:text-amber-700">
+                                届出・手続きについてはこちら
+                            </Link>
+                        </div>
                     </div>
                 </section>
             </div>

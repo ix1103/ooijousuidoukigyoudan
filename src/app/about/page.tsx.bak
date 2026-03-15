@@ -285,11 +285,11 @@ export default function AboutPage() {
                             大井上水道企業団議会は、構成自治体（島田市・吉田町・川根本町）から選出された議員で構成されます。
                             予算の審議・決算の認定、条例の制定・改廃などを行い、企業団の運営を議会の立場から監視しています。
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {[
-                                { label: '議員定数', value: '8名' },
+                                { label: '議員定数', value: '10名' },
                                 { label: '定例会', value: '年2回（3月・9月）' },
-                                { label: '構成', value: '島田市5名・牧之原市3名' },
+                                { label: '構成', value: '島田市6名・吉田町2名・川根本町2名' },
                             ].map((item, idx) => (
                                 <div key={idx} className="bg-white p-4 md:p-6 rounded-xl border border-slate-100 text-center">
                                     <p className="text-xs text-text-sub mb-1">{item.label}</p>
@@ -297,109 +297,34 @@ export default function AboutPage() {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-center">
-                            <Link
-                                href="/about/assembly"
-                                className="inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-2xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
-                            >
-                                議会の組織と活動について詳しく
-                                <ChevronRight size={18} />
-                            </Link>
-                        </div>
                     </div>
                 </section>
             </div>
 
-            {/* 事務所所在地（アクセスマップ） */}
-            <section id="access" className="bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 md:py-24 rounded-2xl md:rounded-3xl">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
-                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Access Map</span>
-                    </div>
-                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-12">交通アクセス</h2>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                        {/* 地図埋め込み */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            className="w-full aspect-video lg:aspect-square rounded-3xl overflow-hidden shadow-premium border border-white"
+            {/* アクセスバナー */}
+            <section className="py-16 md:py-24 bg-primary-deep relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="glass-premium p-8 md:p-12 rounded-2xl md:rounded-[3.5rem] border border-white/10 max-w-4xl w-full"
+                    >
+                        <MapPin className="text-secondary-vibrant mx-auto mb-5 md:mb-8 w-10 h-10 md:w-12 md:h-12" />
+                        <h3 className="text-xl md:text-3xl font-black text-white mb-4 md:mb-6">アクセスマップ</h3>
+                        <p className="text-accent-soft/60 mb-8 md:mb-10 leading-relaxed text-sm md:text-base">
+                            静岡県島田市金谷東一丁目1255番地の2<br />
+                            JR金谷駅より徒歩約10分。国道1号バイパス大代ICより車で約5分。
+                        </p>
+                        <Link
+                            href="https://maps.google.com/?q=大井上水道企業団"
+                            target="_blank"
+                            className="inline-flex items-center space-x-2 md:space-x-3 bg-secondary-vibrant hover:bg-white text-primary-deep px-8 py-4 md:px-10 md:py-5 rounded-2xl font-black transition-all shadow-lg text-sm md:text-base active:scale-95"
                         >
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3275.0996209052214!2d138.1371668!3d34.8285877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601a571921f373f7%3A0x3df1e211ab438d72!2z44CSNDI4LTAwMTMg6Z2Z5bKh55yM5bO255Sw5biC6YeR6LC35p2x77yR5LiB55uu77yR77yS77yV77yV4oiS77yS!5e0!3m2!1sja!2sjp!4v1773065502865!5m2!1sja!2sjp"
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0 }}
-                                allowFullScreen
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            ></iframe>
-                        </motion.div>
-
-                        {/* アクセス情報テキスト */}
-                        <div className="space-y-10">
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3 text-primary-main">
-                                    <MapPin size={24} />
-                                    <h3 className="text-xl font-black">所在地</h3>
-                                </div>
-                                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                                    <p className="text-lg font-black text-primary-deep mb-1">大井上水道企業団 本庁舎</p>
-                                    <p className="text-text-sub text-sm leading-relaxed">
-                                        〒428-0013 静岡県島田市金谷東一丁目1255番地の2
-                                    </p>
-                                    <div className="mt-4 flex gap-3">
-                                        <Link
-                                            href="https://maps.google.com/?q=大井上水道企業団"
-                                            target="_blank"
-                                            className="inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-primary-main px-4 py-2 rounded-xl text-xs font-bold transition-colors"
-                                        >
-                                            <ArrowUpRight size={14} />
-                                            Google Mapsで開く
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div className="flex items-center gap-3 text-primary-main">
-                                    <ChevronRight size={24} className="bg-primary-main/10 rounded-full p-1" />
-                                    <h3 className="text-xl font-black">交通のご案内</h3>
-                                </div>
-
-                                <div className="grid grid-cols-1 gap-6">
-                                    <div className="flex gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
-                                            <span className="text-xl">🚃</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-black text-primary-deep mb-1">電車でお越しの方</h4>
-                                            <p className="text-text-sub text-sm leading-relaxed">
-                                                JR金谷駅・大井川鐵道金谷駅から徒歩約10分。<br />
-                                                踏切を渡って最初の信号を左折（北進）し、突き当たりまでお進みください。
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center shrink-0">
-                                            <span className="text-xl">🚗</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-black text-primary-deep mb-1">お車でお越しの方</h4>
-                                            <p className="text-text-sub text-sm leading-relaxed">
-                                                国道1号バイパス「大代IC」から約5分。<br />
-                                                新東名高速道路「島田金谷IC」から約10分。<br />
-                                                ※敷地内に来客用駐車場がございます。
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <span>Google Mapsで見る</span>
+                            <ChevronRight size={18} />
+                        </Link>
+                    </motion.div>
                 </div>
             </section>
         </div>

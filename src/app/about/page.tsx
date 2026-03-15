@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 import { PageHeader } from '@/components/PageHeader';
+import { ROUTES } from '@/constants/routes';
 
 export default function AboutPage() {
     const sections = [
@@ -17,8 +18,7 @@ export default function AboutPage() {
                 { label: '設立', value: '1970年（昭和45年）' },
                 { label: '構成自治体', value: '島田市、吉田町、川根本町' },
                 { label: '事務所所在地', value: '静岡県島田市金谷東一丁目1255番地の2' },
-            ],
-            link: { label: '事業概要の詳細はこちら', href: 'http://www.ooijousuidoukigyoudan.or.jp/jigyou-gaiyou.html' }
+            ]
         },
         {
             title: '基本理念',
@@ -79,7 +79,7 @@ export default function AboutPage() {
                             <span className="text-secondary-vibrant">効率的で安定した</span>水道経営。
                         </h2>
                         <p className="text-text-sub text-sm md:text-lg leading-relaxed md:leading-loose">
-                            大井上水道企業団は、島田市、吉田町、川根本町の1市2町で構成される「地方公営企業」としての側面を持つ特別地方公共団体です。広域的な視点で水道事業を統合・運営することで、コストの最適化と質の高いサービスの両立を実現しています。
+                            大井上水道企業団は、島田市、吉田町、川根本町の1市2町で構成される「地方公営企業」としての側面を持つ特別地方公共団体（一部事務組合）です。広域的な視点で水道事業を統合・運営することで、コストの最適化と質の高いサービスの両立を実現しています。
                         </p>
                     </motion.div>
                     <motion.div
@@ -92,16 +92,14 @@ export default function AboutPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
                             <div className="space-y-3 md:space-y-4">
                                 <div className="text-primary-main bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-premium">
-                                    <ShieldCheck size={24} className="md:hidden" />
-                                    <ShieldCheck size={28} className="hidden md:block" />
+                                    <ShieldCheck size={28} />
                                 </div>
                                 <h4 className="text-base md:text-xl font-black text-primary-deep">水質の透明性</h4>
-                                <p className="text-text-sub text-xs md:text-sm leading-relaxed">毎月の水質検査結果を公開し、安心をお届けします。</p>
+                                <p className="text-text-sub text-xs md:text-sm leading-relaxed">定期的な水質検査結果を公開し、安心をお届けします。</p>
                             </div>
                             <div className="space-y-3 md:space-y-4">
                                 <div className="text-primary-main bg-white p-3 md:p-4 rounded-xl md:rounded-2xl w-fit shadow-premium">
-                                    <Globe size={24} className="md:hidden" />
-                                    <Globe size={28} className="hidden md:block" />
+                                    <Globe size={28} />
                                 </div>
                                 <h4 className="text-base md:text-xl font-black text-primary-deep">広域連携</h4>
                                 <p className="text-text-sub text-xs md:text-sm leading-relaxed">地域を超えた連携で災害時の復旧体制を強化しています。</p>
@@ -152,18 +150,6 @@ export default function AboutPage() {
                                     ))}
                                 </div>
                             )}
-
-                            {(section as any).link && (
-                                <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
-                                    <Link
-                                        href={(section as any).link.href}
-                                        className="inline-flex items-center gap-2 text-primary-main font-bold text-xs md:text-sm hover:underline"
-                                    >
-                                        <ChevronRight size={16} />
-                                        {(section as any).link.label}
-                                    </Link>
-                                </div>
-                            )}
                         </motion.div>
                     ))}
                 </section>
@@ -207,72 +193,6 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* 事業の推移 */}
-                <section>
-                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
-                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Statistics</span>
-                    </div>
-                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-8 md:mb-12">事業の推移</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                        {[
-                            { label: '給水人口', value: '約10万人', sub: '1市2町の住民の皆様' },
-                            { label: '給水戸数', value: '約43,000戸', sub: '一般家庭・事業所' },
-                            { label: '一日最大給水量', value: '約45,000㎥', sub: '安定供給を確保' },
-                            { label: '管路延長', value: '約900km', sub: '送水管・配水管の総延長' },
-                        ].map((stat, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-white p-5 md:p-8 rounded-2xl border border-slate-100 shadow-sm text-center"
-                            >
-                                <p className="text-2xl md:text-4xl font-black text-primary-main mb-1">{stat.value}</p>
-                                <p className="text-sm md:text-base font-black text-primary-deep mb-1">{stat.label}</p>
-                                <p className="text-[10px] md:text-xs text-text-sub">{stat.sub}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* 組織と業務内容 */}
-                <section>
-                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
-                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
-                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Organization</span>
-                    </div>
-                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-8 md:mb-12">組織と業務内容</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        {[
-                            { dept: '庶務係', tasks: ['料金の徴収・収納', '開栓・閉栓・名義変更の受付', '予算・決算の管理', '議会に関する事務'] },
-                            { dept: '工務係', tasks: ['水道施設の維持管理', '配水管の新設・布設替え', '漏水修理・緊急対応（24時間）', '給水装置工事の審査'] },
-                            { dept: '浄水係', tasks: ['浄水場の運転管理', '水質検査の実施', '薬品の管理・投入', '設備の点検と整備'] },
-                            { dept: '企業長', tasks: ['企業団の統括', '構成自治体との連携調整', '事業計画の策定', '対外的な代表'] },
-                        ].map((org, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-white p-5 md:p-8 rounded-2xl border border-slate-100 shadow-sm"
-                            >
-                                <h3 className="text-lg md:text-xl font-black text-primary-deep mb-4 pb-3 border-b border-slate-100">{org.dept}</h3>
-                                <ul className="space-y-2">
-                                    {org.tasks.map((task, i) => (
-                                        <li key={i} className="flex items-center space-x-2 text-text-sub text-xs md:text-sm">
-                                            <div className="w-1 h-1 bg-primary-main rounded-full shrink-0" />
-                                            <span>{task}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-
                 {/* 議会情報 */}
                 <section className="bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12 md:py-20 rounded-2xl md:rounded-3xl">
                     <div className="max-w-4xl mx-auto">
@@ -285,7 +205,7 @@ export default function AboutPage() {
                             大井上水道企業団議会は、構成自治体（島田市・吉田町・川根本町）から選出された議員で構成されます。
                             予算の審議・決算の認定、条例の制定・改廃などを行い、企業団の運営を議会の立場から監視しています。
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
                             {[
                                 { label: '議員定数', value: '10名' },
                                 { label: '定例会', value: '年2回（3月・9月）' },
@@ -297,34 +217,103 @@ export default function AboutPage() {
                                 </div>
                             ))}
                         </div>
+                        <div className="flex justify-center">
+                            <Link
+                                href={ROUTES.ABOUT.ASSEMBLY}
+                                className="inline-flex items-center gap-2 bg-primary-main text-white px-8 py-4 rounded-2xl font-black shadow-premium hover:shadow-glow transition-all active:scale-95"
+                            >
+                                議会の組織と活動について詳しく
+                                <ChevronRight size={18} />
+                            </Link>
+                        </div>
                     </div>
                 </section>
             </div>
 
-            {/* アクセスバナー */}
-            <section className="py-16 md:py-24 bg-primary-deep relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        className="glass-premium p-8 md:p-12 rounded-2xl md:rounded-[3.5rem] border border-white/10 max-w-4xl w-full"
-                    >
-                        <MapPin className="text-secondary-vibrant mx-auto mb-5 md:mb-8 w-10 h-10 md:w-12 md:h-12" />
-                        <h3 className="text-xl md:text-3xl font-black text-white mb-4 md:mb-6">アクセスマップ</h3>
-                        <p className="text-accent-soft/60 mb-8 md:mb-10 leading-relaxed text-sm md:text-base">
-                            静岡県島田市金谷東一丁目1255番地の2<br />
-                            JR金谷駅より徒歩約10分。国道1号バイパス大代ICより車で約5分。
-                        </p>
-                        <Link
-                            href="https://maps.google.com/?q=大井上水道企業団"
-                            target="_blank"
-                            className="inline-flex items-center space-x-2 md:space-x-3 bg-secondary-vibrant hover:bg-white text-primary-deep px-8 py-4 md:px-10 md:py-5 rounded-2xl font-black transition-all shadow-lg text-sm md:text-base active:scale-95"
+            {/* 事務所所在地（アクセスマップ） */}
+            <section id="access" className="bg-slate-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center space-x-3 text-secondary-vibrant font-black mb-6 md:mb-10">
+                        <div className="w-8 md:w-12 h-1.5 bg-secondary-vibrant rounded-full" />
+                        <span className="tracking-[0.15em] text-xs md:text-sm uppercase">Access Map</span>
+                    </div>
+                    <h2 className="text-2xl md:text-5xl font-black text-primary-deep mb-12">交通アクセス</h2>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                        {/* 地図埋め込み */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            className="w-full aspect-video lg:aspect-square rounded-3xl overflow-hidden shadow-premium border border-white"
                         >
-                            <span>Google Mapsで見る</span>
-                            <ChevronRight size={18} />
-                        </Link>
-                    </motion.div>
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3275.0996209052214!2d138.1371668!3d34.8285877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601a571921f373f7%3A0x3df1e211ab438d72!2z44CSNDI4LTAwMTMg6Z2Z5bKh55yM5bO255Sw5biC6YeR6LC35p2x77yR5LiB55uu77yR77yS77yV77yV4oiS77yS!5e0!3m2!1sja!2sjp!4v1773065502865!5m2!1sja!2sjp"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        </motion.div>
+
+                        {/* アクセス情報テキスト */}
+                        <div className="space-y-10">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 text-primary-main">
+                                    <MapPin size={24} />
+                                    <h3 className="text-xl font-black">所在地</h3>
+                                </div>
+                                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                    <p className="text-lg font-black text-primary-deep mb-1">大井上水道企業団 本庁舎</p>
+                                    <p className="text-text-sub text-sm leading-relaxed">
+                                        〒428-0013 静岡県島田市金谷東一丁目1255番地の2
+                                    </p>
+                                    <div className="mt-4 flex gap-3">
+                                        <Link
+                                            href="https://maps.google.com/?q=大井上水道企業団"
+                                            target="_blank"
+                                            className="inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-primary-main px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+                                        >
+                                            <ArrowUpRight size={14} />
+                                            Google Mapsで開く
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-3 text-primary-main">
+                                    <ChevronRight size={24} className="bg-primary-main/10 rounded-full p-1" />
+                                    <h3 className="text-xl font-black">交通のご案内</h3>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-6 text-sm text-text-sub">
+                                    <div className="flex gap-4">
+                                        <span className="text-xl">🚃</span>
+                                        <div>
+                                            <h4 className="font-black text-primary-deep mb-1">電車でお越しの方</h4>
+                                            <p className="leading-relaxed">
+                                                JR金谷駅・大井川鐵道金谷駅から徒歩約10分。
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <span className="text-xl">🚗</span>
+                                        <div>
+                                            <h4 className="font-black text-primary-deep mb-1">お車でお越しの方</h4>
+                                            <p className="leading-relaxed">
+                                                国道1号バイパス「大代IC」から約5分。<br />
+                                                新東名高速道路「島田金谷IC」から約10分。
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
