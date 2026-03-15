@@ -260,15 +260,3 @@ export const AiKunChat = () => {
     </div>
   );
 };
-      <motion.button
-        whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative group bg-white p-1 rounded-full shadow-2xl border-2 sm:border-4 border-primary-main"
-      >
-        <div className="w-12 h-12 sm:w-16 sm:h-16 relative overflow-hidden rounded-full font-bold">
-           <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0 scale-[1.3]" />
-        </div>
-      </motion.button>
-    </div>
-  );
-};
