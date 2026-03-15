@@ -93,16 +93,17 @@ export const AiKunChat = () => {
 
     if (bestItem && maxScore >= 4) {
       // 語尾のバリエーションと共感
+      const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
-      const empathy = bestItem.empathy ? `${bestItem.empathy} ` : '';
-      let content = bestItem.content;
+      const empathy = item.empathy ? `${item.empathy} ` : '';
+      let content = item.content;
       // 文末をアイ君らしく
       if (content.endsWith('。')) content = content.slice(0, -1);
       
       return { 
-        response: `${empathy}${bestItem.title}について教えるよ。${content}${ending}`,
-        link: bestItem.url ? { title: bestItem.title, url: bestItem.url } : undefined
+        response: `${empathy}${item.title}について教えるよ。${content}${ending}`,
+        link: item.url ? { title: item.title, url: item.url } : undefined
       };
     }
 
