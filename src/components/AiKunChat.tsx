@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, ExternalLink } from 'lucide-react';
+import { X, Send, ExternalLink, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
@@ -25,7 +25,9 @@ export const AiKunChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [proactiveMessage, setProactiveMessage] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const proactiveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -33,8 +35,23 @@ export const AiKunChat = () => {
         const greetings = AI_KUN_PERSONALITY.greetings;
         addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " どんなことでも気軽に話しかけてね。お水のこと以外でも大歓迎さ！");
       }, 500);
+      setProactiveMessage(null); // 開いたら吹き出しは消す
     }
   }, [isOpen]);
+
+  // 自律的な話しかけロジック (V13)
+  useEffect(() => {
+    if (!isOpen && !proactiveMessage) {
+      proactiveTimerRef.current = setTimeout(() => {
+        const tips = AI_KUN_PERSONALITY.random_tips;
+        const msg = tips[Math.floor(Math.random() * tips.length)];
+        setProactiveMessage(msg);
+      }, 15000); // 15秒後に話しかける
+    }
+    return () => {
+      if (proactiveTimerRef.current) clearTimeout(proactiveTimerRef.current);
+    };
+  }, [isOpen, proactiveMessage]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -130,14 +147,31 @@ export const AiKunChat = () => {
   };
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans">
+    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999] font-sans flex flex-col items-end">
+      {/* 吹き出し (V13) */}
       <AnimatePresence>
-        {isOpen && (
+        {!isOpen && proactiveMessage && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-4 w-[calc(100vw-1.5rem)] sm:w-[400px] h-[75dvh] sm:h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col"
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            onClick={() => setIsOpen(true)}
+            className="mb-4 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[200px]"
           >
-            {/* ヘッダー */}
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-r border-b border-primary-light/20" />
+            <div className="flex items-start gap-2">
+              <Sparkles size={16} className="text-secondary-vibrant shrink-0 mt-0.5" />
+              <span>{proactiveMessage}</span>
+            </div>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setProactiveMessage(null); }}
+              className="absolute -top-2 -right-2 bg-slate-200 text-slate-500 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X size={12} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>            {/* ヘッダー */}
             <div className="bg-primary-main p-5 sm:p-6 flex items-center justify-between text-white shrink-0 shadow-lg">
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner">
