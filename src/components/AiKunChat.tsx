@@ -13,7 +13,10 @@ import {
   KnowledgeItem,
   EmotionContext,
   UIEmotionEffect,
-  QUIZ_POOL
+  QUIZ_POOL,
+  DAILY_TRIVIA,
+  FRIENDSHIP_LEVELS,
+  STREAK_MILESTONES
 } from '@/constants/knowledge-base-v22';
 
 /**
@@ -74,18 +77,57 @@ export const AiKunChat = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null);
   const [currentQuizId, setCurrentQuizId] = useState<string | null>(null);
+  const [visitCount, setVisitCount] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [friendshipLevel, setFriendshipLevel] = useState(FRIENDSHIP_LEVELS[0]);
 
   // V22: ローカルストレージから過去の傾向（興味のあるカテゴリ）を読み込む
   useEffect(() => {
     try {
       const storedFav = localStorage.getItem('aikun_favorite_category');
       if (storedFav) setFavoriteCategory(storedFav);
+
+      // 訪問トラッキング
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const storedVisits = parseInt(localStorage.getItem('aikun_visit_count') || '0');
+      const lastVisitDate = localStorage.getItem('aikun_last_visit') || '';
+      const storedStreak = parseInt(localStorage.getItem('aikun_streak') || '0');
+
+      let newVisits = storedVisits;
+      let newStreak = storedStreak;
+
+      if (lastVisitDate !== today) {
+        // 今日初訪問
+        newVisits = storedVisits + 1;
+        
+        // ストリーク計算（昨日訪問していたら継続、そうでなければリセット）
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        
+        if (lastVisitDate === yesterdayStr) {
+          newStreak = storedStreak + 1;
+        } else {
+          newStreak = 1; // リセット
+        }
+
+        localStorage.setItem('aikun_visit_count', newVisits.toString());
+        localStorage.setItem('aikun_last_visit', today);
+        localStorage.setItem('aikun_streak', newStreak.toString());
+      }
+
+      setVisitCount(newVisits);
+      setStreak(newStreak);
+
+      // 友好度レベル計算
+      const level = [...FRIENDSHIP_LEVELS].reverse().find(l => newVisits >= l.minVisits) || FRIENDSHIP_LEVELS[0];
+      setFriendshipLevel(level);
     } catch (e) {
       console.error('LocalStorage read error:', e);
     }
   }, []);
 
-  // チャット開始時の初期メッセージ
+  // チャット開始時の初期メッセージ（友好度・日替わり豆知識・ストリーク祈福付き）
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
@@ -98,12 +140,30 @@ export const AiKunChat = () => {
 
         const greetingData = AI_KUN_CHATTER[greetingKey];
         
-        // 記憶に基づいたパーソナライズ前置き
-        let introParams = "";
-        if (favoriteCategory === 'money') introParams = "\n※いつも料金について見てくれてありがとう！今日も節約のお手伝いするよ！";
-        else if (favoriteCategory === 'trouble') introParams = "\n※トラブル解決の情報をよく見てくれてるね。何か困ったことがあればすぐ教えてね！";
+        // 友好度に応じた挨拶
+        let greeting = greetingData.response;
+        if (visitCount > 1) {
+          greeting = `${friendshipLevel.greeting}\n${greetingData.response}`;
+        }
 
-        addAssistantMessage(greetingData.response + introParams, undefined, 'chat', greetingData.suggest, greetingData.emotionEffect);
+        // 記憶に基づいたパーソナライズ
+        if (favoriteCategory === 'money') greeting += '\n※いつも料金について見てくれてありがとう！今日も節約のお手伝いするよ！';
+        else if (favoriteCategory === 'trouble') greeting += '\n※トラブル解決の情報をよく見てくれてるね。何か困ったことがあればすぐ教えてね！';
+
+        // ストリーク祈福
+        const streakMsg = STREAK_MILESTONES[streak];
+        if (streakMsg) {
+          greeting += `\n\n${streakMsg}`;
+        } else if (streak >= 2) {
+          greeting += `\n\n🔥 ${streak}日連続訪問中！素晴らしい！`;
+        }
+
+        // 日替わり豆知識
+        const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+        const dailyTrivia = DAILY_TRIVIA[dayOfYear % DAILY_TRIVIA.length];
+        greeting += `\n\n【今日の水道豆知識】\n${dailyTrivia}`;
+
+        addAssistantMessage(greeting, undefined, 'chat', greetingData.suggest, greetingData.emotionEffect);
       }, 400);
       setProactiveMessage(null);
     }
@@ -448,7 +508,10 @@ export const AiKunChat = () => {
                     <h3 className="font-black text-xl">アイ君</h3>
                     <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black">v22</span>
                   </div>
-                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Ai-kun Chatbot Agent</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] opacity-90 font-bold">{friendshipLevel.emoji} {friendshipLevel.name}</span>
+                    {streak >= 2 && <span className="text-[10px] opacity-90 font-bold">🔥{streak}日</span>}
+                  </div>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
