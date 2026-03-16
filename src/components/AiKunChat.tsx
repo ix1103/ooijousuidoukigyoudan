@@ -401,7 +401,8 @@ export const AiKunChat = () => {
       let score = 0;
       let matchedKeywordsCount = 0;
 
-      if (item.category === estimatedIntent) score += 15;
+      // V22.4: default意図(general)の場合は加点しない（無関係な入力での誤爆防止）
+      if (item.category === estimatedIntent && estimatedIntent !== 'general') score += 15;
       // 文脈ボーナス
       if (contextCategory === item.category) score += 10;
       
@@ -438,8 +439,9 @@ export const AiKunChat = () => {
       const first = knowledgeCandidates[0];
       const second = knowledgeCandidates[1];
       
-      // スコア差が15%以内の場合は聞き返す
-      if (first.score < second.score * 1.15 && first.score < 200) {
+      // スコア差が15%以内の場合は聞き返す。
+      // ただし、スコアが低すぎる場合は単なるキーワード外れとみなして聞き返さない(V22.4)
+      if (first.score < second.score * 1.15 && first.score < 200 && first.score > 30) {
         return {
           response: `「${first.item.title}」と「${second.item.title}」、どちらについて知りたいかな？\n近いキーワードがいくつかあって迷っちゃった！`,
           category: 'general',
