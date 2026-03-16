@@ -287,6 +287,23 @@ export const AiKunChat = () => {
           emotionEffect: 'bounce'
         };
       }
+      // 占い発火時はランダムで結果を出す
+      if (bestChatKey === 'fortune_good') {
+        const fortunes = [
+          { result: '【🌟大吉（湧水レベル）🌟】', message: '今日のラッキーアクションは「朝一番のうがい」。淀みない川のように、素晴らしい一日になるはずさ！', effect: 'glow' as UIEmotionEffect },
+          { result: '【✨吉（清流レベル）✨】', message: '今日のラッキーアイテムは「マイボトル」。水を持ち歩けば運気もアップ！お出かけ先でもリフレッシュできるよ。', effect: 'bounce' as UIEmotionEffect },
+          { result: '【💧中吉（せせらぎレベル）💧】', message: '今日のラッキーカラーは「水色」。穏やかな一日になりそう。午後にお茶を一杯飲むと、さらに運気が上がるかも！', effect: 'pulse' as UIEmotionEffect },
+          { result: '【🌊小吉（雨上がりレベル）🌊】', message: '今日は少し波がある日かも。でも大丈夫、雨の後にはきっと虹が出る！冷たいお水を飲んで気分転換しよう。', effect: 'wiggle' as UIEmotionEffect },
+          { result: '【⛈末吉（にわか雨レベル）⛈】', message: '今日はちょっぴりツイてない日かも…？でも末吉は「未来は良くなる」という意味もあるんだ。お風呂にゆっくり浸かって明日に備えよう！', effect: 'shake' as UIEmotionEffect },
+        ];
+        const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+        return {
+          response: `アイ君の【水みくじ】！\nシャカシャカシャカ……ポンッ！\n\n${fortune.result}\n${fortune.message}`,
+          category: 'chat',
+          suggestedTopics: ['もう一回占い！', 'クイズ'],
+          emotionEffect: fortune.effect
+        };
+      }
       return { 
         response: AI_KUN_CHATTER[bestChatKey].response, 
         category: 'chat', 
@@ -351,11 +368,21 @@ export const AiKunChat = () => {
       };
     }
 
+    // フォールバック応答（多様化）
+    const fallbackResponses = [
+      `ごめんね、「${query}」については分からなかったよ。料金・手続き・トラブルなど、具体的な言葉で聞いてみてね！`,
+      `うーん、「${query}」かぁ。ちょっと難しい質問だね。「水道料金」「引越し」「水漏れ」みたいなキーワードで聞いてくれると答えやすいよ！`,
+      `「${query}」…ちょっと私には荷が重いかも。でも水道のことなら任せて！「料金」「手続き」「故障」で聞いてみてね。`,
+      `ごめんね、よく分からなかったよ。私は水道の専門家だから、水に関することなら得意なんだけどなぁ。もう少し具体的に教えてくれると嬉しいな！`,
+      `むむむ…「${query}」は私のデータベースにないみたい。でも「クイズ」や「占い」で遊ぶこともできるよ！試してみて。`,
+    ];
+    const fallback = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
-      response: `ごめんね、「${query}」については分からなかったよ。\nでも、こんな言葉を贈るね。「${philosophy}」\n料金・手続き・トラブルなど、具体的な単語で聞いてみてね！`,
-      category: 'general'
+      response: `${fallback}\n\nちなみに…「${philosophy}」`,
+      category: 'general',
+      suggestedTopics: ['料金について', '手続きしたい', 'クイズ', '占い']
     };
   };
 
