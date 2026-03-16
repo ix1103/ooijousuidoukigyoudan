@@ -6,12 +6,12 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V17, 
+  AI_KUN_KNOWLEDGE_V18, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem 
-} from '@/constants/knowledge-base-v17';
+} from '@/constants/knowledge-base-v18';
 
 interface Message {
   id: string;
@@ -82,28 +82,47 @@ export const AiKunChat = () => {
   };
 
   /**
-   * V17 超精度検索エンジン
+   * V18 極限精度検索エンジン
    * - ストップワード除去
-   * - フレーズマッチング一発ヒット
-   * - 複数キーワード(AND)ボーナス
+   * - 完全な表記ゆれ吸収（カタカナ→ひらがな、長音符削除）
+   * - 意図（Intent）カテゴリによる特大ボーナス
+   * - 文字数による動的スコアリング
    */
   const handleLogic = (query: string): { response: string; link?: { title: string; url: string } } => {
-    // 1. ノイズ（ストップワード）の除去と正規化
-    let normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. 　]/g, '');
-    const stopWords = ['について', '教えて', 'とは何', 'とは', 'って何', '知りたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも'];
+    // 1. ノイズ（ストップワード）の除去と正規化の極限進化
+    // カタカナをひらがなに変換、全角英数を半角に、長音符（ー）や空白・記号を完全に削除
+    const normalizeText = (text: string) => {
+      return text
+        .toLowerCase()
+        .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+        .replace(/[\u30a1-\u30f6]/g, (match) => String.fromCharCode(match.charCodeAt(0) - 0x60)) // カタカナ→ひらがな
+        .replace(/[ー〜、。！？!?,.\s　]/g, '');
+    };
+
+    let normalizedQuery = normalizeText(query);
+    const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも'];
     stopWords.forEach(word => {
       normalizedQuery = normalizedQuery.replace(word, '');
     });
 
-    if (!normalizedQuery) normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. 　]/g, ''); // 全部消えちゃった場合のフェイルセーフ
+    if (!normalizedQuery) normalizedQuery = normalizeText(query); // 全部消えちゃった場合のフェイルセーフ
 
-    // 2. 雑談・雑学チェック（優先）
+    // 2. 意図（Intent）の推定
+    let estimatedIntent: 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' = 'general';
+    if (/(りょうきん|だいきん|いくら|はらう|ねあげ|しはらい|くれじっと|こうざ|ペイペイ|paypay)/i.test(normalizedQuery)) estimatedIntent = 'money';
+    else if (/(ひっこし|てつづき|かいし|ちゅうし|めいぎ|しんせい|かえる|あける|とめる|だうんろーど)/i.test(normalizedQuery)) estimatedIntent = 'procedure';
+    else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい)/i.test(normalizedQuery)) estimatedIntent = 'trouble';
+    else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ)/i.test(normalizedQuery)) estimatedIntent = 'about';
+
+    // 3. 雑談・雑学チェック（優先）
     let bestChatKey = null;
     let maxChatScore = 0;
     for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
       let chatScore = 0;
       chat.keywords.forEach(kw => {
-        if (normalizedQuery.includes(kw)) chatScore += chat.weight;
+        const normKw = normalizeText(kw);
+        // キーワード文字数による動的重み付け（長いほどボーナス）
+        if (normalizedQuery.includes(normKw)) chatScore += chat.weight * (1 + normKw.length * 0.2);
       });
       if (chatScore > maxChatScore) {
         maxChatScore = chatScore;
@@ -111,61 +130,69 @@ export const AiKunChat = () => {
       }
     }
 
-    if (bestChatKey && maxChatScore >= 3) {
+    if (bestChatKey && maxChatScore >= 3.5) {
       return { response: AI_KUN_CHATTER[bestChatKey].response };
     }
 
-    // 3. 実務知識検索（V17ロジック）
+    // 4. 実務知識検索（V18ロジック）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V17.forEach(item => {
+    AI_KUN_KNOWLEDGE_V18.forEach(item => {
       let score = 0;
-      let hitCount = 0; // ヒットしたキーワードの種類数
+      let hitCount = 0;
 
-      // A. フレーズマッチング（Q&A想定質問）
+      // A. 意図（Intent）マッチングボーナス
+      if (item.category === estimatedIntent) {
+        score += 15; // カテゴリが合致したら基礎点アップ
+      } else if (estimatedIntent !== 'general') {
+        score -= 5; // カテゴリが外れたらペナルティ（誤爆防止）
+      }
+
+      // B. フレーズマッチング（Q&A想定質問）
       if (item.phrases) {
         item.phrases.forEach(phrase => {
-          const normalizedPhrase = phrase.replace(/[、。！？!?,. 　]/g, '');
+          const normalizedPhrase = normalizeText(phrase);
           if (normalizedPhrase.includes(normalizedQuery) || normalizedQuery.includes(normalizedPhrase)) {
-            score += 50; // 特大ボーナス（ほぼ確定）
+            // クエリが長いほど特大ボーナス
+            score += 50 + (normalizedQuery.length * 2); 
             hitCount++;
           }
         });
       }
 
-      // B. キーワード＆シノニムマッチング
+      // C. キーワード＆シノニムマッチング
       item.keywords.forEach(kw => {
         let keywordHit = false;
-        if (normalizedQuery.includes(kw.word)) {
-          score += kw.weight;
+        const normKw = normalizeText(kw.word);
+        
+        // 文字数による動的重み付け
+        const lengthMultiplier = 1 + (normKw.length * 0.3);
+
+        if (normalizedQuery.includes(normKw)) {
+          score += kw.weight * lengthMultiplier;
           keywordHit = true;
         }
         (SYNONYMS[kw.word] || []).forEach(syn => {
-          if (normalizedQuery.includes(syn)) {
-            score += kw.weight * 0.95;
+          const normSyn = normalizeText(syn);
+          if (normalizedQuery.includes(normSyn)) {
+            score += kw.weight * lengthMultiplier * 0.95;
             keywordHit = true;
           }
         });
         if (keywordHit) hitCount++;
       });
       
-      // C. タイトル・IDマッチング
-      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) {
-        score += 20;
+      // D. タイトルマッチング
+      const normTitle = normalizeText(item.title);
+      if (normalizedQuery.includes(normTitle) || normTitle.includes(normalizedQuery)) {
+        score += 25;
         hitCount++;
       }
-      const words = item.title.split('');
-      for (let i = 0; i < words.length - 1; i++) {
-        const chunk = item.title.slice(i, i + 3);
-        if (chunk.length >= 2 && normalizedQuery.includes(chunk)) {
-          score += 3;
-        }
-      }
 
-      // D. 複数ヒットボーナス（AND検索）
-      if (hitCount >= 2) score += 10;
-      if (hitCount >= 3) score += 20;
+      // E. 複数ヒットボーナス（AND検索）
+      if (hitCount >= 2) score += 15;
+      if (hitCount >= 3) score += 30;
       
       if (score > maxScore) {
         maxScore = score;
@@ -173,8 +200,8 @@ export const AiKunChat = () => {
       }
     });
 
-    // スコア閾値チェック
-    if (bestItem && maxScore >= 3) {
+    // スコア閾値チェック（V18はペナルティもあるため閾値を少し高めに）
+    if (bestItem && maxScore >= 8) {
       const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
@@ -188,7 +215,7 @@ export const AiKunChat = () => {
       };
     }
 
-    // 4. フォールバック（ヒットなし時）
+    // 5. フォールバック（ヒットなし時）
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
