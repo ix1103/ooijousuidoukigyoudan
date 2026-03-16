@@ -10,8 +10,9 @@ description: 修正内容を全ての主要ブランチ（master, main, review/c
 2. 指定されたメッセージでコミットを作成します（メッセージは適宜変更してください）。
    `git commit -m "feat: [変更内容の要約]"`
 
-3. 全てのブランチに一括で強制 push し、デプロイをトリガーします。
+3. 現在のブランチ名を変数に格納し、全てのブランチに一括で強制 push してデプロイをトリガーします。
+   （PowerShell / Bash 両対応の形式）
 // turbo
-4. `git push origin master:master --force; git push origin master:main --force; git push origin master:review/client-check --force; git push origin master:feature/site-restructure --force`
+4. `$current = $(git branch --show-current); git push origin ${current}:master --force; git push origin ${current}:main --force; git push origin ${current}:review/client-check --force; git push origin ${current}:feature/site-restructure --force`
 
 5. 完了後、ビルドが開始されたか確認してください。
