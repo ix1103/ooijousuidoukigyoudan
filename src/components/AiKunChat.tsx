@@ -6,12 +6,12 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V15, 
+  AI_KUN_KNOWLEDGE_V16, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem 
-} from '@/constants/knowledge-base-v15';
+} from '@/constants/knowledge-base-v16';
 
 interface Message {
   id: string;
@@ -59,6 +59,16 @@ export const AiKunChat = () => {
     };
   }, [isOpen, proactiveMessage]);
 
+  // 吹き出しを2秒後に自動消去
+  useEffect(() => {
+    if (proactiveMessage) {
+      const autoHideTimer = setTimeout(() => {
+        setProactiveMessage(null);
+      }, 2000);
+      return () => clearTimeout(autoHideTimer);
+    }
+  }, [proactiveMessage]);
+
   // メッセージ追加のたびに下へスクロール
   useEffect(() => {
     if (scrollRef.current) {
@@ -101,7 +111,7 @@ export const AiKunChat = () => {
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V15.forEach(item => {
+    AI_KUN_KNOWLEDGE_V16.forEach(item => {
       let score = 0;
       item.keywords.forEach(kw => {
         // 直接マッチング
@@ -227,7 +237,7 @@ export const AiKunChat = () => {
                   </div>
                   <div>
                     <h3 className="font-black text-base leading-tight">アイ君</h3>
-                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">Grand Concierge v15</p>
+                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">Grand Concierge v16</p>
                   </div>
                 </div>
                 <button 
@@ -339,7 +349,7 @@ export const AiKunChat = () => {
                   </motion.div>
                   <div>
                     <h3 className="font-black text-xl leading-tight">アイ君</h3>
-                    <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v15</p>
+                    <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v16</p>
                   </div>
                 </div>
                 <button 
@@ -417,30 +427,15 @@ export const AiKunChat = () => {
         )}
       </AnimatePresence>
 
-      {/* チャット開閉ボタン（フローティング） */}
+      {/* チャット開閉ボタン（半分隠れた控えめスタイル） */}
       <motion.button
-        animate={!isOpen ? {
-          y: [0, -10, 0],
-          transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-        } : { y: 0 }}
-        whileHover={{ scale: 1.1, rotate: 5 }} 
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ y: -8 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative group bg-white p-1 rounded-full shadow-2xl border-2 sm:border-4 border-primary-main"
+        className="relative bg-white p-0.5 rounded-full shadow-lg border-2 border-primary-main/60 translate-y-[40%] hover:translate-y-0 transition-transform duration-300"
       >
-        {/* パルス波紋 */}
-        {!isOpen && (
-          <div className="absolute inset-0 -z-10 bg-primary-main/20 rounded-full animate-ping opacity-75" />
-        )}
-        
-        <div className="w-12 h-12 sm:w-16 sm:h-16 relative overflow-hidden rounded-full font-bold">
-          <motion.div
-            animate={!isOpen ? { scale: [1.3, 1.4, 1.3] } : { scale: 1.3 }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="w-full h-full relative"
-          >
-            <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0" />
-          </motion.div>
+        <div className="w-12 h-12 sm:w-14 sm:h-14 relative overflow-hidden rounded-full">
+          <Image src="/aikun.png" alt="アイ君" fill className="object-contain scale-125" />
         </div>
       </motion.button>
     </div>
