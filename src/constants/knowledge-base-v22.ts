@@ -145,7 +145,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道料金が上がるの？', '料金改定について教えて', '値上げの理由は何', 'いつから新料金になるの'],
     summary: '令和7年10月からの料金改定だよ。',
     content: '老朽化した管の更新・耐震化・物価高騰への対応として令和7年10月1日から料金を改定するんだ。一般家庭（13mm/20mm）では基本料金が1,650円→1,815円（+165円）、超過料金は141円→155.1円/m³に変わるよ。25mmは2,090円→2,299円（+209円）さ。',
-    url: '/resident/billing-update', empathy: '値上げはつらいよね。でも安全な水道を未来に届けるための大切な一歩なんだ。', emotionEffect: 'sad'
+    url: '/resident/billing-update', empathy: '値上げはつらいよね。でも安全な水道を未来に届けるための大切な一歩なんだ。', emotionEffect: 'shake'
   },
   {
     id: 'rate_table', category: 'money', title: '水道料金表',

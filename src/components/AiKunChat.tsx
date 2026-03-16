@@ -15,7 +15,10 @@ import {
   UIEmotionEffect
 } from '@/constants/knowledge-base-v22';
 
-// レーベンシュタイン距離を計算する関数（V22: Typo補正用）
+/**
+ * レーベンシュタイン距離を計算する関数（V22: Typo補正用）
+ * 2つの文字列がどれだけ似ているかを数値化します。
+ */
 const levenshteinDistance = (a: string, b: string): number => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
@@ -48,7 +51,7 @@ interface Message {
   emotionEffect?: UIEmotionEffect;
 }
 
-// V22: UIアニメーションバリアント
+// V22: 感情に基づくUIアニメーション設定
 const bubbleAnimationVariants = {
   none: { scale: 1, rotate: 0 },
   shake: { x: [0, -4, 4, -4, 4, 0], transition: { duration: 0.4 } },
@@ -70,7 +73,7 @@ export const AiKunChat = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null);
 
-  // V22: ローカルストレージからユーザーの好みを読み込む
+  // V22: ローカルストレージから過去の傾向（興味のあるカテゴリ）を読み込む
   useEffect(() => {
     try {
       const storedFav = localStorage.getItem('aikun_favorite_category');
@@ -80,7 +83,7 @@ export const AiKunChat = () => {
     }
   }, []);
 
-  // チャットを開いたときの初期挨拶（時間帯に応じて変化 V21）
+  // チャット開始時の初期メッセージ
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
@@ -93,15 +96,15 @@ export const AiKunChat = () => {
 
         const greetingData = AI_KUN_CHATTER[greetingKey];
         
+        // 記憶に基づいたパーソナライズ前置き
         let introParams = "";
-        if (favoriteCategory === 'money') introParams = "\n※いつも料金について見てくれてありがとう！今日も節約のお手伝いするね！";
-        else if (favoriteCategory === 'trouble') introParams = "\n※いつもトラブル解決を見てくれてるね。困ったことがあったらすぐに言ってね！";
+        if (favoriteCategory === 'money') introParams = "\n※いつも料金について見てくれてありがとう！今日も節約のお手伝いするよ！";
+        else if (favoriteCategory === 'trouble') introParams = "\n※トラブル解決の情報をよく見てくれてるね。何か困ったことがあればすぐ教えてね！";
 
         addAssistantMessage(greetingData.response + introParams, undefined, 'chat', greetingData.suggest, greetingData.emotionEffect);
       }, 400);
       setProactiveMessage(null);
     }
-    // チャットを開いたらキーボードフォーカス（モバイル対応）
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 600);
     }
@@ -121,17 +124,16 @@ export const AiKunChat = () => {
     };
   }, [isOpen, proactiveMessage]);
 
-  // 吹き出しを2秒後に自動消去
+  // プロアクティブメッセージの自動消去
   useEffect(() => {
     if (proactiveMessage) {
       const autoHideTimer = setTimeout(() => {
         setProactiveMessage(null);
-      }, 2000);
+      }, 5000);
       return () => clearTimeout(autoHideTimer);
     }
   }, [proactiveMessage]);
 
-  // メッセージ追加のたびに下へスクロール
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -142,7 +144,7 @@ export const AiKunChat = () => {
     const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link, category, suggestedTopics, emotionEffect };
     setMessages(prev => [...prev, newMessage]);
     
-    // V22: ユーザーのよく見るカテゴリを記憶
+    // カテゴリの記憶（LocalStorage）
     if (category && category !== 'chat' && category !== 'general' && category !== 'quiz_running') {
       try {
         localStorage.setItem('aikun_favorite_category', category);
@@ -154,19 +156,10 @@ export const AiKunChat = () => {
   };
 
   /**
-   * V22 究極検索エンジン（極限進化）
-   * - 過去のコンテキストを参照する文脈理解
-   * - レーベンシュタイン距離によるTypo補正
-   * - 感情UIエフェクトプロパティの返却
-   * - 連続クイズ状態の拡張
+   * V22 究極検索ロジック
    */
   const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect } => {
-    // 0. 特殊ショートカット（雑な入力への最速回答）
-    if (query === '料金' || query === '水道代') {
-      return { response: '水道料金についてだね！基本料金は2ヶ月で1,815円（13/20mm）から。詳しい料金表や支払い方法はこのページを見てね！', link: { title: '水道料金表', url: '/resident/price' } };
-    }
     
-    // 1. ノイズ（ストップワード）の除去と正規化の極限進化
     const normalizeText = (text: string) => {
       return text
         .toLowerCase()
@@ -177,22 +170,16 @@ export const AiKunChat = () => {
 
     let normalizedQuery = normalizeText(query);
 
-    // V22: Typo補正（レーベンシュタイン距離による近似単語への自動置換）
+    // V22: Typo補正（レーベンシュタイン距離）
     const applyTypoCorrection = (text: string) => {
       let correctedText = text;
-      // 辞書内の全キーワードについて検査（コストはかかるが文字数が少ないので許容範囲）
       Object.keys(SYNONYMS).forEach(canonical => {
         [canonical, ...SYNONYMS[canonical]].forEach(kw => {
            const normKw = normalizeText(kw);
-           // 3文字以上のキーワードのみ対象（短いと誤爆が増えるため）
            if (normKw.length >= 3) {
-             // ユーザー入力の部分文字列に対して近似チェック（簡易実装：入力全体とキーワードの距離）
-             if (correctedText.length >= normKw.length - 1 && correctedText.length <= normKw.length + 1) {
-               const dist = levenshteinDistance(correctedText, normKw);
-               // 文字数の25%以下のタイポなら補正
-               if (dist === 1 || (normKw.length >= 5 && dist <= 2)) {
-                 correctedText = normKw; // 補正！
-               }
+             const dist = levenshteinDistance(text, normKw);
+             if (dist === 1 || (normKw.length >= 5 && dist <= 2)) {
+               correctedText = normKw;
              }
            }
         });
@@ -202,15 +189,14 @@ export const AiKunChat = () => {
     
     normalizedQuery = applyTypoCorrection(normalizedQuery);
 
-    // V19: 方言や感情表現のノイズ除去を強化
-    const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも', 'だら', 'だに', 'でしょ', 'だけど', 'なんですが'];
+    const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも'];
     stopWords.forEach(word => {
       normalizedQuery = normalizedQuery.replace(word, '');
     });
 
-    if (!normalizedQuery) normalizedQuery = normalizeText(query); // 全部消えちゃった場合のフェイルセーフ
+    if (!normalizedQuery) normalizedQuery = normalizeText(query);
 
-    // 2. メタIntent（基本カテゴリ＋感情推論＋緊急度＋文脈理解）の推定
+    // 意図の推定
     let estimatedIntent: 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' | 'chat' = 'general';
     let emotion: EmotionContext = 'neutral';
     let urgency: 'high' | 'normal' = 'normal';
@@ -220,10 +206,8 @@ export const AiKunChat = () => {
     else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい)/i.test(normalizedQuery)) estimatedIntent = 'trouble';
     else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ)/i.test(normalizedQuery)) estimatedIntent = 'about';
 
-    // V20: 文脈（Context）理解によるIntent補正 と V21 連続クイズ判定
-    const isShortQuery = normalizedQuery.length <= 4 || /(それ|あれ|これ|はい|いいえ|うん|ううん|もっと|くわしく|詳細)/.test(normalizedQuery);
+    // 文脈（Context）理解
     let contextCategory = '';
-    
     if (pastMessages.length > 0) {
       for (let i = pastMessages.length - 1; i >= 0; i--) {
         if (pastMessages[i].role === 'assistant' && pastMessages[i].category) {
@@ -233,7 +217,7 @@ export const AiKunChat = () => {
       }
     }
 
-    // V21/V22 連続クイズの回答判定
+    // クイズ回答判定
     if (contextCategory === 'quiz_running') {
       const isCorrect = /(2|２|かわねほんちょう|川根本)/.test(normalizedQuery);
       if (isCorrect) {
@@ -252,10 +236,6 @@ export const AiKunChat = () => {
         };
       }
     }
-    
-    if (isShortQuery && contextCategory && contextCategory !== 'general' && contextCategory !== 'chat' && estimatedIntent === 'general') {
-      estimatedIntent = contextCategory as any;
-    }
 
     // 感情・緊急度推論
     if (/(こわい|ふあん|たすけて|パニック|あせる)/.test(normalizeText(query))) emotion = 'anxious';
@@ -267,198 +247,91 @@ export const AiKunChat = () => {
       urgency = 'high';
     }
 
-    // 3. 雑談・雑学・感情チェック（優先）
+    // 雑談チェック
     let bestChatKey = null;
     let maxChatScore = 0;
-    
-    // 実務キーワードと雑談が被る場合の判別（例：水漏れして「最悪」）
-    const isDirectTrouble = (estimatedIntent === 'trouble' && urgency === 'high');
-
-    if (!isDirectTrouble) {
-      for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
-        let chatScore = 0;
-        chat.keywords.forEach(kw => {
-          const normKw = normalizeText(kw);
-          if (normalizedQuery.includes(normKw)) chatScore += chat.weight * (1 + normKw.length * 0.25);
-        });
-        
-        // V19 タイブレーク用：入力の長さとキーワードの長さの比率で純度をみる
-        if (chatScore === maxChatScore && bestChatKey) {
-            const currentPure = chat.keywords.some(k => normalizeText(query) === normalizeText(k)) ? 1 : 0;
-            const bestPure = AI_KUN_CHATTER[bestChatKey].keywords.some(k => normalizeText(query) === normalizeText(k)) ? 1 : 0;
-            if (currentPure > bestPure) bestChatKey = key;
-        }
-
-        if (chatScore > maxChatScore) {
-          maxChatScore = chatScore;
-          bestChatKey = key;
-        }
-      }
-
-      if (bestChatKey && maxChatScore >= 4.0) { // 閾値調整
-        // V21/V22: クイズ開始時などはカテゴリを特定のものにする
-        const chatCategory = bestChatKey === 'quiz_start' ? 'quiz_running' : 'chat';
-        return { 
-          response: AI_KUN_CHATTER[bestChatKey].response, 
-          category: chatCategory, 
-          suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest,
-          emotionEffect: AI_KUN_CHATTER[bestChatKey].emotionEffect
-        };
+    for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
+      let chatScore = 0;
+      chat.keywords.forEach(kw => {
+        const normKw = normalizeText(kw);
+        if (normalizedQuery.includes(normKw)) chatScore += chat.weight * (1 + normKw.length * 0.25);
+      });
+      if (chatScore > maxChatScore) {
+        maxChatScore = chatScore;
+        bestChatKey = key;
       }
     }
 
-    // 4. 実務知識検索（V22ロジック）
+    if (bestChatKey && maxChatScore >= 4.0) {
+      const chatCategory = bestChatKey === 'quiz_start' ? 'quiz_running' : 'chat';
+      return { 
+        response: AI_KUN_CHATTER[bestChatKey].response, 
+        category: chatCategory, 
+        suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest,
+        emotionEffect: AI_KUN_CHATTER[bestChatKey].emotionEffect
+      };
+    }
+
+    // 実務知識検索
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
     AI_KUN_KNOWLEDGE_V22.forEach(item => {
       let score = 0;
-      let hitCount = 0;
-
-      // A. 意図（Intent）マッチングボーナス
-      if (item.category === estimatedIntent) {
-        score += 15;
-      } else if (estimatedIntent !== 'general') {
-        score -= 10; // V19：誤爆ペナルティ強化
-      }
-
-      // B. 完全一致・フレーズマッチング
+      if (item.category === estimatedIntent) score += 15;
+      
       if (item.phrases) {
         item.phrases.forEach(phrase => {
           const normalizedPhrase = normalizeText(phrase);
-          if (normalizedQuery === normalizedPhrase) {
-            score += 200; // 完全一致は即回答
-            hitCount += 2;
-          } else if (normalizedPhrase.includes(normalizedQuery) || normalizedQuery.includes(normalizedPhrase)) {
-            score += 50 + (normalizedQuery.length * 2.5); // 包含関係の配点増強
-            hitCount++;
-          }
+          if (normalizedQuery === normalizedPhrase) score += 200;
+          else if (normalizedPhrase.includes(normalizedQuery) || normalizedQuery.includes(normalizedPhrase)) score += 50;
         });
       }
-
-      // C. キーワード＆シノニムマッチング（V21: 近接スコア Proximity Scoring 導入）
-      let foundPositions: number[] = []; // ヒットした単語の位置を記録
 
       item.keywords.forEach(kw => {
-        let keywordHit = false;
         const normKw = normalizeText(kw.word);
-        
-        // TF-IDF的：長いキーワードは希少（価値が高い）
-        const lengthMultiplier = 1 + (normKw.length * 0.4);
-
-        let pos = normalizedQuery.indexOf(normKw);
-        if (pos !== -1) {
-          score += kw.weight * lengthMultiplier;
-          keywordHit = true;
-          foundPositions.push(pos);
+        if (normalizedQuery.includes(normKw)) {
+          score += kw.weight * (1 + normKw.length * 0.4);
         }
-        
-        (SYNONYMS[kw.word] || []).forEach(syn => {
-          const normSyn = normalizeText(syn);
-          let synPos = normalizedQuery.indexOf(normSyn);
-          if (synPos !== -1) {
-            score += kw.weight * lengthMultiplier * 0.98;
-            keywordHit = true;
-            foundPositions.push(synPos);
-          }
-        });
-        if (keywordHit) hitCount++;
       });
 
-      // V21 近接スコアリング（複数単語がヒットした場合、距離が近いほどボーナス）
-      if (foundPositions.length >= 2) {
-        foundPositions.sort((a, b) => a - b);
-        let minDistance = 999;
-        for (let i = 0; i < foundPositions.length - 1; i++) {
-          const dist = foundPositions[i + 1] - foundPositions[i];
-          if (dist > 0 && dist < minDistance) minDistance = dist;
-        }
-        if (minDistance <= 15) {
-          score += 15; // 距離15文字以内ならボーナス加点
-        }
-      }
-      
-      // D. タイトルマッチング
-      const normTitle = normalizeText(item.title);
-      if (normalizedQuery.includes(normTitle) || normTitle.includes(normalizedQuery)) {
-        score += 30; // タイトル一致の配点も強化
-        hitCount++;
-      }
-
-      // E. 複数ヒットボーナス
-      if (hitCount >= 2) score += 20;
-      if (hitCount >= 3) score += 40;
-      
-      // タイブレーク：スコアが同じなら、文字数の短いアイテム（よりピンポイントな回答）を優先
-      if (score === maxScore && bestItem) {
-          if (item.content.length < bestItem.content.length) {
-              bestItem = item;
-          }
-      } else if (score > maxScore) {
+      if (score > maxScore) {
         maxScore = score;
         bestItem = item;
       }
     });
 
-    // V21: スコア閾値チェック ＆ 「もしかして〇〇ですか？」機能（曖昧さ回避）
-    const CONFIDENCE_THRESHOLD = 8.0;
-    const AMBIGUOUS_THRESHOLD = 3.5;
-
-    if (bestItem) {
+    if (bestItem && maxScore >= 3.5) {
       const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
 
-      if (maxScore >= CONFIDENCE_THRESHOLD) {
-        // --- 確信度が高い（通常回答） ---
-        
-        // V19 感情・緊急度による前置きの動的生成
-        let empathy = item.empathy ? `${item.empathy}\n\n` : '';
-        if (urgency === 'high' && item.category === 'trouble') {
-            empathy = `【緊急】大変！水漏れや故障はパニックになるよね。落ち着いて聞いてね。\n\n`;
-        } else if (emotion === 'angry') {
-            empathy = `イライラさせてごめんね。すぐに役立つ情報を教えるよ！\n\n`;
-        } else if (emotion === 'sad') {
-            empathy = `落ち込まないで。私がしっかりサポートするから安心して！\n\n`;
-        }
-
-        let content = item.content;
-        if (content.endsWith('。')) content = content.slice(0, -1);
-        
-        // V20: 次のアクションを促す提案機能
-        let suggestedTopics: string[] | undefined;
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-        if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
-        else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き', 'よくある質問'];
-        else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策', '夜間・休日の連絡'];
-        else if (item.category === 'about') suggestedTopics = ['アクセス・場所', '電話番号'];
-        else if (item.category === 'faq') suggestedTopics = ['漏水・故障の相談', '料金表'];
-        // スマホの場合はサジェストは2つくらいに絞る
-        if (suggestedTopics && isMobile) suggestedTopics = suggestedTopics.slice(0, 2);
-
-        return { 
-          response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
-          link: item.url ? { title: item.title, url: item.url } : undefined,
-          category: item.category,
-          suggestedTopics,
-          emotionEffect: item.emotionEffect
-        };
-      } else if (maxScore >= AMBIGUOUS_THRESHOLD) {
-        // --- 確信度が微妙（もしかして？機能） ---
-        return {
-          response: `うーん…もしかして「${item.title}」のことかな？\nもしそうなら、下のボタンを押してみてね！違ったら、もう少し違う言葉で教えてもらえると嬉しいな！`,
-          category: 'general',
-          suggestedTopics: [item.title, '違う（FAQを見る）', '電話をかける'],
-          emotionEffect: 'wiggle'
-        };
+      let empathy = item.empathy ? `${item.empathy}\n\n` : '';
+      if (urgency === 'high' && item.category === 'trouble') {
+          empathy = `【緊急】大変！水漏れや故障はパニックになるよね。落ち着いて聞いてね。\n\n`;
       }
+
+      let content = item.content;
+      if (content.endsWith('。')) content = content.slice(0, -1);
+      
+      let suggestedTopics: string[] | undefined;
+      if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
+      else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き'];
+      else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策'];
+
+      return { 
+        response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
+        link: item.url ? { title: item.title, url: item.url } : undefined,
+        category: item.category,
+        suggestedTopics,
+        emotionEffect: item.emotionEffect
+      };
     }
 
-    // 5. フォールバック
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
-      response: `ごめんね、「${query}」については、私のデータベースを隅々まで調べたけど見つからなかったよ。\nでも、こんな言葉を贈るね。「${philosophy}」\n料金・手続き・トラブルなど、具体的な単語で聞いてくれると答えやすいかもしれないな！`,
+      response: `ごめんね、「${query}」については分からなかったよ。\nでも、こんな言葉を贈るね。「${philosophy}」\n料金・手続き・トラブルなど、具体的な単語で聞いてみてね！`,
       category: 'general'
     };
   };
@@ -486,306 +359,119 @@ export const AiKunChat = () => {
   };
 
   return (
-    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 sm:bottom-6 sm:right-6 z-[9999] font-sans flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] font-sans flex flex-col items-end">
       
-      {/* 吹き出し */}
       <AnimatePresence>
         {!isOpen && proactiveMessage && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, y: 20, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.5, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setIsOpen(true)}
-            className="mb-8 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative group max-w-[180px] sm:max-w-[200px] mr-2"
+            className="mb-8 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative max-w-[200px] mr-2"
           >
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-r border-b border-primary-light/20" />
             <div className="flex items-start gap-2">
               <Sparkles size={16} className="text-secondary-vibrant shrink-0 mt-0.5 animate-pulse" />
               <span>{proactiveMessage}</span>
             </div>
-            <button 
-              onClick={(e) => { e.stopPropagation(); setProactiveMessage(null); }}
-              className="absolute -top-2 -right-2 bg-slate-200 text-slate-500 rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-            >
-              <X size={12} />
-            </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ===== チャットウィンドウ ===== */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* ── スマホ用：ボトムシート（全幅・四角） ── */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="
-                fixed inset-x-0 bottom-0 z-[9999]
-                flex flex-col
-                h-[85dvh]
-                bg-white
-                rounded-t-2xl
-                shadow-2xl
-                border-t border-slate-200
-                sm:hidden
-              "
-            >
-              {/* ドラッグハンドル */}
-              <div className="flex justify-center pt-3 pb-1 shrink-0">
-                <div className="w-10 h-1 bg-slate-300 rounded-full" />
-              </div>
-
-              {/* スマホ用ヘッダー */}
-              <div className="bg-primary-main px-4 py-3 flex items-center justify-between text-white shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-9 h-9 bg-white rounded-full overflow-hidden border-2 border-white/30 shadow-inner shrink-0">
-                    <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-black text-base leading-tight">アイ君</h3>
-                      <span className="bg-white/20 px-1.5 py-0.5 rounded text-[8px] font-black tracking-wider leading-none">v22</span>
-                    </div>
-                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">※アイ君は平気で嘘をつく事があります</p>
-                  </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 40 }}
+            className="mb-4 w-[90vw] sm:w-[400px] h-[70vh] sm:h-[600px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden flex-col flex origin-bottom-right"
+          >
+            {/* ヘッダー */}
+            <div className="bg-primary-main p-5 flex items-center justify-between text-white shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="relative w-12 h-12 bg-white rounded-full overflow-hidden border-2 border-white/20">
+                  <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-1 scale-110" />
                 </div>
-                <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="p-2 bg-white/10 rounded-full flex items-center gap-1 text-xs font-bold"
-                >
-                  <ChevronDown size={18} />
-                </button>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-xl">アイ君</h3>
+                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black">v22</span>
+                  </div>
+                  <p className="text-[10px] opacity-70 font-bold uppercase tracking-widest">Ai-kun Chatbot Agent</p>
+                </div>
               </div>
+              <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
 
-              {/* スマホ用チャットエリア */}
-              <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-                {messages.map((m) => (
+            {/* チャットエリア */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+              {messages.map((m) => (
+                <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <motion.div 
-                    key={m.id} 
-                    initial={{ opacity: 0, y: 10 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
+                    variants={bubbleAnimationVariants}
+                    animate={m.emotionEffect || "none"}
+                    className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
+                      m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none' : 'bg-white text-primary-deep rounded-tl-none border border-slate-100'
+                    }`}
                   >
-                    <motion.div 
-                      variants={bubbleAnimationVariants}
-                      animate={m.emotionEffect && m.emotionEffect !== 'none' ? m.emotionEffect : "none"}
-                      className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                        m.role === 'user' 
-                          ? 'bg-primary-main text-white rounded-2xl rounded-br-sm shadow-sm' 
-                          : 'bg-white text-primary-deep rounded-2xl rounded-bl-sm shadow-sm border border-slate-100'
-                      }`}
-                    >
-                      {m.content}
-                    </motion.div>
-                    {m.link && (
-                      <Link 
-                        href={m.link.url}
-                        className="mt-2 flex items-center gap-2 bg-secondary-vibrant text-primary-deep px-4 py-2 rounded-xl text-xs font-black shadow-sm hover:opacity-90 transition-opacity"
-                      >
-                        <ExternalLink size={13} />
-                        {m.link.title}を見る
-                      </Link>
-                    )}
-                    {m.suggestedTopics && m.suggestedTopics.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2 pointer-events-auto">
-                        {m.suggestedTopics.map(topic => (
-                          <button
-                            key={topic}
-                            onClick={() => handleQuickSend(topic)}
-                            className="text-[11px] font-bold bg-white text-primary-deep border border-primary-light/40 px-3 py-1.5 rounded-full shadow-sm hover:bg-primary-light/10 active:scale-95 transition-all text-left"
-                          >
-                            👉 {topic} 
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    {m.content}
                   </motion.div>
-                ))}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                      className="bg-white px-4 py-3 rounded-2xl rounded-bl-sm shadow-sm border border-slate-100 flex gap-1.5"
-                    >
-                      {[0, 0.2, 0.4].map((delay, i) => (
-                        <motion.span 
-                          key={i}
-                          animate={{ y: [0, -5, 0] }}
-                          transition={{ repeat: Infinity, duration: 0.6, delay }}
-                          className="w-2 h-2 bg-primary-main/40 rounded-full" 
-                        />
+                  {m.link && (
+                    <Link href={m.link.url} className="mt-2 flex items-center gap-2 bg-secondary-vibrant text-primary-deep px-4 py-2 rounded-xl text-xs font-black shadow-sm transition-transform hover:scale-105">
+                      <ExternalLink size={14} />
+                      {m.link.title}を見る
+                    </Link>
+                  )}
+                  {m.suggestedTopics && m.suggestedTopics.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {m.suggestedTopics.map(topic => (
+                        <button key={topic} onClick={() => handleQuickSend(topic)} className="text-[12px] font-bold bg-white text-primary-deep border border-primary-light/30 px-3 py-1.5 rounded-full shadow-sm hover:bg-primary-light/10 transition-colors">
+                          👉 {topic} 
+                        </button>
                       ))}
-                    </motion.div>
-                  </div>
-                )}
-              </div>
-
-              {/* スマホ用入力エリア */}
-              <div className="px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white border-t border-slate-100 shrink-0">
-                <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="メッセージを送る..."
-                    className="flex-1 bg-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-main/30 transition-all"
-                  />
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    type="submit"
-                    disabled={!inputValue.trim() || isTyping}
-                    className="bg-primary-main text-white p-3 rounded-2xl disabled:opacity-40 shadow-sm shrink-0"
-                  >
-                    <Send size={18} />
-                  </motion.button>
-                </form>
-              </div>
-            </motion.div>
-
-            {/* スマホ用背景オーバーレイ */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/30 z-[9998] sm:hidden"
-            />
-
-
-            {/* ── PC用：フローティングウィンドウ（既存デザイン維持） ── */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 40, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, scale: 0.8, y: 40, filter: 'blur(10px)' }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="hidden sm:flex mb-4 w-[400px] h-[600px] max-h-[700px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex-col origin-bottom-right"
-            >
-              {/* PC用ヘッダー */}
-              <div className="bg-primary-main p-5 flex items-center justify-between text-white shrink-0 shadow-lg relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                  <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] border-[20px] border-white rounded-full animate-[spin_20s_linear_infinite]" />
-                </div>
-                <div className="flex items-center gap-3 relative">
-                  <motion.div 
-                    initial={{ rotate: -10 }} animate={{ rotate: 0 }}
-                    className="relative w-14 h-14 bg-white rounded-full overflow-hidden border-2 border-white/20 shadow-inner"
-                  >
-                    <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
-                  </motion.div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-black text-xl leading-tight">アイ君</h3>
-                      <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black tracking-wider leading-none">v22</span>
                     </div>
-                    <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">※アイ君は平気で嘘をつく事があります</p>
+                  )}
+                </div>
+              ))}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-1.5">
+                    {[0, 0.2, 0.4].map((delay, i) => (
+                      <motion.span key={i} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay }} className="w-2 h-2 bg-primary-main/30 rounded-full" />
+                    ))}
                   </div>
                 </div>
-                <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="hover:rotate-90 transition-transform p-1.5 bg-white/10 rounded-full relative z-10"
-                >
-                  <X size={20} />
-                </button>
-              </div>
+              )}
+            </div>
 
-              {/* PC用チャットエリア */}
-              <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-5 bg-slate-50/50">
-                {messages.map((m) => (
-                  <motion.div 
-                    key={m.id} 
-                    initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20 }} 
-                    animate={{ opacity: 1, x: 0 }} 
-                    className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
-                  >
-                    <motion.div 
-                      variants={bubbleAnimationVariants}
-                      animate={m.emotionEffect && m.emotionEffect !== 'none' ? m.emotionEffect : "none"}
-                      className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-                        m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none shadow-glow' : 'bg-white text-primary-deep rounded-tl-none shadow-premium'
-                      }`}
-                    >
-                      {m.content}
-                    </motion.div>
-                    {m.link && (
-                      <Link 
-                        href={m.link.url}
-                        className="mt-2 flex items-center gap-2 bg-secondary-vibrant text-primary-deep px-4 py-2.5 rounded-xl text-xs font-black shadow-premium hover:scale-105 transition-all outline-none"
-                      >
-                        <ExternalLink size={14} />
-                        {m.link.title}を見る
-                      </Link>
-                    )}
-                    {m.suggestedTopics && m.suggestedTopics.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2 pointer-events-auto">
-                        {m.suggestedTopics.map(topic => (
-                          <button
-                            key={topic}
-                            onClick={() => handleQuickSend(topic)}
-                            className="text-[12px] font-bold bg-white text-primary-deep border border-primary-light/40 px-3 py-1.5 rounded-full shadow-sm hover:bg-primary-light/10 hover:-translate-y-0.5 active:scale-95 transition-all outline-none text-left"
-                          >
-                            👉 {topic} 
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                      className="bg-white p-4 rounded-2xl rounded-tl-none shadow-premium flex gap-1.5"
-                    >
-                      {[0, 0.2, 0.4].map((delay, i) => (
-                        <motion.span 
-                          key={i}
-                          animate={{ y: [0, -6, 0] }}
-                          transition={{ repeat: Infinity, duration: 0.6, delay }}
-                          className="w-2 h-2 bg-primary-main/30 rounded-full" 
-                        />
-                      ))}
-                    </motion.div>
-                  </div>
-                )}
-              </div>
-
-              {/* PC用入力エリア */}
-              <div className="p-4 bg-white border-t border-slate-100 shrink-0">
-                <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
-                  <input
-                    type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="なんでも話しかけておくれ！"
-                    className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none transition-all"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    type="submit" disabled={!inputValue.trim() || isTyping}
-                    className="bg-primary-main text-white p-3.5 rounded-xl disabled:opacity-50 shadow-glow"
-                  >
-                    <Send size={18} />
-                  </motion.button>
-                </form>
-              </div>
-            </motion.div>
-          </>
+            {/* 入力エリア */}
+            <div className="p-4 bg-white border-t border-slate-100 shrink-0">
+              <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
+                <input
+                  ref={inputRef}
+                  type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="メッセージを入力..."
+                  className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-primary-main/20 outline-none transition-all"
+                />
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="submit" disabled={!inputValue.trim() || isTyping} className="bg-primary-main text-white p-3.5 rounded-xl disabled:opacity-50">
+                  <Send size={18} />
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
-      {/* チャット開閉ボタン（半分隠れた控えめスタイル） */}
       <motion.button
-        whileHover={{ y: -8 }}
+        whileHover={{ y: -5 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative bg-white p-0.5 rounded-full shadow-lg border-2 border-primary-main/60 translate-y-[40%] hover:translate-y-0 transition-transform duration-300"
+        className="w-16 h-16 bg-white rounded-full shadow-2xl border-2 border-primary-main/20 flex items-center justify-center overflow-hidden"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 relative overflow-hidden rounded-full">
+        <div className="w-14 h-14 relative overflow-hidden rounded-full">
           <Image src="/aikun.png" alt="アイ君" fill className="object-contain scale-125" />
         </div>
       </motion.button>
