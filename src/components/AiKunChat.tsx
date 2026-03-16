@@ -232,38 +232,11 @@ export const AiKunChat = () => {
 
     let normalizedQuery = normalizeText(query);
 
-    // V22: Typo補正（レーベンシュタイン距離）
-    // V22: Typo補正（レーベンシュタイン距離）
-    const applyTypoCorrection = (text: string) => {
-      if (text.length < 2) return text;
-      let correctedText = text;
-      
-      // 全ての補正候補（シノニム、ナレッジ、雑談）を集約
-      const candidates = new Set<string>();
-      Object.keys(SYNONYMS).forEach(k => { candidates.add(k); SYNONYMS[k].forEach(s => candidates.add(s)); });
-      AI_KUN_KNOWLEDGE_V22.forEach(item => item.phrases?.forEach(p => candidates.add(p)));
-      Object.values(AI_KUN_CHATTER).forEach(chat => chat.keywords.forEach(kw => candidates.add(kw)));
-
-      candidates.forEach(phrase => {
-        const normPhrase = normalizeText(phrase);
-        if (normPhrase.length >= 2) {
-          const dist = levenshteinDistance(text, normPhrase);
-          // 2-4文字なら距離1まで、5文字以上なら距離2まで許容
-          if (dist === 1 || (normPhrase.length >= 5 && dist <= 2)) {
-            correctedText = normPhrase;
-          }
-        }
-      });
-      return correctedText;
-    };
-    
-    normalizedQuery = applyTypoCorrection(normalizedQuery);
-
-    const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも'];
+    // V22.1: ストップワード除去（タイポ補正より先に実行）
+    const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'どうも'];
     stopWords.forEach(word => {
       normalizedQuery = normalizedQuery.replace(word, '');
     });
-
     if (!normalizedQuery) normalizedQuery = normalizeText(query);
 
     // 意図の推定
@@ -291,7 +264,6 @@ export const AiKunChat = () => {
     if (contextCategory === 'quiz_running' && currentQuizId) {
       const quiz = QUIZ_POOL.find(q => q.id === currentQuizId);
       if (quiz) {
-        // ユーザーの回答を番号で判定（1,2,3 or １,２,３）
         let userAnswer = -1;
         if (/(1|１)/.test(query)) userAnswer = 0;
         else if (/(2|２)/.test(query)) userAnswer = 1;
@@ -327,24 +299,36 @@ export const AiKunChat = () => {
       urgency = 'high';
     }
 
-    // 雑談チェック
-    let bestChatKey = null;
+    // ── 雑談チェック（精度重視のマッチング） ──
+    let bestChatKey: string | null = null;
     let maxChatScore = 0;
     for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
+      // weight:0 のグリーティングはここではスキップ（専用ルーティング用）
+      if (chat.weight === 0) continue;
+      
       let chatScore = 0;
+      let matchedCount = 0;
       chat.keywords.forEach(kw => {
         const normKw = normalizeText(kw);
-        if (normalizedQuery.includes(normKw)) chatScore += chat.weight * (1 + normKw.length * 0.25);
+        if (normKw.length === 0) return;
+        // キーワードが入力に含まれているかチェック
+        if (normalizedQuery.includes(normKw)) {
+          matchedCount++;
+          // スコア = 重み × キーワード長ボーナス（長いキーワードほど信頼度が高い）
+          chatScore += chat.weight * (1 + normKw.length * 0.3);
+        }
       });
+      
       if (chatScore > maxChatScore) {
         maxChatScore = chatScore;
         bestChatKey = key;
       }
     }
 
-    // 感度調整: 4.0 -> 3.0 (より拾いやすくする)
-    if (bestChatKey && maxChatScore >= 3.0) {
-      // クイズ発火時はQUIZ_POOLからランダムに出題
+    // しきい値: 短いキーワード（2文字）× weight5 × (1+0.6) = 8.0
+    // 確実にマッチした場合のみ発火するようにする
+    if (bestChatKey && maxChatScore >= 5.0) {
+      // クイズ発火
       if (bestChatKey === 'quiz_start') {
         const randomQuiz = QUIZ_POOL[Math.floor(Math.random() * QUIZ_POOL.length)];
         setCurrentQuizId(randomQuiz.id);
@@ -356,7 +340,7 @@ export const AiKunChat = () => {
           emotionEffect: 'bounce'
         };
       }
-      // 占い発火時はランダムで結果を出す
+      // 占い発火（ランダム結果）
       if (bestChatKey === 'fortune_good') {
         const fortunes = [
           { result: '【🌟大吉（湧水レベル）🌟】', message: '今日のラッキーアクションは「朝一番のうがい」。淀みない川のように、素晴らしい一日になるはずさ！', effect: 'glow' as UIEmotionEffect },
