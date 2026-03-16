@@ -6,13 +6,37 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V21, 
+  AI_KUN_KNOWLEDGE_V22, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem,
-  EmotionContext
-} from '@/constants/knowledge-base-v21';
+  EmotionContext,
+  UIEmotionEffect
+} from '@/constants/knowledge-base-v22';
+
+// レーベンシュタイン距離を計算する関数（V22: Typo補正用）
+const levenshteinDistance = (a: string, b: string): number => {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) { matrix[i] = [i]; }
+  for (let j = 0; j <= a.length; j++) { matrix[0][j] = j; }
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // 置換
+          matrix[i][j - 1] + 1,     // 挿入
+          matrix[i - 1][j] + 1      // 削除
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+};
 
 interface Message {
   id: string;
@@ -21,7 +45,19 @@ interface Message {
   link?: { title: string; url: string };
   category?: string;
   suggestedTopics?: string[];
+  emotionEffect?: UIEmotionEffect;
 }
+
+// V22: UIアニメーションバリアント
+const bubbleAnimationVariants = {
+  none: { scale: 1, rotate: 0 },
+  shake: { x: [0, -4, 4, -4, 4, 0], transition: { duration: 0.4 } },
+  bounce: { y: [0, -8, 0], transition: { duration: 0.4, repeat: 2, repeatType: "reverse" as const } },
+  pulse: { scale: [1, 1.05, 1], transition: { duration: 0.5, repeat: Infinity, repeatType: "reverse" as const } },
+  glow: { boxShadow: ["0px 0px 0px rgba(0,0,0,0)", "0px 0px 15px rgba(0,180,255,0.6)", "0px 0px 0px rgba(0,0,0,0)"], transition: { duration: 1.2, repeat: Infinity } },
+  spin: { rotate: [0, 360], transition: { duration: 0.8 } },
+  wiggle: { rotate: [0, -5, 5, -5, 5, 0], transition: { duration: 0.5 } }
+};
 
 export const AiKunChat = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +68,17 @@ export const AiKunChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const proactiveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null);
+
+  // V22: ローカルストレージからユーザーの好みを読み込む
+  useEffect(() => {
+    try {
+      const storedFav = localStorage.getItem('aikun_favorite_category');
+      if (storedFav) setFavoriteCategory(storedFav);
+    } catch (e) {
+      console.error('LocalStorage read error:', e);
+    }
+  }, []);
 
   // チャットを開いたときの初期挨拶（時間帯に応じて変化 V21）
   useEffect(() => {
@@ -45,7 +92,12 @@ export const AiKunChat = () => {
         else greetingKey = 'greeting_night';
 
         const greetingData = AI_KUN_CHATTER[greetingKey];
-        addAssistantMessage(greetingData.response, undefined, 'chat', greetingData.suggest);
+        
+        let introParams = "";
+        if (favoriteCategory === 'money') introParams = "\n※いつも料金について見てくれてありがとう！今日も節約のお手伝いするね！";
+        else if (favoriteCategory === 'trouble') introParams = "\n※いつもトラブル解決を見てくれてるね。困ったことがあったらすぐに言ってね！";
+
+        addAssistantMessage(greetingData.response + introParams, undefined, 'chat', greetingData.suggest, greetingData.emotionEffect);
       }, 400);
       setProactiveMessage(null);
     }
@@ -86,18 +138,29 @@ export const AiKunChat = () => {
     }
   }, [messages, isTyping]);
 
-  const addAssistantMessage = (content: string, link?: { title: string; url: string }, category?: string, suggestedTopics?: string[]) => {
-    const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link, category, suggestedTopics };
+  const addAssistantMessage = (content: string, link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect) => {
+    const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link, category, suggestedTopics, emotionEffect };
     setMessages(prev => [...prev, newMessage]);
+    
+    // V22: ユーザーのよく見るカテゴリを記憶
+    if (category && category !== 'chat' && category !== 'general' && category !== 'quiz_running') {
+      try {
+        localStorage.setItem('aikun_favorite_category', category);
+        setFavoriteCategory(category);
+      } catch (e) {
+        console.error('LocalStorage write error:', e);
+      }
+    }
   };
 
   /**
-   * V20 究極検索エンジン（極限進化）
+   * V22 究極検索エンジン（極限進化）
    * - 過去のコンテキストを参照する文脈理解
-   * - 次の質問サジェスト機能
-   * - 約200パターンの超バリエーション辞書連携
+   * - レーベンシュタイン距離によるTypo補正
+   * - 感情UIエフェクトプロパティの返却
+   * - 連続クイズ状態の拡張
    */
-  const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[] } => {
+  const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect } => {
     // 0. 特殊ショートカット（雑な入力への最速回答）
     if (query === '料金' || query === '水道代') {
       return { response: '水道料金についてだね！基本料金は2ヶ月で1,815円（13/20mm）から。詳しい料金表や支払い方法はこのページを見てね！', link: { title: '水道料金表', url: '/resident/price' } };
@@ -113,6 +176,32 @@ export const AiKunChat = () => {
     };
 
     let normalizedQuery = normalizeText(query);
+
+    // V22: Typo補正（レーベンシュタイン距離による近似単語への自動置換）
+    const applyTypoCorrection = (text: string) => {
+      let correctedText = text;
+      // 辞書内の全キーワードについて検査（コストはかかるが文字数が少ないので許容範囲）
+      Object.keys(SYNONYMS).forEach(canonical => {
+        [canonical, ...SYNONYMS[canonical]].forEach(kw => {
+           const normKw = normalizeText(kw);
+           // 3文字以上のキーワードのみ対象（短いと誤爆が増えるため）
+           if (normKw.length >= 3) {
+             // ユーザー入力の部分文字列に対して近似チェック（簡易実装：入力全体とキーワードの距離）
+             if (correctedText.length >= normKw.length - 1 && correctedText.length <= normKw.length + 1) {
+               const dist = levenshteinDistance(correctedText, normKw);
+               // 文字数の25%以下のタイポなら補正
+               if (dist === 1 || (normKw.length >= 5 && dist <= 2)) {
+                 correctedText = normKw; // 補正！
+               }
+             }
+           }
+        });
+      });
+      return correctedText;
+    };
+    
+    normalizedQuery = applyTypoCorrection(normalizedQuery);
+
     // V19: 方言や感情表現のノイズ除去を強化
     const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも', 'だら', 'だに', 'でしょ', 'だけど', 'なんですが'];
     stopWords.forEach(word => {
@@ -144,20 +233,22 @@ export const AiKunChat = () => {
       }
     }
 
-    // V21 連続クイズの回答判定
+    // V21/V22 連続クイズの回答判定
     if (contextCategory === 'quiz_running') {
       const isCorrect = /(2|２|かわねほんちょう|川根本)/.test(normalizedQuery);
       if (isCorrect) {
         return { 
           response: '大正解！🎉\n島田市・吉田町・川根本町の1市2町に安全な水を届けているのが私たち大井上水道企業団なんだ！すごいね！', 
           category: 'chat',
-          suggestedTopics: ['他のクイズ出して', '大井川の歴史']
+          suggestedTopics: ['違うクイズだして', '大井川の歴史'],
+          emotionEffect: 'bounce'
         };
       } else {
         return {
           response: 'ざんねん…！ハズレだよ。\n正解は「【2】川根本町」でした！島田市・吉田町・川根本町の1市2町に水を届けているんだよ。次は頑張って！',
           category: 'chat',
-          suggestedTopics: ['もう一回クイズ！', '企業団って？']
+          suggestedTopics: ['もう一回クイズ！', '企業団って？'],
+          emotionEffect: 'shake'
         };
       }
     }
@@ -205,17 +296,22 @@ export const AiKunChat = () => {
       }
 
       if (bestChatKey && maxChatScore >= 4.0) { // 閾値調整
-        // V21: クイズ開始時などはカテゴリを特定のものにする
+        // V21/V22: クイズ開始時などはカテゴリを特定のものにする
         const chatCategory = bestChatKey === 'quiz_start' ? 'quiz_running' : 'chat';
-        return { response: AI_KUN_CHATTER[bestChatKey].response, category: chatCategory, suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest };
+        return { 
+          response: AI_KUN_CHATTER[bestChatKey].response, 
+          category: chatCategory, 
+          suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest,
+          emotionEffect: AI_KUN_CHATTER[bestChatKey].emotionEffect
+        };
       }
     }
 
-    // 4. 実務知識検索（V21ロジック）
+    // 4. 実務知識検索（V22ロジック）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V21.forEach(item => {
+    AI_KUN_KNOWLEDGE_V22.forEach(item => {
       let score = 0;
       let hitCount = 0;
 
@@ -344,14 +440,16 @@ export const AiKunChat = () => {
           response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
           link: item.url ? { title: item.title, url: item.url } : undefined,
           category: item.category,
-          suggestedTopics
+          suggestedTopics,
+          emotionEffect: item.emotionEffect
         };
       } else if (maxScore >= AMBIGUOUS_THRESHOLD) {
         // --- 確信度が微妙（もしかして？機能） ---
         return {
           response: `うーん…もしかして「${item.title}」のことかな？\nもしそうなら、下のボタンを押してみてね！違ったら、もう少し違う言葉で教えてもらえると嬉しいな！`,
           category: 'general',
-          suggestedTopics: [item.title, '違う（FAQを見る）', '電話をかける']
+          suggestedTopics: [item.title, '違う（FAQを見る）', '電話をかける'],
+          emotionEffect: 'wiggle'
         };
       }
     }
@@ -372,9 +470,9 @@ export const AiKunChat = () => {
 
     setTimeout(() => {
       setMessages(currentMessages => {
-        const { response, link, category, suggestedTopics } = handleLogic(text, currentMessages);
+        const { response, link, category, suggestedTopics, emotionEffect } = handleLogic(text, currentMessages);
         setIsTyping(false);
-        const assistantMsg: Message = { id: Date.now().toString(), role: 'assistant', content: response, link, category, suggestedTopics };
+        const assistantMsg: Message = { id: Date.now().toString(), role: 'assistant', content: response, link, category, suggestedTopics, emotionEffect };
         return [...currentMessages, assistantMsg];
       });
     }, 800);
@@ -451,7 +549,7 @@ export const AiKunChat = () => {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h3 className="font-black text-base leading-tight">アイ君</h3>
-                      <span className="bg-white/20 px-1.5 py-0.5 rounded text-[8px] font-black tracking-wider leading-none">v21</span>
+                      <span className="bg-white/20 px-1.5 py-0.5 rounded text-[8px] font-black tracking-wider leading-none">v22</span>
                     </div>
                     <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">※アイ君は平気で嘘をつく事があります</p>
                   </div>
@@ -473,13 +571,17 @@ export const AiKunChat = () => {
                     animate={{ opacity: 1, y: 0 }} 
                     className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
                   >
-                    <div className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                      m.role === 'user' 
-                        ? 'bg-primary-main text-white rounded-2xl rounded-br-sm shadow-sm' 
-                        : 'bg-white text-primary-deep rounded-2xl rounded-bl-sm shadow-sm border border-slate-100'
-                    }`}>
+                    <motion.div 
+                      variants={bubbleAnimationVariants}
+                      animate={m.emotionEffect && m.emotionEffect !== 'none' ? m.emotionEffect : "none"}
+                      className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                        m.role === 'user' 
+                          ? 'bg-primary-main text-white rounded-2xl rounded-br-sm shadow-sm' 
+                          : 'bg-white text-primary-deep rounded-2xl rounded-bl-sm shadow-sm border border-slate-100'
+                      }`}
+                    >
                       {m.content}
-                    </div>
+                    </motion.div>
                     {m.link && (
                       <Link 
                         href={m.link.url}
@@ -579,7 +681,7 @@ export const AiKunChat = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-black text-xl leading-tight">アイ君</h3>
-                      <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black tracking-wider leading-none">v21</span>
+                      <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black tracking-wider leading-none">v22</span>
                     </div>
                     <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">※アイ君は平気で嘘をつく事があります</p>
                   </div>
@@ -601,11 +703,15 @@ export const AiKunChat = () => {
                     animate={{ opacity: 1, x: 0 }} 
                     className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
                   >
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-                      m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none shadow-glow' : 'bg-white text-primary-deep rounded-tl-none shadow-premium'
-                    }`}>
+                    <motion.div 
+                      variants={bubbleAnimationVariants}
+                      animate={m.emotionEffect && m.emotionEffect !== 'none' ? m.emotionEffect : "none"}
+                      className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                        m.role === 'user' ? 'bg-primary-main text-white rounded-tr-none shadow-glow' : 'bg-white text-primary-deep rounded-tl-none shadow-premium'
+                      }`}
+                    >
                       {m.content}
-                    </div>
+                    </motion.div>
                     {m.link && (
                       <Link 
                         href={m.link.url}
