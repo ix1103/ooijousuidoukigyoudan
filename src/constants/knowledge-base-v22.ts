@@ -232,7 +232,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水がくさい', 'カルキ臭がする', '変な味がする', '水道水からいやなにおい'],
     summary: '水の味やにおいがおかしい時の対処法だよ。',
     content: 'カルキ臭が気になるときは、一度沸騰させるか浄水ポットを使うといいよ。夏場は水温が上がってにおいを感じやすくなることもあるんだ。カルキ臭以外の異臭（腐敗臭など）は危険信号！すぐに企業団（0547-46-4130）に連絡してね。',
-    url: '/resident/water-quality', empathy: '水の味がおかしいと心配だよね。すぐに原因を確認するよ！'
+    url: '/resident/quality', empathy: '水の味がおかしいと心配だよね。すぐに原因を確認するよ！'
   },
   {
     id: 'meter_reading', category: 'general', title: 'メーターの検針・見方',
@@ -264,7 +264,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道水はそのまま飲める？', '水質検査の結果を見たい', '浄水器なしで安全？', '水の安全性について'],
     summary: '水質検査と安全性だよ。',
     content: '国の水質基準（53項目）を全てクリアしているよ！定期的に検査を行い、結果はホームページで公開しているんだ。安心して飲んでもらえると嬉しいな。',
-    url: '/resident/water-quality', empathy: '安全な水は私たちの誇り。自信を持って飲んでほしいな！', emotionEffect: 'glow'
+    url: '/resident/quality', empathy: '安全な水は私たちの誇り。自信を持って飲んでほしいな！', emotionEffect: 'glow'
   },
   {
     id: 'cross_connection', category: 'general', title: 'クロスコネクション（誤接続）',
@@ -296,7 +296,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道工事の申請をしたい', '給水装置を新設したい', '工事の手続きを教えて', '配管を改造したい'],
     summary: '給水装置工事の申請だよ。',
     content: '新築・改築・給水管の新設や変更は企業団への申請が必要だよ。必ず指定給水装置工事事業者を通して申請してね。自分で勝手に工事すると法律違反になるから注意！事業者さんが申請から完了までサポートしてくれるよ。',
-    url: '/water-works/overview', empathy: 'リフォームや新築、わくわくするね！水道のことも忘れずに。'
+    url: '/business/contractor', empathy: 'リフォームや新築、わくわくするね！水道のことも忘れずに。'
   },
   {
     id: 'bidding_info', category: 'about', title: '入札・契約情報',
