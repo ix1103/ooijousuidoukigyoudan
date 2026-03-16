@@ -12,7 +12,8 @@ import {
   AI_KUN_CHATTER,
   KnowledgeItem,
   EmotionContext,
-  UIEmotionEffect
+  UIEmotionEffect,
+  QUIZ_POOL
 } from '@/constants/knowledge-base-v22';
 
 /**
@@ -72,6 +73,7 @@ export const AiKunChat = () => {
   const proactiveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [favoriteCategory, setFavoriteCategory] = useState<string | null>(null);
+  const [currentQuizId, setCurrentQuizId] = useState<string | null>(null);
 
   // V22: ローカルストレージから過去の傾向（興味のあるカテゴリ）を読み込む
   useEffect(() => {
@@ -217,23 +219,33 @@ export const AiKunChat = () => {
       }
     }
 
-    // クイズ回答判定
-    if (contextCategory === 'quiz_running') {
-      const isCorrect = /(2|２|かわねほんちょう|川根本)/.test(normalizedQuery);
-      if (isCorrect) {
-        return { 
-          response: '大正解！🎉\n島田市・吉田町・川根本町の1市2町に安全な水を届けているのが私たち大井上水道企業団なんだ！すごいね！', 
-          category: 'chat',
-          suggestedTopics: ['違うクイズだして', '大井川の歴史'],
-          emotionEffect: 'bounce'
-        };
-      } else {
-        return {
-          response: 'ざんねん…！ハズレだよ。\n正解は「【2】川根本町」でした！島田市・吉田町・川根本町の1市2町に水を届けているんだよ。次は頑張って！',
-          category: 'chat',
-          suggestedTopics: ['もう一回クイズ！', '企業団って？'],
-          emotionEffect: 'shake'
-        };
+    // クイズ回答判定（QUIZ_POOLベース）
+    if (contextCategory === 'quiz_running' && currentQuizId) {
+      const quiz = QUIZ_POOL.find(q => q.id === currentQuizId);
+      if (quiz) {
+        // ユーザーの回答を番号で判定（1,2,3 or １,２,３）
+        let userAnswer = -1;
+        if (/(1|１)/.test(query)) userAnswer = 0;
+        else if (/(2|２)/.test(query)) userAnswer = 1;
+        else if (/(3|３)/.test(query)) userAnswer = 2;
+
+        if (userAnswer === quiz.correctIndex) {
+          setCurrentQuizId(null);
+          return { 
+            response: `大正解！🎉\n${quiz.correctExplanation}`, 
+            category: 'chat',
+            suggestedTopics: ['次のクイズ', '違うクイズだして'],
+            emotionEffect: 'bounce'
+          };
+        } else {
+          setCurrentQuizId(null);
+          return {
+            response: `ざんねん…！ハズレだよ。\n${quiz.wrongExplanation}\n次は頑張って！`,
+            category: 'chat',
+            suggestedTopics: ['もう一回クイズ！', '次のクイズ'],
+            emotionEffect: 'shake'
+          };
+        }
       }
     }
 
@@ -263,10 +275,21 @@ export const AiKunChat = () => {
     }
 
     if (bestChatKey && maxChatScore >= 4.0) {
-      const chatCategory = bestChatKey === 'quiz_start' ? 'quiz_running' : 'chat';
+      // クイズ発火時はQUIZ_POOLからランダムに出題
+      if (bestChatKey === 'quiz_start') {
+        const randomQuiz = QUIZ_POOL[Math.floor(Math.random() * QUIZ_POOL.length)];
+        setCurrentQuizId(randomQuiz.id);
+        const questionText = `それじゃあ、アイ君のクイズ！デデン！\n\nQ. ${randomQuiz.question}\n\n【1】${randomQuiz.choices[0]}\n【2】${randomQuiz.choices[1]}\n【3】${randomQuiz.choices[2]}\n\n番号で答えてね！`;
+        return {
+          response: questionText,
+          category: 'quiz_running',
+          suggestedTopics: ['1', '2', '3'],
+          emotionEffect: 'bounce'
+        };
+      }
       return { 
         response: AI_KUN_CHATTER[bestChatKey].response, 
-        category: chatCategory, 
+        category: 'chat', 
         suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest,
         emotionEffect: AI_KUN_CHATTER[bestChatKey].emotionEffect
       };

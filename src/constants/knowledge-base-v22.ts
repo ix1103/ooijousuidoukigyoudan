@@ -374,9 +374,8 @@ export const AI_KUN_CHATTER: Record<string, { weight: number, response: string, 
   
   'fortune_excellent': { weight: 10, keywords: ['うらない', 'おみくじ', '運勢', '今日の運勢'], response: 'アイ君の【水みくじ】！\nシャカシャカシャカ……ポンッ！\n\n【🌟大吉（湧水レベル）🌟】だよ！！\n今日のラッキーアクションは「朝一番のうがい」。淀みない川のように、素晴らしい一日になるはずさ！', emotionEffect: 'glow' },
 
-  // ▼ V22 連続クイズ（給水分野）
-  'quiz_start': { weight: 15, keywords: ['クイズ', 'なぞなぞ', '問題だして'], response: 'それじゃあ、アイ君の給水クイズ！デデン！\n\nQ. 「大井上水道企業団」が水を送っているのは、島田市・吉田町と、あと一つはどこ？\n\n【1】藤枝市\n【2】川根本町\n【3】焼津市\n\n番号で答えてね！', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
-  'quiz_start_history': { weight: 15, keywords: ['歴史クイズ', '昔の'], response: 'それじゃあ、アイ君の歴史クイズ！！\n\nQ. 企業団が設立されたのはいつ？\n\n【1】1970年\n【2】1990年\n【3】2010年\n\n番号で答えてね！', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
+  // ▼ クイズ発火用（実際の問題はQUIZ_POOLからランダム出題）
+  'quiz_start': { weight: 15, keywords: ['クイズ', 'なぞなぞ', '問題だして', '違うクイズ', 'もう一回クイズ', '次のクイズ', '別の問題', '歴史クイズ'], response: '__QUIZ_RANDOM__', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
 
   // ── 自己紹介・パーソナリティ ──
   'self_intro': { weight: 8, keywords: ['アイ君って', '自己紹介', '誰', 'あなた', '何者', '名前'], response: '私はアイ君！大井上水道企業団の公式AIコンシェルジュさ。水道の手続き・料金から人生相談まで、何でも任せてね。', emotionEffect: 'glow' },
@@ -443,3 +442,136 @@ export const AI_KUN_PERSONALITY: { greetings: string[], random_tips: string[], p
     'もしよかったら、家族や友達にもアイ君のこと教えてあげてね。',
   ]
 };
+
+// ── クイズプール（ランダム出題用・15問） ──
+export type QuizItem = {
+  id: string;
+  question: string;
+  choices: string[];
+  correctIndex: number; // 0始まり
+  correctExplanation: string;
+  wrongExplanation: string;
+};
+
+export const QUIZ_POOL: QuizItem[] = [
+  {
+    id: 'q_area',
+    question: '「大井上水道企業団」が水を送っているのは、島田市・吉田町と、あと一つはどこ？',
+    choices: ['藤枝市', '川根本町', '焼津市'],
+    correctIndex: 1,
+    correctExplanation: '島田市・吉田町・川根本町の1市2町に安全な水を届けているのが私たち大井上水道企業団なんだ！',
+    wrongExplanation: '正解は「川根本町」！島田市・吉田町・川根本町の1市2町に水を届けているんだよ。'
+  },
+  {
+    id: 'q_year',
+    question: '大井上水道企業団が設立されたのは何年？',
+    choices: ['1960年', '1970年', '1980年'],
+    correctIndex: 1,
+    correctExplanation: '1970年（昭和45年）に設立されたんだ。もう50年以上の歴史があるんだよ！',
+    wrongExplanation: '正解は「1970年」！昭和45年に設立されたんだ。半世紀以上の歴史があるよ。'
+  },
+  {
+    id: 'q_river',
+    question: '企業団の水源である大井川の源流は、どの山脈にある？',
+    choices: ['富士山', '南アルプス', '八ヶ岳'],
+    correctIndex: 1,
+    correctExplanation: '南アルプス（赤石山脈）の間ノ岳付近が源流だよ。標高3,000m級の山々から湧き出す清冽な水なんだ！',
+    wrongExplanation: '正解は「南アルプス」！赤石山脈の間ノ岳付近が源流で、標高3,000m級の山から湧き出す水なんだよ。'
+  },
+  {
+    id: 'q_body',
+    question: '人間の体の約何%が水分でできている？',
+    choices: ['約40%', '約60%', '約80%'],
+    correctIndex: 1,
+    correctExplanation: '人間の体の約60%は水分なんだ。だから水分補給はとっても大切なんだよ！',
+    wrongExplanation: '正解は「約60%」！成人の体の約6割が水でできているんだ。水って偉大だね。'
+  },
+  {
+    id: 'q_meter',
+    question: '水道メーターの法定有効期限は何年？',
+    choices: ['5年', '8年', '12年'],
+    correctIndex: 1,
+    correctExplanation: '計量法で定められた有効期限は8年なんだ。期限が来たら企業団が無料で交換するよ！',
+    wrongExplanation: '正解は「8年」！計量法で定められているんだ。交換は企業団が無料でやるから安心してね。'
+  },
+  {
+    id: 'q_quality',
+    question: '日本の水道水の水質基準項目は全部でいくつ？',
+    choices: ['31項目', '53項目', '72項目'],
+    correctIndex: 1,
+    correctExplanation: '水質基準は全53項目！これを全てクリアした安全な水が蛇口から出てくるんだよ。すごいでしょ！',
+    wrongExplanation: '正解は「53項目」！こんなに厳しい基準をクリアしているんだ。日本の水道水は世界トップレベルだよ。'
+  },
+  {
+    id: 'q_coverage',
+    question: '日本の水道普及率（蛇口から安全な水が飲める割合）は約何%？',
+    choices: ['約88%', '約94%', '約98%'],
+    correctIndex: 2,
+    correctExplanation: '約98%以上！世界でも蛇口の水をそのまま飲める国は数えるほどしかないんだよ。日本の水道はすごいんだ！',
+    wrongExplanation: '正解は「約98%」！ほぼ全国どこでも安全な水が飲めるんだ。これは世界的にもすごいことなんだよ。'
+  },
+  {
+    id: 'q_kanetani',
+    question: '企業団の事務所がある「金谷」は、どの市にある？',
+    choices: ['藤枝市', '島田市', '吉田町'],
+    correctIndex: 1,
+    correctExplanation: '島田市金谷東一丁目にあるよ！JR金谷駅や大井川鐵道の金谷駅から徒歩約10分の場所さ。',
+    wrongExplanation: '正解は「島田市」！島田市金谷東一丁目1255番地の2にあるんだ。金谷駅から歩いて10分くらいだよ。'
+  },
+  {
+    id: 'q_freeze',
+    question: '水道管が凍結した時、絶対にやってはいけないことは？',
+    choices: ['タオルを巻く', '熱湯をかける', 'ぬるま湯をかける'],
+    correctIndex: 1,
+    correctExplanation: '熱湯をかけると急激な温度変化で水道管が破裂する危険があるんだ！ぬるま湯をゆっくりかけるのが正解だよ。',
+    wrongExplanation: '正解は「熱湯をかける」がNG！急激な温度変化で管が割れちゃうんだ。ぬるま湯をゆ〜っくりかけてね。'
+  },
+  {
+    id: 'q_save',
+    question: '歯磨き中に水を出しっぱなしにすると、1日で約何リットル無駄になる？',
+    choices: ['約2L', '約6L', '約15L'],
+    correctIndex: 1,
+    correctExplanation: '約6リットルも無駄になるんだ！小さな習慣の改善で大きな節水効果があるよ。',
+    wrongExplanation: '正解は「約6L」！こまめに蛇口を閉めるだけで、年間で相当な節水になるんだよ。'
+  },
+  {
+    id: 'q_assembly',
+    question: '企業団議会の議員は全部で何名？',
+    choices: ['6名', '10名', '15名'],
+    correctIndex: 1,
+    correctExplanation: '島田市6名・吉田町2名・川根本町2名の計10名で構成されているんだ！定例会は年2回（3月と9月）だよ。',
+    wrongExplanation: '正解は「10名」！島田市6名、吉田町2名、川根本町2名で、合計10名なんだ。'
+  },
+  {
+    id: 'q_cross',
+    question: '水道管と井戸水の管を直接つなぐ違法行為を何という？',
+    choices: ['ダブルパイプ', 'クロスコネクション', 'パラレルライン'],
+    correctIndex: 1,
+    correctExplanation: '「クロスコネクション（誤接続）」は法律で禁止されているんだ！他の水源の水が逆流して汚染される危険があるよ。',
+    wrongExplanation: '正解は「クロスコネクション」！水道法で禁止されている危険な行為なんだ。心当たりがあれば企業団に相談してね。'
+  },
+  {
+    id: 'q_billing',
+    question: '水道料金の検針は何ヶ月ごとに行われる？',
+    choices: ['毎月', '2ヶ月ごと', '3ヶ月ごと'],
+    correctIndex: 1,
+    correctExplanation: '2ヶ月に1回、検針員さんがメーターを確認に来るんだ。料金も2ヶ月分まとめての請求だよ！',
+    wrongExplanation: '正解は「2ヶ月ごと」！だから料金表も2ヶ月分で表示されているんだよ。'
+  },
+  {
+    id: 'q_phone',
+    question: '大井上水道企業団の電話番号は？',
+    choices: ['0547-46-4130', '0547-36-7100', '0547-45-2222'],
+    correctIndex: 0,
+    correctExplanation: '大正解！0547-46-4130だよ。夜間・休日の緊急時もこの番号で当直が対応してくれるから覚えておいてね！',
+    wrongExplanation: '正解は「0547-46-4130」！困った時はこの番号に電話してね。夜でも緊急対応してもらえるよ。'
+  },
+  {
+    id: 'q_payment',
+    question: '次のうち、水道料金の支払いに対応していないのはどれ？',
+    choices: ['口座振替', 'クレジットカード', 'PayPay'],
+    correctIndex: 1,
+    correctExplanation: 'クレジットカード払いには残念ながら未対応なんだ。でもPayPay・LINE Pay・au PAYなどスマホ決済は使えるよ！',
+    wrongExplanation: '正解は「クレジットカード」が未対応！でもPayPayなどのスマホ決済や口座振替は使えるから安心してね。'
+  },
+];
