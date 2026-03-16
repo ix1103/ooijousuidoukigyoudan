@@ -140,10 +140,14 @@ export const AiKunChat = () => {
 
         const greetingData = AI_KUN_CHATTER[greetingKey];
         
-        // 友好度に応じた挨拶
-        let greeting = greetingData.response;
+        // 友好度に応じた挨拶（配列の場合はランダム選択）
+        let baseGreeting = Array.isArray(greetingData.response) 
+          ? greetingData.response[Math.floor(Math.random() * greetingData.response.length)] 
+          : greetingData.response;
+          
+        let greeting = baseGreeting;
         if (visitCount > 1) {
-          greeting = `${friendshipLevel.greeting}\n${greetingData.response}`;
+          greeting = `${friendshipLevel.greeting}\n${baseGreeting}`;
         }
 
         // 記憶に基づいたパーソナライズ
@@ -357,11 +361,16 @@ export const AiKunChat = () => {
           emotionEffect: fortune.effect
         };
       }
+      const chatData = AI_KUN_CHATTER[bestChatKey];
+      const chatResponse = Array.isArray(chatData.response) 
+        ? chatData.response[Math.floor(Math.random() * chatData.response.length)] 
+        : chatData.response;
+
       return { 
-        response: AI_KUN_CHATTER[bestChatKey].response, 
+        response: chatResponse, 
         category: 'chat', 
-        suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest,
-        emotionEffect: AI_KUN_CHATTER[bestChatKey].emotionEffect
+        suggestedTopics: chatData.suggest,
+        emotionEffect: chatData.emotionEffect
       };
     }
 

@@ -334,12 +334,35 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
 ];
 
 // ▼ V22: 会話バリエーション（UIエフェクトプロパティも追加）
-export const AI_KUN_CHATTER: Record<string, { weight: number, response: string, keywords: string[], suggest?: string[], emotionEffect?: UIEmotionEffect }> = {
-  // ── 時間帯による専用挨拶（AiKunChat.tsx側から強制ルーティング用） ──
-  'greeting_morning': { weight: 0, keywords: [], response: 'おはよう！今日も大井川のようなフレッシュな1日になりますように。朝ごはんと一緒にお水も飲んでね！', suggest: ['料金シミュレーション', '指定工事店'], emotionEffect: 'bounce' },
-  'greeting_day': { weight: 0, keywords: [], response: 'こんにちは！日中はお仕事かな？お茶でも飲みながら、ゆっくり話していってね。', suggest: ['よくある質問', '電話をかける'] },
-  'greeting_evening': { weight: 0, keywords: [], response: 'こんばんは！今日も1日、本当にお疲れ様。冷たいお水で一息ついてね。', suggest: ['休日の連絡先', '手続き'] },
-  'greeting_night': { weight: 0, keywords: [], response: 'こんな時間に起きてるの？夜更かしはお肌にも心にも良くないよ。あったかい白湯を飲んで、そろそろ休んでね。おやすみ。', suggest: ['羊の数を数えて'], emotionEffect: 'pulse' },
+export const AI_KUN_CHATTER: Record<string, { weight: number, response: string | string[], keywords: string[], suggest?: string[], emotionEffect?: UIEmotionEffect }> = {
+  // ── 時間帯による専用挨拶（AiKunChat.tsx側から強制ルーティング用・配列の場合はランダム選択） ──
+  'greeting_morning': { weight: 0, keywords: [], response: [
+    'おはよう！今日も大井川のようなフレッシュな1日になりますように。朝ごはんと一緒にお水も飲んでね！',
+    'おはようございます！朝一番にコップ一杯の水を飲むと、体がシャキッと目覚めるよ。試してみてね！',
+    'やあ、おはよう！今日も元気に頑張ろう！企業団も朝からフル稼働で安全な水を作っているよ。',
+    'ふぁ〜…おはよう！なんて、私はAIだから眠らないけどね！今日も透き通った1日でありますように！'
+  ], suggest: ['料金シミュレーション', '指定工事店'], emotionEffect: 'bounce' },
+  
+  'greeting_day': { weight: 0, keywords: [], response: [
+    'こんにちは！日中はお仕事かな？お茶でも飲みながら、ゆっくり話していってね。',
+    'こんにちは！お昼ご飯は食べた？食後の水分補給も忘れずにね！',
+    'やっほー！今日もいい日だね。お水回りのことでわからないことがあれば、何でも聞いてね！',
+    'こんにちは！午後も頑張っていこう！疲れた時は冷たいお水でリフレッシュするのがおすすめだよ。'
+  ], suggest: ['よくある質問', '電話をかける'] },
+  
+  'greeting_evening': { weight: 0, keywords: [], response: [
+    'こんばんは！今日も1日、本当にお疲れ様。冷たいお水で一息ついてね。',
+    'もうこんな時間だね、お疲れ様！夕飯の準備かな？お料理にも大井川の恵みをたっぷり使ってね！',
+    'こんばんは！今日も一日頑張ったね。ゆっくりお風呂に浸かって、一日の疲れを洗い流してね。',
+    'お疲れ様！夜は少しひんやりするかな？温かい白湯（さゆ）を飲むとホッとするよ。'
+  ], suggest: ['休日の連絡先', '手続き'] },
+  
+  'greeting_night': { weight: 0, keywords: [], response: [
+    'こんな時間に起きてるの？夜更かしはお肌にも心にも良くないよ。あったかい白湯を飲んで、そろそろ休んでね。おやすみ。',
+    'こんばんは。まだ起きているんだね！静かな夜は私も好きだよ。でも、無理はしないでね。',
+    '今日も一日お疲れ様。寝る前にコップ一杯の水を飲むと、寝ている間の水分不足を防げるよ。いい夢見てね！',
+    'ふわぁ…夜も更けてきたね。君がゆっくり眠れるように、私はここで静かに見守っているよ。おやすみ！'
+  ], suggest: ['羊の数を数えて'], emotionEffect: 'pulse' },
 
   // ── 基本挨拶・相槌 ──
   'hello': { weight: 5, keywords: ['こんにちは', 'おはよう', 'こんばんは', 'やあ', 'ハロー', 'よろしく', 'はじめまして', 'おっす', 'どうも', 'やっほー'], response: 'やあ！今日も美味しい水のような、透き通った１日になりますように。何かお手伝いできることはあるかい？', emotionEffect: 'bounce' },
