@@ -6,12 +6,12 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V16, 
+  AI_KUN_KNOWLEDGE_V17, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem 
-} from '@/constants/knowledge-base-v16';
+} from '@/constants/knowledge-base-v17';
 
 interface Message {
   id: string;
@@ -82,14 +82,22 @@ export const AiKunChat = () => {
   };
 
   /**
-   * V15 スコアリングエンジン
-   * - スコア閾値を3に引き下げ（ヒット率向上）
-   * - タイトルマッチボーナスを20に引き上げ
+   * V17 超精度検索エンジン
+   * - ストップワード除去
+   * - フレーズマッチング一発ヒット
+   * - 複数キーワード(AND)ボーナス
    */
   const handleLogic = (query: string): { response: string; link?: { title: string; url: string } } => {
-    const normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. 　]/g, '');
-    
-    // 1. 雑談・雑学チェック（優先）
+    // 1. ノイズ（ストップワード）の除去と正規化
+    let normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. 　]/g, '');
+    const stopWords = ['について', '教えて', 'とは何', 'とは', 'って何', '知りたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'こんにちは', 'どうも'];
+    stopWords.forEach(word => {
+      normalizedQuery = normalizedQuery.replace(word, '');
+    });
+
+    if (!normalizedQuery) normalizedQuery = query.toLowerCase().replace(/[、。！？!?,. 　]/g, ''); // 全部消えちゃった場合のフェイルセーフ
+
+    // 2. 雑談・雑学チェック（優先）
     let bestChatKey = null;
     let maxChatScore = 0;
     for (const [key, chat] of Object.entries(AI_KUN_CHATTER)) {
@@ -107,29 +115,57 @@ export const AiKunChat = () => {
       return { response: AI_KUN_CHATTER[bestChatKey].response };
     }
 
-    // 2. 実務知識検索（シノニム対応スコアリング）
+    // 3. 実務知識検索（V17ロジック）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V16.forEach(item => {
+    AI_KUN_KNOWLEDGE_V17.forEach(item => {
       let score = 0;
-      item.keywords.forEach(kw => {
-        // 直接マッチング
-        if (normalizedQuery.includes(kw.word)) score += kw.weight;
-        // シノニムマッチング（ほぼ同等として扱う）
-        (SYNONYMS[kw.word] || []).forEach(syn => {
-          if (normalizedQuery.includes(syn)) score += kw.weight * 0.95;
+      let hitCount = 0; // ヒットしたキーワードの種類数
+
+      // A. フレーズマッチング（Q&A想定質問）
+      if (item.phrases) {
+        item.phrases.forEach(phrase => {
+          const normalizedPhrase = phrase.replace(/[、。！？!?,. 　]/g, '');
+          if (normalizedPhrase.includes(normalizedQuery) || normalizedQuery.includes(normalizedPhrase)) {
+            score += 50; // 特大ボーナス（ほぼ確定）
+            hitCount++;
+          }
         });
+      }
+
+      // B. キーワード＆シノニムマッチング
+      item.keywords.forEach(kw => {
+        let keywordHit = false;
+        if (normalizedQuery.includes(kw.word)) {
+          score += kw.weight;
+          keywordHit = true;
+        }
+        (SYNONYMS[kw.word] || []).forEach(syn => {
+          if (normalizedQuery.includes(syn)) {
+            score += kw.weight * 0.95;
+            keywordHit = true;
+          }
+        });
+        if (keywordHit) hitCount++;
       });
       
-      // タイトル・IDマッチング（強力ボーナス：V15では20点）
-      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) score += 20;
-      // 部分的なタイトルマッチ（2文字以上の共通部分）
+      // C. タイトル・IDマッチング
+      if (normalizedQuery.includes(item.title) || item.title.includes(normalizedQuery)) {
+        score += 20;
+        hitCount++;
+      }
       const words = item.title.split('');
       for (let i = 0; i < words.length - 1; i++) {
         const chunk = item.title.slice(i, i + 3);
-        if (chunk.length >= 2 && normalizedQuery.includes(chunk)) score += 3;
+        if (chunk.length >= 2 && normalizedQuery.includes(chunk)) {
+          score += 3;
+        }
       }
+
+      // D. 複数ヒットボーナス（AND検索）
+      if (hitCount >= 2) score += 10;
+      if (hitCount >= 3) score += 20;
       
       if (score > maxScore) {
         maxScore = score;
@@ -137,7 +173,7 @@ export const AiKunChat = () => {
       }
     });
 
-    // V15: 閾値を3に引き下げ
+    // スコア閾値チェック
     if (bestItem && maxScore >= 3) {
       const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
@@ -147,16 +183,16 @@ export const AiKunChat = () => {
       if (content.endsWith('。')) content = content.slice(0, -1);
       
       return { 
-        response: `${empathy}${item.title}について教えるね。${content}${ending}`,
+        response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
         link: item.url ? { title: item.title, url: item.url } : undefined
       };
     }
 
-    // 3. フォールバック（ヒットなし時）
+    // 4. フォールバック（ヒットなし時）
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
-      response: `ほほう、「${query}」についてだね。私のデータベースを隅々まで探してみたけれど、ぴったりの答えは見つからなかったよ。でも、こんな言葉を贈ろう。「${philosophy}」\n\n料金・手続き・水道工事・トラブルなど、具体的なことを聞いてくれると力になれるかも！`
+      response: `ほほう、「${query}」についてだね。私のデータベースを隅々まで探してみたけれど、ぴったりの答えは見つからなかったよ。でも、こんな言葉を贈ろう。「${philosophy}」\n\n料金・手続き・水道工事・トラブルなど、具体的な単語で聞いてくれると力になれるかも！`
     };
   };
 
