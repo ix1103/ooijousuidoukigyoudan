@@ -330,15 +330,20 @@ export const AiKunChat = () => {
       if (chat.weight === 0) continue;
       
       let chatScore = 0;
+      let matchedKeywordsCount = 0;
+
       chat.keywords.forEach(kw => {
         const normKw = normalizeText(kw);
-        // expandedQueryにキーワードが含まれているかチェック
         if (normKw.length > 0 && expandedQuery.includes(normKw)) {
-          // スコア = 重み × キーワード長ボーナス（長いキーワードほど信頼度が高い）
           chatScore += chat.weight * (1 + normKw.length * 0.3);
+          matchedKeywordsCount++;
         }
       });
       
+      // 複数キーワードボーナス
+      if (matchedKeywordsCount >= 3) chatScore *= 1.5;
+      else if (matchedKeywordsCount >= 2) chatScore *= 1.2;
+
       if (chatScore > maxChatScore) {
         maxChatScore = chatScore;
         bestChatKey = key;
@@ -390,19 +395,20 @@ export const AiKunChat = () => {
       };
     }
 
-    // 実務知識検索
-    let bestItem: KnowledgeItem | null = null;
-    let maxScore = 0;
+    const knowledgeCandidates: { item: KnowledgeItem, score: number }[] = [];
 
     AI_KUN_KNOWLEDGE_V22.forEach(item => {
       let score = 0;
+      let matchedKeywordsCount = 0;
+
       if (item.category === estimatedIntent) score += 15;
+      // 文脈ボーナス
+      if (contextCategory === item.category) score += 10;
       
       if (item.phrases) {
-        // V22.2: 誤爆を防ぐため、完全一致の場合のみ超高得点（フレーズの部分一致による加点を廃止）
         item.phrases.forEach(phrase => {
           const normalizedPhrase = normalizeText(phrase);
-          if (normalizedQuery === normalizedPhrase || expandedQuery === normalizedPhrase) score += 100;
+          if (normalizedQuery === normalizedPhrase || expandedQuery === normalizedPhrase) score += 150;
         });
       }
 
@@ -410,17 +416,41 @@ export const AiKunChat = () => {
         const normKw = normalizeText(kw.word);
         if (expandedQuery.includes(normKw)) {
           score += kw.weight * (1 + normKw.length * 0.4);
+          matchedKeywordsCount++;
         }
       });
 
-      if (score > maxScore) {
-        maxScore = score;
-        bestItem = item;
+      // 複数キーワードボーナス
+      if (matchedKeywordsCount >= 3) score *= 1.5;
+      else if (matchedKeywordsCount >= 2) score *= 1.2;
+
+      if (score > 3.5) {
+        knowledgeCandidates.push({ item, score });
       }
     });
 
-    if (bestItem && maxScore >= 3.5) {
-      const item = bestItem as KnowledgeItem;
+    // スコア順にソート
+    knowledgeCandidates.sort((a, b) => b.score - a.score);
+
+    // ── 曖昧性解消（聞き返し）ロジック ──
+    // 1位と2位のスコアが近く、かつどちらも一定基準以上のスコアの場合
+    if (knowledgeCandidates.length >= 2) {
+      const first = knowledgeCandidates[0];
+      const second = knowledgeCandidates[1];
+      
+      // スコア差が15%以内の場合は聞き返す
+      if (first.score < second.score * 1.15 && first.score < 200) {
+        return {
+          response: `「${first.item.title}」と「${second.item.title}」、どちらについて知りたいかな？\n近いキーワードがいくつかあって迷っちゃった！`,
+          category: 'general',
+          suggestedTopics: [first.item.title, second.item.title],
+          emotionEffect: 'wiggle'
+        };
+      }
+    }
+
+    if (knowledgeCandidates.length > 0) {
+      const item = knowledgeCandidates[0].item;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
 
