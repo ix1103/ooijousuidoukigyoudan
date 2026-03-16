@@ -233,18 +233,26 @@ export const AiKunChat = () => {
     let normalizedQuery = normalizeText(query);
 
     // V22: Typo補正（レーベンシュタイン距離）
+    // V22: Typo補正（レーベンシュタイン距離）
     const applyTypoCorrection = (text: string) => {
+      if (text.length < 2) return text;
       let correctedText = text;
-      Object.keys(SYNONYMS).forEach(canonical => {
-        [canonical, ...SYNONYMS[canonical]].forEach(kw => {
-           const normKw = normalizeText(kw);
-           if (normKw.length >= 3) {
-             const dist = levenshteinDistance(text, normKw);
-             if (dist === 1 || (normKw.length >= 5 && dist <= 2)) {
-               correctedText = normKw;
-             }
-           }
-        });
+      
+      // 全ての補正候補（シノニム、ナレッジ、雑談）を集約
+      const candidates = new Set<string>();
+      Object.keys(SYNONYMS).forEach(k => { candidates.add(k); SYNONYMS[k].forEach(s => candidates.add(s)); });
+      AI_KUN_KNOWLEDGE_V22.forEach(item => item.phrases?.forEach(p => candidates.add(p)));
+      Object.values(AI_KUN_CHATTER).forEach(chat => chat.keywords.forEach(kw => candidates.add(kw)));
+
+      candidates.forEach(phrase => {
+        const normPhrase = normalizeText(phrase);
+        if (normPhrase.length >= 2) {
+          const dist = levenshteinDistance(text, normPhrase);
+          // 2-4文字なら距離1まで、5文字以上なら距離2まで許容
+          if (dist === 1 || (normPhrase.length >= 5 && dist <= 2)) {
+            correctedText = normPhrase;
+          }
+        }
       });
       return correctedText;
     };
@@ -334,7 +342,8 @@ export const AiKunChat = () => {
       }
     }
 
-    if (bestChatKey && maxChatScore >= 4.0) {
+    // 感度調整: 4.0 -> 3.0 (より拾いやすくする)
+    if (bestChatKey && maxChatScore >= 3.0) {
       // クイズ発火時はQUIZ_POOLからランダムに出題
       if (bestChatKey === 'quiz_start') {
         const randomQuiz = QUIZ_POOL[Math.floor(Math.random() * QUIZ_POOL.length)];
@@ -506,7 +515,7 @@ export const AiKunChat = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-black text-xl">アイ君</h3>
-                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black">v22</span>
+                    <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black">v22.1</span>
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] opacity-90 font-bold">{friendshipLevel.emoji} {friendshipLevel.name}</span>
