@@ -80,6 +80,7 @@ export const AiKunChat = () => {
   const [visitCount, setVisitCount] = useState(0);
   const [streak, setStreak] = useState(0);
   const [friendshipLevel, setFriendshipLevel] = useState(FRIENDSHIP_LEVELS[0]);
+  const [lastKnowledgeId, setLastKnowledgeId] = useState<string | null>(null);
 
   // V22: ローカルストレージから過去の傾向（興味のあるカテゴリ）を読み込む
   useEffect(() => {
@@ -212,9 +213,10 @@ export const AiKunChat = () => {
     }
   }, [messages, isTyping]);
 
-  const addAssistantMessage = (content: string, link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect) => {
+  const addAssistantMessage = (content: string, link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect, knowledgeId?: string) => {
     const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link, category, suggestedTopics, emotionEffect };
     setMessages(prev => [...prev, newMessage]);
+    if (knowledgeId) setLastKnowledgeId(knowledgeId);
     
     // カテゴリの記憶（LocalStorage）
     if (category && category !== 'chat' && category !== 'general' && category !== 'quiz_running') {
@@ -230,7 +232,7 @@ export const AiKunChat = () => {
   /**
    * V22 究極検索ロジック
    */
-  const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect } => {
+  const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[], emotionEffect?: UIEmotionEffect, knowledgeId?: string } => {
     
     const normalizeText = (text: string) => {
       return text
@@ -320,6 +322,31 @@ export const AiKunChat = () => {
 
     if (estimatedIntent === 'trouble' && (emotion === 'anxious' || /(よる|きゅう|いま|すぐ|夜|急|今|直ぐ)/.test(expandedQuery))) {
       urgency = 'high';
+    }
+
+    // V22.4: 同意・継続（もっと、詳しく、他には）への対応
+    const agreementKeywords = ['もっと', 'くわしく', '詳細', '他には', '続き', 'おしえて', '関連'];
+    const isAgreement = agreementKeywords.some(k => normalizedQuery.includes(k));
+    
+    if (isAgreement && lastKnowledgeId) {
+      const lastItem = AI_KUN_KNOWLEDGE_V22.find(k => k.id === lastKnowledgeId);
+      if (lastItem && lastItem.related_topics && lastItem.related_topics.length > 0) {
+        // 関連トピックの最初を自動的に提示
+        const nextId = lastItem.related_topics[0];
+        const nextItem = AI_KUN_KNOWLEDGE_V22.find(k => k.id === nextId);
+        if (nextItem) {
+          const transitions = ['それに関連してね、', 'さっきの話の続きだけど、', 'これも知っておくといいかも！', 'ちなみに…'];
+          const transition = transitions[Math.floor(Math.random() * transitions.length)];
+          return {
+            response: `${transition}「${nextItem.title}」についても教えるね。\n\n${nextItem.content}`,
+            link: nextItem.url ? { title: nextItem.title, url: nextItem.url } : undefined,
+            category: nextItem.category,
+            suggestedTopics: nextItem.related_topics?.map(tid => AI_KUN_KNOWLEDGE_V22.find(k => k.id === tid)?.title || '').filter(t => t),
+            emotionEffect: 'none',
+            knowledgeId: nextItem.id
+          };
+        }
+      }
     }
 
     // ── 雑談チェック（精度重視のマッチング） ──
@@ -464,17 +491,34 @@ export const AiKunChat = () => {
       let content = item.content;
       if (content.endsWith('。')) content = content.slice(0, -1);
       
+      // V22.4: 接続詞の動的挿入（直前と同じカテゴリ、または関連した話の場合）
+      let prefix = '';
+      if (contextCategory === item.category && lastKnowledgeId) {
+        const bridges = ['それに関連してね、', 'さっきの続きだけど！', 'うんうん、それならこれも大切だよ。', '続けて説明するね！'];
+        prefix = bridges[Math.floor(Math.random() * bridges.length)];
+      } else if (lastKnowledgeId) {
+        // カテゴリが変わった場合
+        const shifts = ['おっと、話題が変わったね！', '次は〇〇のことだね！', '了解！それについてはこうだよ。'];
+        prefix = shifts[Math.floor(Math.random() * shifts.length)].replace('〇〇', item.title);
+      }
+
       let suggestedTopics: string[] | undefined;
-      if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
-      else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き'];
-      else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策'];
+      // 関連トピックがある場合はそちらを優先
+      if (item.related_topics && item.related_topics.length > 0) {
+          suggestedTopics = item.related_topics.map(tid => AI_KUN_KNOWLEDGE_V22.find(k => k.id === tid)?.title || '').filter(t => t);
+      } else {
+          if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
+          else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き'];
+          else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策'];
+      }
 
       return { 
-        response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
+        response: `${prefix}${empathy}「${item.title}」についてだね。${content}${ending}`,
         link: item.url ? { title: item.title, url: item.url } : undefined,
         category: item.category,
         suggestedTopics,
-        emotionEffect: item.emotionEffect
+        emotionEffect: item.emotionEffect,
+        knowledgeId: item.id
       };
     }
 
@@ -502,12 +546,11 @@ export const AiKunChat = () => {
     setIsTyping(true);
 
     setTimeout(() => {
-      setMessages(currentMessages => {
-        const { response, link, category, suggestedTopics, emotionEffect } = handleLogic(text, currentMessages);
-        setIsTyping(false);
-        const assistantMsg: Message = { id: Date.now().toString(), role: 'assistant', content: response, link, category, suggestedTopics, emotionEffect };
-        return [...currentMessages, assistantMsg];
-      });
+      const result = handleLogic(text, messages);
+      setIsTyping(false);
+      const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: result.response, link: result.link, category: result.category, suggestedTopics: result.suggestedTopics, emotionEffect: result.emotionEffect };
+      setMessages(prev => [...prev, assistantMsg]);
+      if (result.knowledgeId) setLastKnowledgeId(result.knowledgeId);
     }, 800);
   };
 

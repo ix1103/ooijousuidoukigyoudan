@@ -69,6 +69,7 @@ export type KnowledgeItem = {
   url?: string;
   empathy?: string;
   emotionEffect?: UIEmotionEffect;
+  related_topics?: string[];
 };
 `;
 
@@ -80,7 +81,8 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['大井上水道企業団とは', '企業団って何', '組織の概要を教えて', 'どんな団体ですか'],
     summary: '企業団の基本情報だよ。',
     content: '大井上水道企業団は、島田市・吉田町・川根本町の1市2町で構成される特別地方公共団体（一部事務組合）で、1970年（昭和45年）に設立されたんだ。広域的な視点で水道事業を統合・運営して、コストの最適化と安全な水の供給を両立しているよ。',
-    url: '/about', empathy: '私たちの企業団について知りたいなんて嬉しいな！', emotionEffect: 'bounce'
+    url: '/about', empathy: '私たちの企業団について知りたいなんて嬉しいな！', emotionEffect: 'bounce',
+    related_topics: ['org_history', 'org_vision', 'access_info']
   },
   {
     id: 'org_history', category: 'about', title: '事業の沿革・歴史',
@@ -152,7 +154,8 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道料金はいくらですか', '料金表を見たい', '基本料金はいくら', '水道代を知りたい'],
     summary: '水道料金の詳しい料金表だよ。',
     content: '料金は2ヶ月ごと（税込）だよ。13mm/20mmは基本料金1,815円（16m³まで込み）+超過分155.1円/m³。25mmは基本2,299円。30mm以上は基本料金のみ（使用量0m³から有料）で、30mm:3,630円、40mm:4,840円、50mm:6,215円、75mm:12,100円。下水道使用料は別途、市町から請求されるよ。',
-    url: '/resident/price', empathy: '料金が気になるときは、料金シミュレーターも使ってみてね！'
+    url: '/resident/price', empathy: '料金が気になるときは、料金シミュレーターも使ってみてね！',
+    related_topics: ['simulator', 'payment_method', 'billing_revision']
   },
   {
     id: 'payment_method', category: 'money', title: '料金の支払い方法',
@@ -160,7 +163,8 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['どうやって払うの', '支払い方法を教えて', '口座振替にしたい', 'クレジットカードで払える？', 'コンビニで払えるか'],
     summary: '料金の支払い方法を教えるよ。',
     content: 'クレジットカード払いには対応していないんだ（ごめんね）。口座振替が一番便利で推奨だよ（自動引き落としで払い忘れなし！）。ほかに金融機関窓口、コンビニ（セブン・ローソン・ファミマ等）、企業団窓口で納付書払いもできるよ。',
-    url: '/resident/price#payment', empathy: '払い方がわからなくて困ってた？口座振替がラクでおすすめだよ！', emotionEffect: 'bounce'
+    url: '/resident/price#payment', empathy: '払い方がわからなくて困ってた？口座振替がラクでおすすめだよ！', emotionEffect: 'bounce',
+    related_topics: ['smartphone_payment', 'rate_table', 'procedure_start']
   },
   {
     id: 'smartphone_payment', category: 'money', title: 'スマホ決済での支払い',
@@ -184,7 +188,8 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道を開けたい', '引っ越してきたので手続きしたい', '使用開始の手続き', '新居で水を使いたい'],
     summary: '水道を使い始めるときの手続きだよ。',
     content: '転入や新築で水道を使い始めるときは、使用開始希望日の前営業日までに電話（0547-46-4130）か窓口でお申し込みしてね。お伺いする内容は①新住所（部屋番号も）②お名前・ふりがな③電話番号④使用開始日⑤お支払い方法だよ。立ち会いは不要さ！土日祝は開閉栓できないから注意してね。',
-    url: '/resident/procedure#usage-start', empathy: '新生活のスタートだね！水道の手続きはお早めに！', emotionEffect: 'bounce'
+    url: '/resident/procedure#usage-start', empathy: '新生活のスタートだね！水道の手続きはお早めに！', emotionEffect: 'bounce',
+    related_topics: ['procedure_stop', 'payment_method', 'name_change']
   },
   {
     id: 'procedure_stop', category: 'procedure', title: '水道の使用中止（閉栓）',
@@ -216,7 +221,8 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水漏れしてる！', '水道が故障した', '蛇口からポタポタ水が落ちる', '修理はどうすればいい'],
     summary: '水漏れ・故障の対処法だよ。',
     content: '宅内で漏水を見つけたら、まずメーターボックス内の止水栓を右に回して水を止めてね！修理は「指定給水装置工事事業者」に依頼するのがルールだよ。道路の漏水は企業団（0547-46-4130）に連絡を。夜間・休日は当番店を案内してもらえるよ！',
-    url: '/resident/trouble', empathy: '水漏れは本当に焦るよね！まず深呼吸して、元栓を閉めよう。', emotionEffect: 'shake'
+    url: '/resident/trouble', empathy: '水漏れは本当に焦るよね！まず深呼吸して、元栓を閉めよう。', emotionEffect: 'shake',
+    related_topics: ['designated_shops', 'water_outage', 'emergency_contact']
   },
   {
     id: 'water_outage', category: 'trouble', title: '断水・濁り水情報',
