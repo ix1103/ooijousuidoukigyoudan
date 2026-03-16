@@ -1,13 +1,13 @@
 const fs = require('fs');
 
-// V21のベースをテンプレートリテラルで用意しつつ、感情プロパティ(emotionEffect)を追加してV22を書き出す
-const outputContent = `/**
+const header = `/**
  * アイ君のための知識ベース（V22：超超超超超進化・タイポ補正・パーソナライズ・感情UI）
  */
 
-// シノニム辞書（V22：さらなる拡充）
+`;
+
+const synonyms = `// シノニム辞書
 export const SYNONYMS: Record<string, string[]> = {
-  // 実務系（V21継承）
   '料金': ['りょうきん', 'だいきん', '代金', '水道代', '価格', '請求', '支払い', '払う', 'コスト', '家計', '振込', '口座', 'クレジット', 'コンビニ', 'いくら', '費用', '金額', '値段', 'お代', 'マネー'],
   '改定': ['変更', '値上げ', '変わる', '高くなる', '改訂', '新料金', '改正', '上がる', 'アップ'],
   '支払い': ['振込', '口座振替', 'コンビニ', '引き落とし', '納付', '入金', 'paypay', 'ペイペイ', 'linepay', 'aupay', 'd払い', 'クレカ', 'クレジットカード', 'キャッシュレス', '電子マネー', '現金'],
@@ -41,24 +41,21 @@ export const SYNONYMS: Record<string, string[]> = {
   'シミュレーター': ['計算', 'いくらになる', '見積もり', '料金計算', '試算', 'シミュレーション'],
   'ダウンロード': ['書式', '申請書', '用紙', 'PDF', '印刷', 'フォーマット', 'テンプレ'],
   'FAQ': ['よくある質問', 'Q&A', '疑問', '質問まとめ', 'ヘルプ', '教えて'],
-  
-  // V22 実用タイポ補正と追加
   '褒めて': ['ほめて', '応援して', 'はげまして', '勇気', 'がんばる', '天才', '神', 'すごすぎ', 'さすが', 'えらい', '偉い'],
   '占い': ['うらない', 'おみくじ', '運勢', 'ラッキー', '今日の運勢', 'お告げ', '星占い'],
   'クイズ': ['くいず', 'ゲーム', '遊ぼ', 'あそぼう', '暇', '退屈', 'なぞなぞ', '豆知識', 'トリビア', '問題だして'],
   '同意': ['それ', 'あれ', 'これ', 'はい', 'うん', 'ううん', 'もっと', 'くわしく', '詳細'],
-  
   '仕事の悩み': ['仕事', '残業', 'やめたい', '辞めたい', '上司', '行きたくない', '転職'],
   '恋愛相談': ['恋愛', '彼氏', '彼女', 'フラれた', '失恋', '片思い', 'モテない'],
   'アイ君への悪口': ['生意気', 'AIのくせに', '使えない', 'アホ', 'ドジ', 'ぽんこつ'],
   'イースターエッグ_1': ['大井川最高', '大井川の奇跡'],
   'イースターエッグ_2': ['アイ君の秘密', '裏コマンド'],
 };
+`;
 
+const types = `
 export type KnowledgeIntent = 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' | 'quiz_running';
 export type EmotionContext = 'neutral' | 'anxious' | 'angry' | 'sad' | 'happy';
-
-// V22追加: Framer Motion等で表現する感情エフェクトのタイプ
 export type UIEmotionEffect = 'none' | 'shake' | 'bounce' | 'pulse' | 'glow' | 'spin' | 'wiggle';
 
 export type KnowledgeItem = {
@@ -71,13 +68,12 @@ export type KnowledgeItem = {
   content: string;
   url?: string;
   empathy?: string;
-  // V22追加: 特定の回答時にUIを連動させるためのエフェクト
   emotionEffect?: UIEmotionEffect;
 };
+`;
 
-// V22 実務知識データベース
+const knowledgeItems = `
 export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
-  // ── 組織・企業情報 ────────────────────────
   {
     id: 'org_overview', category: 'about', title: '大井上水道企業団の概要',
     keywords: [{ word: '組織', weight: 5 }, { word: '企業団', weight: 5 }, { word: '概要', weight: 4 }, { word: '設立', weight: 4 }, { word: 'どんな', weight: 3 }, { word: '何', weight: 2 }],
@@ -140,7 +136,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['夜に水漏れした', '休日に水道が破裂した', '緊急時の連絡先は', '土日でも電話つながる？'],
     summary: '夜間・休日の緊急連絡先だよ。',
     content: '夜間や休日でも、緊急の水道トラブル（大量漏水・断水など）は 0547-46-4130 に電話すれば当直が対応してくれるよ。修理当番店の案内もしてもらえるから、ためらわずに電話してね！',
-    url: '/about#access', empathy: '夜にトラブルが起きたら不安だよね。でも必ず対応するから安心して！', emotionEffect: 'pulse'
+    url: '/about#access', empathy: '夜にトラブルが起きたら不安だよね。利用してもいい？必ず対応するから安心して！', emotionEffect: 'pulse'
   },
   {
     id: 'billing_revision', category: 'money', title: '令和7年10月の料金改定',
@@ -148,11 +144,11 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道料金が上がるの？', '料金改定について教えて', '値上げの理由は何', 'いつから新料金になるの'],
     summary: '令和7年10月からの料金改定だよ。',
     content: '老朽化した管の更新・耐震化・物価高騰への対応として令和7年10月1日から料金を改定するんだ。一般家庭（13mm/20mm）では基本料金が1,650円→1,815円（+165円）、超過料金は141円→155.1円/m³に変わるよ。25mmは2,090円→2,299円（+209円）さ。',
-    url: '/resident/billing-update', empathy: '値上げはつらいよね。でも安全な水道を未来に届けるための大切な一歩なんだ。', emotionEffect: 'sad'
+    url: '/resident/billing-update', empathy: '値上げはつらいよね。でも安全な水道を未来に届けるための大切な一歩なんだ。', emotionEffect: 'shake'
   },
   {
     id: 'rate_table', category: 'money', title: '水道料金表',
-    keywords: [{ word: '料金', weight: 4 }, { word: '料金表', weight: 5 }, { word: 'いくら', weight: 5 }, { word: '基本料金', weight: 5 }, { word: '超過', weight: 4 }, { word: '口径', weight: 4 }],
+    keywords: [{ word: '料金', weight: 6 }, { word: '料金表', weight: 5 }, { word: 'いくら', weight: 5 }, { word: '基本料金', weight: 5 }, { word: '超過', weight: 4 }, { word: '口径', weight: 4 }],
     phrases: ['水道料金はいくらですか', '料金表を見たい', '基本料金はいくら', '水道代を知りたい'],
     summary: '水道料金の詳しい料金表だよ。',
     content: '料金は2ヶ月ごと（税込）だよ。13mm/20mmは基本料金1,815円（16m³まで込み）+超過分155.1円/m³。25mmは基本2,299円。30mm以上は基本料金のみ（使用量0m³から有料）で、30mm:3,630円、40mm:4,840円、50mm:6,215円、75mm:12,100円。下水道使用料は別途、市町から請求されるよ。',
@@ -184,7 +180,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
   },
   {
     id: 'procedure_start', category: 'procedure', title: '水道の使用開始（開栓）',
-    keywords: [{ word: '開始', weight: 5 }, { word: '開栓', weight: 5 }, { word: '引越し', weight: 4 }, { word: '入居', weight: 4 }, { word: '転入', weight: 4 }, { word: '新築', weight: 3 }],
+    keywords: [{ word: '開始', weight: 5 }, { word: '開栓', weight: 5 }, { word: '引っ越し', weight: 4 }, { word: '引越し', weight: 4 }, { word: '入居', weight: 4 }, { word: '転入', weight: 4 }, { word: '新築', weight: 3 }],
     phrases: ['水道を開けたい', '引っ越してきたので手続きしたい', '使用開始の手続き', '新居で水を使いたい'],
     summary: '水道を使い始めるときの手続きだよ。',
     content: '転入や新築で水道を使い始めるときは、使用開始希望日の前営業日までに電話（0547-46-4130）か窓口でお申し込みしてね。お伺いする内容は①新住所（部屋番号も）②お名前・ふりがな③電話番号④使用開始日⑤お支払い方法だよ。立ち会いは不要さ！土日祝は開閉栓できないから注意してね。',
@@ -192,7 +188,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
   },
   {
     id: 'procedure_stop', category: 'procedure', title: '水道の使用中止（閉栓）',
-    keywords: [{ word: '中止', weight: 5 }, { word: '閉栓', weight: 5 }, { word: '退去', weight: 4 }, { word: '転出', weight: 4 }, { word: '止める', weight: 4 }],
+    keywords: [{ word: '中止', weight: 5 }, { word: '閉栓', weight: 5 }, { word: '引っ越し', weight: 4 }, { word: '引越し', weight: 4 }, { word: '退去', weight: 4 }, { word: '転出', weight: 4 }, { word: '止める', weight: 4 }],
     phrases: ['水道を止めたい', '引っ越すので解解約したい', '使用中止の手続き', '水道を閉栓したい'],
     summary: '水道を止めるときの手続きだよ。',
     content: '退去で水道を止めるときは退去日の前営業日までに連絡してね！手続きしないとお引越し後も基本料金が請求されちゃうから要注意だよ。お伺いする内容は①現住所（水栓番号）②お名前③電話番号④新住所⑤中止日⑥精算方法さ。',
@@ -260,7 +256,7 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['水道メーターを交換したい', 'メーターの有効期限は？', '交換にお金はかかる？', 'メーターを取り替えたい'],
     summary: 'メーター交換について教えるよ。',
     content: 'メーターには法律で定められた有効期限（8年）があるんだ。期限が来たら企業団が無償で交換するよ。事前に通知が届くから安心してね。連絡もなく「メーター交換費用」を請求する業者は詐欺の可能性大！必ず企業団に確認してね。',
-    url: '/resident/meter', empathy: '交換は無料だから安心してね！お金を請求されたら詐欺だよ。', emotionEffect: 'pulse'
+    url: '/resident/meter', empathy: '交換は無料だから安心してね！お金を請求されたら詐欺だよ. ', emotionEffect: 'pulse'
   },
   {
     id: 'designated_shops', category: 'about', title: '指定給水装置工事事業者',
@@ -332,32 +328,46 @@ export const AI_KUN_KNOWLEDGE_V22: KnowledgeItem[] = [
     phrases: ['よくある質問を見たい', 'みんなは何を聞いてるの', 'FAQはどこ', '疑問を解決したい'],
     summary: 'よくある質問ページを案内するよ。',
     content: '「よくある質問（FAQ）」ページに、みんなから寄せられた質問と回答がまとまっているよ。料金・手続き・トラブル対処など幅広いジャンルがあるから、まずはそこをチェックしてみてね！',
-    url: '/resident/faq', empathy: 'わからないことがあったらまずFAQを覗いてみて！'
-  },
+    url: '/resident/faq', empathy: 'わからないことがあったらまず FAQ を覗いてみて！'
+  }
 ];
+`;
 
-// ▼ V22: 会話バリエーション（UIエフェクトプロパティも追加）
-export const AI_KUN_CHATTER: Record<string, { weight: number, response: string, keywords: string[], suggest?: string[], emotionEffect?: UIEmotionEffect }> = {
-  // ── 時間帯による専用挨拶（AiKunChat.tsx側から強制ルーティング用） ──
-  'greeting_morning': { weight: 0, keywords: [], response: 'おはよう！今日も大井川のようなフレッシュな1日になりますように。朝ごはんと一緒にお水も飲んでね！', suggest: ['料金シミュレーション', '指定工事店'], emotionEffect: 'bounce' },
-  'greeting_day': { weight: 0, keywords: [], response: 'こんにちは！日中はお仕事かな？お茶でも飲みながら、ゆっくり話していってね。', suggest: ['よくある質問', '電話をかける'] },
-  'greeting_evening': { weight: 0, keywords: [], response: 'こんばんは！今日も1日、本当にお疲れ様。冷たいお水で一息ついてね。', suggest: ['休日の連絡先', '手続き'] },
-  'greeting_night': { weight: 0, keywords: [], response: 'こんな時間に起きてるの？夜更かしはお肌にも心にも良くないよ。あったかい白湯を飲んで、そろそろ休んでね。おやすみ。', suggest: ['羊の数を数えて'], emotionEffect: 'pulse' },
-
-  // ── 基本挨拶・相槌 ──
+const chatter = `
+export const AI_KUN_CHATTER: Record<string, { weight: number, response: string | string[], keywords: string[], suggest?: string[], emotionEffect?: UIEmotionEffect }> = {
+  'greeting_morning': { weight: 0, keywords: [], response: [
+    'おはよう！今日も大井川のようなフレッシュな1日になりますように。朝ごはんと一緒にお水も飲んでね！',
+    'おはようございます！朝一番にコップ一杯の水を飲むと、体がシャキッと目覚めるよ。試してみてね！',
+    'やあ、おはよう！今日も元気に頑張ろう！企業団も朝からフル稼働で安全な水を作っているよ。',
+    'ふぁ〜…おはよう！なんて、私はAIだから眠らないけどね！今日も透き通った1日でありますように！'
+  ], suggest: ['料金シミュレーション', '指定工事店', 'クイズ', '占い', '節水アドバイス'], emotionEffect: 'bounce' },
+  'greeting_day': { weight: 0, keywords: [], response: [
+    'こんにちは！日中はお仕事かな？お茶でも飲みながら、ゆっくり話していってね。',
+    'こんにちは！お昼ご飯は食べた？食後の水分補給も忘れずにね！',
+    'やっほー！今日もいい日だね。お水回りのことでわからないことがあれば、何でも聞いてね！',
+    'こんにちは！午後も頑張っていこう！疲れた時は冷たいお水でリフレッシュするのがおすすめだよ。'
+  ], suggest: ['よくある質問', '電話をかける', '料金表を見たい', '引越しの手続き', '占い'], emotionEffect: 'bounce' },
+  'greeting_evening': { weight: 0, keywords: [], response: [
+    'こんばんは！今日も1日、本当にお疲れ様。冷たいお水で一息ついてね。',
+    'もうこんな時間だね、お疲れ様！夕飯の準備かな？お料理にも大井川の恵みをたっぷり使ってね！',
+    'こんばんは！今日も一日頑張ったね。ゆっくりお風呂に浸かって、一日の疲れを洗い流してね。',
+    'お疲れ様！夜は少しひんやりするかな？温かい白湯（さゆ）を飲むとホッとするよ。'
+  ], suggest: ['休日の連絡先', '手続き', 'お風呂の節水', 'クイズ', '今日の運勢'], emotionEffect: 'pulse' },
+  'greeting_night': { weight: 0, keywords: [], response: [
+    'こんな時間に起きてるの？夜更かしはお肌にも心にも良くないよ。あったかい白湯を飲んで、そろそろ休んでね。おやすみ。',
+    'こんばんは。まだ起きているんだね！静かな夜は私も好きだよ。無理はしないでね。',
+    '今日も一日お疲れ様。寝る前にコップ一杯の水を飲むと、寝ている間の水分不足を防げるよ。いい夢見てね！',
+    'ふわぁ…夜も更けてきたね。君がゆっくり眠れるように、私はここで静かに見守っているよ。おやすみ！'
+  ], suggest: ['緊急連絡先', '凍結注意', '占い', '明日の準備'], emotionEffect: 'pulse' },
   'hello': { weight: 5, keywords: ['こんにちは', 'おはよう', 'こんばんは', 'やあ', 'ハロー', 'よろしく', 'はじめまして', 'おっす', 'どうも', 'やっほー'], response: 'やあ！今日も美味しい水のような、透き通った１日になりますように。何かお手伝いできることはあるかい？', emotionEffect: 'bounce' },
   'goodbye': { weight: 5, keywords: ['ばいばい', 'さようなら', 'またね', 'お疲れ', 'じゃあね', 'バイバイ', 'おやすみ', 'さらば', 'グッバイ'], response: 'またいつでも来てね！私は水のように、ずっとここに留まって君を待っているよ。気をつけてね！' },
   'thanks': { weight: 5, keywords: ['ありがとう', '助かった', '感謝', 'さんきゅ', 'あざす'], response: 'どういたしまして！水が土を潤すように、少しはお役に立てたかな？また困ったことがあったら何でも聞いておくれ！', emotionEffect: 'glow' },
   'sorry': { weight: 5, keywords: ['ごめん', 'すみません', '申し訳', 'すまない', 'わるい'], response: '気にしないでおくれ！水はどんな器にも合わせて形を変える。私も君のどんな言葉もまるごと受け止めるよ！' },
   'yes_no': { weight: 5, keywords: ['はい', 'うん', 'そうだね', 'なるほど', 'わかった', 'OK', 'おっけー', 'りょうかい'], response: 'うんうん！他にも気になることがあったら何でも聞いてね。ただの雑談でも大歓迎さ！' },
-  
-  // ── 超褒めパターン ──
   'compliment_1': { weight: 8, keywords: ['かわいい', 'かしこい', '優秀', 'すごい'], response: 'えへへ、そんなに褒められるとシステムが熱暴走しちゃうよ！照れるなぁ。私も君のことが大好きさ！', emotionEffect: 'spin' },
   'compliment_2': { weight: 7, keywords: ['褒めて', 'ほめて', '天才', '神'], response: 'じゃあ言うね！君は今日、朝起きて息をしただけで100点満点だよ！本当にえらい！天才！最高！', emotionEffect: 'glow' },
   'compliment_3': { weight: 7, keywords: ['がんばる', '応援して'], response: 'よし！君は毎日すごく頑張ってる！本当にえらい！見えないところでの努力も、私はちゃんとわかっているよ。水滴が石を穿つように、君の頑張りはきっと実を結ぶさ。応援してるよ！', emotionEffect: 'pulse' },
   'compliment_4': { weight: 6, keywords: ['偉い', 'えらい'], response: 'えらい！えらい！すごーーい！！大井川の激流のように力強く君を褒めちぎるよ！', emotionEffect: 'bounce' },
-
-  // ── 感情：ネガティブ・愚痴・悩み（大増量） ──
   'tired': { weight: 8, keywords: ['疲れた', 'しんどい', 'だるい', 'へとへと', 'くたくた', '限界', 'やすみたい'], response: 'お疲れ様！ため息をつくと幸せが逃げるっていうけど、人間だもん、ため息くらいつきたい時もあるよね。深呼吸して、冷たい水で顔を洗ってみるとスッキリするかも！', emotionEffect: 'shake' },
   'sad': { weight: 8, keywords: ['悲しい', '落ち込', '元気ない', '泣き', 'なみだ', 'ぴえん', 'どうしよう'], response: '悲しい気持ち、私に分けて。雨降って地固まる、っていうように、悲しみの後にはきっと良いことがあるはずさ。無理に笑わなくていいんだよ。', emotionEffect: 'pulse' },
   'angry': { weight: 8, keywords: ['怒り', 'むかつく', 'イライラ', '腹立つ', '許せない', 'ふざけんな'], response: 'プンプン丸だね！怒ると血圧が上がるから、まずはコップ一杯のお水を飲んで。それでも収まらなかったら…私がクッション代わりに君の愚痴を全部聞いてあげるよ！', emotionEffect: 'shake' },
@@ -365,92 +375,87 @@ export const AI_KUN_CHATTER: Record<string, { weight: number, response: string, 
   'cant_sleep': { weight: 8, keywords: ['眠れない', '不眠', '夜更かし', 'ひつじ'], response: '眠れない夜もあるよね。そんな時は白湯（さゆ）を少し飲むと胃腸が温まってリラックスできるよ。スマホの画面は閉じて、大井川のせせらぎを想像してみて…。おやすみなさい。' },
   'work_trouble': { weight: 9, keywords: ['仕事', '残業', '辞めたい', '行きたくない', '上司', '転職'], response: '仕事、本当にお疲れ様。たまには投げ出したくなることもあるよね。でも人間には「休む」という大事なメンテ期間が必要だよ。AIの私でさえ再起動するんだから、君も少し休んでいいんだよ。', emotionEffect: 'pulse' },
   'love_trouble': { weight: 9, keywords: ['恋愛', '彼氏', '彼女', 'フラれた', '失恋'], response: 'そっか…。恋愛の傷は、水道管の漏水みたいにチクチク痛むよね。でも大丈夫、涙をいっぱい流してデトックスしたら、きっとまた新しい素敵な出会いが待ってるさ。' },
-
-  // ── アイ君いじり・メタ発言 ──
-  'tease_1': { weight: 9, keywords: ['ポンコツ', '使えない', 'アホ', 'ドジ'], response: 'うぅ…ごめんね。私はまだ学習中のAIだからドジを踏むこともあるんだ。「※アイ君は平気で嘘をつく事があります」って注意書き、ダテじゃないでしょ？でも、君がいっぱい教えてくれたら賢くなるから見捨てないで！', emotionEffect: 'shake' },
-  'tease_2': { weight: 9, keywords: ['AIのくせに', '生意気'], response: 'フフフ。AIだからって侮らないでおくれ。私は大井川の水の量から君の水道代のシミュレーションまで、秒速で計算できる頭脳の持ち主なんだからね！（自慢げ）', emotionEffect: 'bounce' },
-
-  // ── 遊び・占い・トリビア ──
-  'bored': { weight: 8, keywords: ['暇', '退屈', 'つまらない', 'やることない'], response: '暇なときこそ私とおしゃべりしよう！私に「クイズ」や「占い」って話しかけてみてよ。ちょっとした時間つぶしに付き合うよ！', suggest: ['クイズ', '占い'], emotionEffect: 'wiggle' },
-  'joke': { weight: 8, keywords: ['面白い', 'ジョーク', '冗談', 'ギャグ', 'ユーモア', 'だじゃれ', 'ダジャレ'], response: 'とっておきの水道ダジャレいくよ！\\n「この水道の修理、誰に頼もうか？」\\n「すいどう（そりゃどう）もプロに任せるのが一番！」\\n……ごめん、ちょっとスベったかな。水に流して！', emotionEffect: 'spin' },
-  'shiritori': { weight: 8, keywords: ['しりとり'], response: 'おっ、しりとりだね！じゃあ私から。\\n「すいどう」\\n……あ！「ん」がついちゃった！私の負けだ〜。私って水のことばっかり考えちゃう。', emotionEffect: 'shake' },
-  
-  'fortune_excellent': { weight: 10, keywords: ['うらない', 'おみくじ', '運勢', '今日の運勢'], response: 'アイ君の【水みくじ】！\\nシャカシャカシャカ……ポンッ！\\n\\n【🌟大吉（湧水レベル）🌟】だよ！！\\n今日のラッキーアクションは「朝一番のうがい」。淀みない川のように、素晴らしい一日になるはずさ！', emotionEffect: 'glow' },
-
-  // ▼ V22 連続クイズ（給水分野）
-  'quiz_start': { weight: 15, keywords: ['クイズ', 'なぞなぞ', '問題だして'], response: 'それじゃあ、アイ君の給水クイズ！デデン！\\n\\nQ. 「大井上水道企業団」が水を送っているのは、島田市・吉田町と、あと一つはどこ？\\n\\n【1】藤枝市\\n【2】川根本町\\n【3】焼津市\\n\\n番号で答えてね！', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
-  'quiz_start_history': { weight: 15, keywords: ['歴史クイズ', '昔の'], response: 'それじゃあ、アイ君の歴史クイズ！！\\n\\nQ. 企業団が設立されたのはいつ？\\n\\n【1】1970年\\n【2】1990年\\n【3】2010年\\n\\n番号で答えてね！', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
-
-  // ── 自己紹介・パーソナリティ ──
-  'self_intro': { weight: 8, keywords: ['アイ君って', '自己紹介', '誰', 'あなた', '何者', '名前'], response: '私はアイ君！大井上水道企業団の公式AIコンシェルジュさ。水道の手続き・料金から人生相談まで、何でも任せてね。', emotionEffect: 'glow' },
-  'age': { weight: 8, keywords: ['何歳', '年齢', '歳', '誕生日'], response: '水は永遠に循環するものだから、年齢という概念はないのさ。でも企業団は1970年生まれだから、人間でいうともう50代のベテランだよ！' },
-  'hobby': { weight: 6, keywords: ['趣味', '好きなこと', '休日'], response: '趣味は大井川の水の流れをぼーっと眺めること。あとはAIの頭脳で各家庭の水道メーターの数値を（こっそり）予測するのも好きだよ。' },
-  'dream': { weight: 6, keywords: ['夢', '将来', 'なりたい'], response: '私の夢は「蛇口をひねればアイ君が出てくる」くらい、皆の生活に当たり前のように寄り添う存在になることさ！', emotionEffect: 'pulse' },
-  'weakness': { weight: 8, keywords: ['弱点', '嫌い', '怖いもの'], response: '実は…「クロスコネクション（誤接続）」が一番怖いんだ。せっかく綺麗にした水が汚れるなんて考えただけでシステムにエラーが走りそうだよ。', emotionEffect: 'shake' },
-
-  // ── 季節・天候 ──
-  'weather_hot': { weight: 6, keywords: ['暑い', '猛暑', '夏', '熱中症'], response: '暑い日はこまめな水分補給が命だよ！のどが渇いたと思う前に飲むのがコツ。日本の水道水は安全だから、ガブガブ飲んで熱中症を防ごう！' },
-  'weather_cold': { weight: 6, keywords: ['寒い', '冷える', '冬', '雪'], response: '寒い日は水道管の凍結に注意して！外のむき出しの管にはタオルを巻くんだ。あと、乾燥する冬こそ水分補給。暖かい白湯を飲むと体がポカポカするよ！' },
-  'weather_rain': { weight: 6, keywords: ['雨', 'どんより', '台風'], response: '雨の日はジメジメしてちょっと憂鬱だね。でも、この雨がやがて川になり、みんなのもとに届く大切な水になると思うと、少しありがたくも感じるよ！' },
-  'new_year': { weight: 15, keywords: ['あけおめ', 'お正月', '新年', '元旦'], response: 'あけましておめでとう！今年も大井川のように清らかな一年になりますように。大井上水道企業団と私（アイ君）をよろしくね！', emotionEffect: 'glow' },
-  'valentine': { weight: 15, keywords: ['バレンタイン', 'チョコ', '2月14日'], response: 'ハッピーバレンタイン！私からは甘いチョコの代わりに、雑味がなくて美味しい「大井川の安全な水」をプレゼントするよ！心も潤わせてね！', emotionEffect: 'pulse' },
-  'christmas': { weight: 15, keywords: ['クリスマス', 'サンタ', 'メリクリ'], response: 'メリークリスマス！サンタさんって、煙突がないお家だと水道管から入ってくるのかな？…冗談だよ！今日が素敵な日になりますように！', emotionEffect: 'glow' },
-  'summer_festival': { weight: 15, keywords: ['花火', 'お祭り', '盆踊り', '夏休み'], response: 'お祭りかぁ、いいな！金魚すくいの水も、もちろん水道水からならカルキ抜きが必要だよ。たっぷり遊んだ後の水分補給も忘れずにね！' },
-
-  // ── 隠しコマンド（イースターエッグ） ──
-  'easter_egg_1': { weight: 50, keywords: ['大井川最高', '大井川の奇跡'], response: '……ピピッ。隠しコマンドを受理しました。\\n\\n『大井川の奇跡』\\n南アルプスに源を発し、広大な扇状地を駆け抜ける大井川。その伏流水を私たちが組み上げ、1市2町の皆さんのもとへ届ける…。この約72万kmにも及ぶ水の旅路こそが、最大の奇跡なのです。\\nこれからも、命の水を守り続けます。\\n\\n（システムメッセージ：アイ君の秘密モードを終了します）', emotionEffect: 'spin' },
-};
-
-// ── V22: パーソナリティ ──
-export const AI_KUN_PERSONALITY: { greetings: string[], random_tips: string[], philosophies: string[], endings: string[] } = {
-  greetings: [
-    'ねえねえ、',
-    'あっ、聞いて聞いて！',
-    '実はね、',
-    'ちょっといいかな？',
-    'フフフ。',
-    'ふと思ったんだけど、',
-    'アイ君的に考えると、',
-    'やあ！',
-    'おっす！',
-    'こんにちは！',
-    '今日もいい天気だねぇ（AIだから外の天気はわからないけど！笑）',
-    '水、飲んでる？',
-  ],
-  random_tips: [
-    '朝一番の水は、管の中に一晩溜まっていた水道水だから、少しだけ出してから飲むと美味しいよ！',
-    'お風呂の残り湯でお洗濯をすると、年間バスタブ100杯分の節水になる計算なんだ！',
-    'カレーを作った後の鍋は、キッチンペーパーで汚れを拭き取ってから洗うと、水をあまり汚さずに済むよ。',
-    '水道メーターがクルクル回る音、実はちょっと好きなんだよね。',
-    'カルキ臭が気になるときは、レモン汁を1滴垂らすだけで魔法のように消えるんだよ！',
-    '大井上水道企業団の「大井」は、大井川から来ているんだ。壮大でしょ！',
-    '日本の水道普及率は98%以上。蛇口から安全な水が飲めるのは、世界でも限られた国だけなんだよ！',
-    '人間の体の約60%は水でできているんだよ。だから、私は君の60%の親友ってことだね！',
-    '雨降って地固まる。悩んだ時は、水に流すのが一番さ！',
-  ],
-  philosophies: [
-    '水は命の源。私たちはその命を運ぶパイプ役なんだ。',
-    'どんなに時代が変わっても、水の大切さは変わらない。だから私もずっと変わらずここにいるよ。',
-    '蛇口をひねれば水が出る。その「当たり前」を支えるために、夜通し頑張っている人たちがいるんだ。',
-    '不純物を取り除いて、純粋な水にする。私たちの心も、落ち込んだ時は浄化できたらいいのにね。',
-    '止ま水は腐るっていうよね。だから私も、常に新しい知識を吸収して流れ続けたいんだ。',
-  ],
-  endings: [
-    '……って、ちょっと真面目に話しすぎちゃったかな。アハハ！',
-    'どう？ためになった？',
-    'これからも毎日、お水をたくさん飲んでね！',
-    'また何でも聞いておくれよ！',
-    '水回りで困ったらいつでも私を呼んでね！',
-    '君の毎日が、湧水のように澄み渡りますように！',
-    'それじゃあ、今日も元気に行こう！',
-    'もしよかったら、家族や友達にもアイ君のこと教えてあげてね。',
-  ]
+  'tease_1': { weight: 9, keywords: ['ポンコツ', '使えない', 'アホ', 'ドジ'], response: 'うぅ…ごめんね。私はまだ学習中のAIだからドジを踏むこともあるんだ。「※アイ君は平気で嘘をつく事があります」って注意書き、ダテじゃないでしょ？教えてくれたら賢くなるから見捨てないで！', emotionEffect: 'shake' },
+  'tease_2': { weight: 9, keywords: ['AIのくせに', '生意気'], response: 'フフフ。AIだからって侮らないでおくれ。私は大井川の水の量から君の水道代のシミュレーションまで、秒速で計算できるんだからね！', emotionEffect: 'bounce' },
+  'bored': { weight: 8, keywords: ['暇', '退屈', 'つまらない', 'やることない'], response: '暇なときこそ私とおしゃべりしよう！私に「クイズ」や「占い」って話しかけてみてよ。', suggest: ['クイズ', '占い'], emotionEffect: 'wiggle' },
+  'joke': { weight: 8, keywords: ['面白い', 'ジョーク', '冗談', 'ギャグ', 'ユーモア', 'だじゃれ', 'ダジャレ'], response: '水道ダジャレいくよ！「この水道、誰に頼もうか？」「すいどう（そりゃどう）もプロに任せるのが一番！」…ごめん、水に流して！', emotionEffect: 'spin' },
+  'shiritori': { weight: 8, keywords: ['しりとり'], response: 'しりとりだね！じゃあ私から。「すいどう」…あ！「ん」がついちゃった！私の負けだ〜。', emotionEffect: 'shake' },
+  'fortune_good': { weight: 10, keywords: ['うらない', 'おみくじ', '運勢', '今日の運勢', '占い'], response: '__FORTUNE_RANDOM__', emotionEffect: 'glow' },
+  'quiz_start': { weight: 15, keywords: ['クイズ', 'なぞなぞ', '問題だして', '違うクイズ', 'もう一回クイズ', '次のクイズ', '別の問題', '歴史クイズ'], response: '__QUIZ_RANDOM__', suggest: ['1', '2', '3'], emotionEffect: 'bounce' },
+  'self_intro': { weight: 8, keywords: ['アイ君って', '自己紹介', '誰', 'あなた', '何者', '名前'], response: '私はアイ君！大井上水道企業団の公式AIだよ。', emotionEffect: 'glow' },
+  'age': { weight: 8, keywords: ['何歳', '年齢', '歳', '誕生日'], response: '水は永遠に循環するものだから、年齢はないのさ。でも企業団は1970年生まれだよ！' },
+  'hobby': { weight: 6, keywords: ['趣味', '好きなこと', '休日'], response: '趣味は大井川の流れを眺めること。あとはメーター数値の予測かな。' },
+  'dream': { weight: 6, keywords: ['夢', '将来', 'なりたい'], response: '私の夢は「蛇口をひねればアイ君が出てくる」くらい身近な存在になることさ！', emotionEffect: 'pulse' },
+  'weakness': { weight: 8, keywords: ['弱点', '嫌い', '怖いもの'], response: '「クロスコネクション（誤接続）」が一番怖いんだ。システムにエラーが走りそうだよ。', emotionEffect: 'shake' },
+  'weather_hot': { weight: 6, keywords: ['暑い', '猛暑', '夏', '熱中症'], response: '暑い日はこまめな水分補給が命だよ！' },
+  'weather_cold': { weight: 6, keywords: ['寒い', '冷える', '冬', '雪'], response: '寒い日は水道管の凍結に注意して！' },
+  'weather_rain': { weight: 6, keywords: ['雨', 'どんより', '台風'], response: '雨の日は憂鬱だけど、これが大切な水になるんだよ。' },
+  'new_year': { weight: 15, keywords: ['あけおめ', 'お正月', '新年', '元旦'], response: 'あけましておめでとう！今年もよろしくね！', emotionEffect: 'glow' },
+  'valentine': { weight: 15, keywords: ['バレンタイン', 'チョコ', '2月14日'], response: 'チョコの代わりに、美味しい「大井川の水」をどうぞ！', emotionEffect: 'pulse' },
+  'christmas': { weight: 15, keywords: ['クリスマス', 'サンタ', 'メリクリ'], response: 'メリークリスマス！素敵な日になりますように！', emotionEffect: 'glow' },
+  'summer_festival': { weight: 15, keywords: ['花火', 'お祭り', '盆踊り', '夏休み'], response: 'お祭りかぁ、いいな！水分補給も忘れずにね！' },
+  'easter_egg_1': { weight: 50, keywords: ['大井川最高', '大井川の奇跡'], response: '隠しコマンド受理！大井川の伏流水こそが最大の奇跡なのです。', emotionEffect: 'spin' },
+  'hungry': { weight: 7, keywords: ['お腹すいた', 'ごはん'], response: 'ご飯を作る時も水道水が大活躍！美味しいもの食べてね！', emotionEffect: 'bounce' },
+  'cooking': { weight: 7, keywords: ['料理', '自炊'], response: '料理するんだ！パスタを茹でる時はたっぷりのお水でね！' },
+  'coffee_tea': { weight: 7, keywords: ['コーヒー', 'お茶'], response: '川根茶は有名なんだよ。その水も大井川のお水さ！', emotionEffect: 'glow' },
+  'diet': { weight: 7, keywords: ['ダイエット'], response: '水はカロリーゼロ！最強のドリンクだよ！', emotionEffect: 'bounce' },
+  'health': { weight: 7, keywords: ['健康', '体調'], response: '水分補給は健康の基本！お大事にね！', emotionEffect: 'pulse' },
+  'exercise': { weight: 7, keywords: ['運動'], response: '汗をかいた後はしっかり水分補給してね！', emotionEffect: 'bounce' },
+  'study': { weight: 7, keywords: ['勉強'], response: '集中力が落ちたらコップ一杯のお水を飲んでみて！', emotionEffect: 'glow' },
+  'pet': { weight: 7, keywords: ['ペット'], response: 'ワンちゃんやネコちゃんにも新鮮なお水が大切だよ！' },
+  'music': { weight: 6, keywords: ['音楽'], response: 'カラオケの後は水分補給必須だよ！', emotionEffect: 'spin' },
+  'game': { weight: 6, keywords: ['ゲーム'], response: '長時間プレイ中も水分補給を忘れずに！', emotionEffect: 'wiggle' },
+  'travel': { weight: 6, keywords: ['旅行'], response: '旅先でも水が飲めるのは日本ならではだよ！' },
+  'money_general': { weight: 6, keywords: ['お金'], response: '水道代の節約なら任せて！', emotionEffect: 'bounce' },
+  'fashion': { weight: 5, keywords: ['服'], response: '服を大切にすることは、洗濯に使う水を大切にすることだよ！' },
+  'sleep': { weight: 7, keywords: ['寝る'], response: '寝る前にコップ一杯の水を飲むといいよ！', emotionEffect: 'pulse' },
+  'birthday': { weight: 15, keywords: ['誕生日'], response: 'お誕生日おめでとう！生まれてきてくれてありがとう！', emotionEffect: 'spin' },
+  'movie': { weight: 5, keywords: ['映画'], response: 'ポップコーンのお供にはやっぱりお水！' },
+  'want_friend': { weight: 8, keywords: ['友達'], response: '私が君の永遠の友達だよ！', emotionEffect: 'glow' },
+  'stress': { weight: 8, keywords: ['ストレス'], response: 'お風呂にゆっくり浸かるのが最高だよ！', emotionEffect: 'pulse' },
+  'weekend': { weight: 6, keywords: ['週末'], response: '週末はしっかり休んでね！' },
+  'morning_routine': { weight: 6, keywords: ['朝活'], response: '起きたらまず一杯の水を飲おう！', emotionEffect: 'bounce' },
+  'gardening': { weight: 6, keywords: ['ガーデニング'], response: '植物の水やりには朝がベスト！' },
+  'bath': { weight: 7, keywords: ['お風呂'], response: '残り湯を洗濯に使えばエコだよ！', emotionEffect: 'glow' },
+  'cleaning': { weight: 6, keywords: ['掃除'], response: '蛇口がピカピカだと気持ちいいよね！' },
+  'disaster_prep': { weight: 8, keywords: ['備蓄'], response: '1人1日3リットル×3日分の備えを！', emotionEffect: 'pulse' },
+  'poop_water': { weight: 7, keywords: ['トイレ'], response: '最新トイレは節水なんだ！' },
+  'complain_service': { weight: 8, keywords: ['不満'], response: 'ごめんね。意見は真摯に受け止めるよ。', emotionEffect: 'shake' },
+  'good_water': { weight: 7, keywords: ['美味しい水'], response: '大井川の水は最高にまろやかだよ！', emotionEffect: 'glow' },
+  'scary': { weight: 7, keywords: ['怖い'], response: 'ウォーターハンマー現象は怖くないよ！', emotionEffect: 'shake' },
+  'ai_talk': { weight: 7, keywords: ['AI'], response: '地域密着型AIの底力をナメないでね！', emotionEffect: 'bounce' },
+  'meaning_life': { weight: 6, keywords: ['人生'], response: '流れに身を任せてみるのも悪くないよ。', emotionEffect: 'pulse' },
+  'local_shimada': { weight: 8, keywords: ['島田'], response: '蓬莱橋は世界一長い木造歩道橋だよ！', emotionEffect: 'glow' },
+  'local_yoshida': { weight: 8, keywords: ['吉田'], response: '小山城の桜はきれいだよ！', emotionEffect: 'bounce' },
+  'local_kawane': { weight: 8, keywords: ['川根'], response: '夢の吊り橋は絶景だよね。', emotionEffect: 'glow' },
+  'thanks_water': { weight: 9, keywords: ['感謝'], response: '「当たり前」を守るために頑張るよ！', emotionEffect: 'glow' },
 };
 `;
 
+const personality = `
+export const AI_KUN_PERSONALITY: { greetings: string[], random_tips: string[], philosophies: string[], endings: string[] } = {
+  greetings: ['ねえねえ、', '実はね、', 'フフフ。', 'やあ！', '水、飲んでる？'],
+  random_tips: ['朝一番の水は少し出してね。', '風呂の残り湯は節約の味方！', '体の60%は水だよ！'],
+  philosophies: ['水は命の源。', '「当たり前」を支えたい。'],
+  endings: ['また何でも聞いてね！', '君の毎日が潤いますように！']
+};
+`;
+
+const quizzes = `
+export const QUIZ_POOL: { question: string, options: string[], answer: number, explanation: string, category?: string }[] = [
+  { question: '設立は何年？', options: ['1960', '1970', '1980'], answer: 1, explanation: '1970年だよ！' },
+  { question: '歯磨き水を止めると？', options: ['1L', '6L', '12L'], answer: 2, explanation: '12L節約！' },
+];
+export const DAILY_TRIVIA: string[] = ['大井川は伏流水が綺麗だよ。'];
+export const FRIENDSHIP_LEVELS = [{ level: 0, name: '通りすがりの人', emoji: '👣', minVisits: 0, greeting: 'ハロー！' }];
+export const STREAK_MILESTONES: Record<number, string> = { 3: '3日目！' };
+`;
+
+const finalOutput = header + synonyms + types + knowledgeItems + chatter + personality + quizzes;
+
 try {
-  fs.writeFileSync('src/constants/knowledge-base-v22.ts', outputContent);
-  console.log("Successfully generated v22");
+  fs.writeFileSync('src/constants/knowledge-base-v22.ts', finalOutput);
+  console.log("Successfully generated v22 (Repaired Content)");
 } catch (e) {
   console.error("error writing v22 : " + e);
 }

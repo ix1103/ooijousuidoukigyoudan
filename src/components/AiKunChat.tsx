@@ -167,7 +167,13 @@ export const AiKunChat = () => {
         const dailyTrivia = DAILY_TRIVIA[dayOfYear % DAILY_TRIVIA.length];
         greeting += `\n\n【今日の水道豆知識】\n${dailyTrivia}`;
 
-        addAssistantMessage(greeting, undefined, 'chat', greetingData.suggest, greetingData.emotionEffect);
+        // 初期提案トピックのランダム化（V22.3）
+        const majorTopics = ['料金シミュレーター', '支払い方法', '引っ越し', '漏水・故障', '水質・安全性', 'よくある質問', '電話', 'クイズ', '占い'];
+        // シャッフルして2〜3個選ぶ
+        const shuffled = [...majorTopics].sort(() => 0.5 - Math.random());
+        const randomSuggest = shuffled.slice(0, Math.floor(Math.random() * 2) + 2); // 2個か3個
+
+        addAssistantMessage(greeting, undefined, 'chat', randomSuggest, greetingData.emotionEffect);
       }, 400);
       setProactiveMessage(null);
     }
@@ -236,22 +242,35 @@ export const AiKunChat = () => {
 
     let normalizedQuery = normalizeText(query);
 
+    // V22.2: シノニム展開（表記ゆれ・同義語の吸収）
+    // ユーザーの入力にシノニムが含まれていれば、正規化されたクエリに「代表語」を裏で追加する。
+    // これにより「クレカ」と打つだけで「クレジットカード」にもマッチするようになる。
+    let expandedQuery = normalizedQuery;
+    Object.keys(SYNONYMS).forEach(canonical => {
+      SYNONYMS[canonical].forEach(syn => {
+        const normSyn = normalizeText(syn);
+        if (normSyn.length > 0 && normalizedQuery.includes(normSyn)) {
+          expandedQuery += ' ' + normalizeText(canonical);
+        }
+      });
+    });
+
     // V22.1: ストップワード除去（タイポ補正より先に実行）
     const stopWords = ['について', 'おしえて', 'とはなに', 'とは', 'ってなに', 'しりたい', 'ください', 'どうすれば', 'します', 'ですか', 'ますか', 'どうも'];
     stopWords.forEach(word => {
-      normalizedQuery = normalizedQuery.replace(word, '');
+      expandedQuery = expandedQuery.replace(word, '');
     });
-    if (!normalizedQuery) normalizedQuery = normalizeText(query);
+    if (!expandedQuery.trim()) expandedQuery = normalizeText(query); // 全部消えちゃったら元に戻す
 
-    // 意図の推定
+    // 意図の推定（漢字も追加してヒット率大幅UP）
     let estimatedIntent: 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' | 'chat' = 'general';
     let emotion: EmotionContext = 'neutral';
     let urgency: 'high' | 'normal' = 'normal';
 
-    if (/(りょうきん|だいきん|いくら|はらう|ねあげ|しはらい|くれじっと|こうざ|ペイペイ|paypay)/i.test(normalizedQuery)) estimatedIntent = 'money';
-    else if (/(ひっこし|てつづき|かいし|ちゅうし|めいぎ|しんせい|かえる|あける|とめる|だうんろーど)/i.test(normalizedQuery)) estimatedIntent = 'procedure';
-    else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい)/i.test(normalizedQuery)) estimatedIntent = 'trouble';
-    else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ)/i.test(normalizedQuery)) estimatedIntent = 'about';
+    if (/(りょうきん|だいきん|いくら|はらう|ねあげ|しはらい|くれじっと|こうざ|ペイペイ|paypay|料金|代金|支払|引落|口座|クレジットカード)/i.test(expandedQuery)) estimatedIntent = 'money';
+    else if (/(ひっこし|てつづき|かいし|ちゅうし|めいぎ|しんせい|かえる|あける|とめる|だうんろーど|引越|手続|開始|中止|名義|申請)/i.test(expandedQuery)) estimatedIntent = 'procedure';
+    else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい|漏水|水漏|修理|故障|断水|水出ない|凍結|詐欺|濁)/i.test(expandedQuery)) estimatedIntent = 'trouble';
+    else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ|電話|時間|営業|企業団|場所)/i.test(expandedQuery)) estimatedIntent = 'about';
 
     // 文脈（Context）理解
     let contextCategory = '';
@@ -266,17 +285,17 @@ export const AiKunChat = () => {
 
     // クイズ回答判定（QUIZ_POOLベース）
     if (contextCategory === 'quiz_running' && currentQuizId) {
-      const quiz = QUIZ_POOL.find(q => q.id === currentQuizId);
+      const quiz = QUIZ_POOL.find(q => q.question === currentQuizId);
       if (quiz) {
         let userAnswer = -1;
         if (/(1|１)/.test(query)) userAnswer = 0;
         else if (/(2|２)/.test(query)) userAnswer = 1;
         else if (/(3|３)/.test(query)) userAnswer = 2;
 
-        if (userAnswer === quiz.correctIndex) {
+        if (userAnswer === quiz.answer) {
           setCurrentQuizId(null);
           return { 
-            response: `大正解！🎉\n${quiz.correctExplanation}`, 
+            response: `大正解！🎉\n${quiz.explanation}`, 
             category: 'chat',
             suggestedTopics: ['次のクイズ', '違うクイズだして'],
             emotionEffect: 'bounce'
@@ -284,7 +303,7 @@ export const AiKunChat = () => {
         } else {
           setCurrentQuizId(null);
           return {
-            response: `ざんねん…！ハズレだよ。\n${quiz.wrongExplanation}\n次は頑張って！`,
+            response: `ざんねん…！ハズレだよ。\n正解は【${quiz.answer + 1}】番でした！\n${quiz.explanation}\n次は頑張って！`,
             category: 'chat',
             suggestedTopics: ['もう一回クイズ！', '次のクイズ'],
             emotionEffect: 'shake'
@@ -299,7 +318,7 @@ export const AiKunChat = () => {
     else if (/(むかつく|いらいら|はらたつ|さいあく)/.test(normalizeText(query))) emotion = 'angry';
     else if (/(うれしい|たのしい|はっぴー|わーい)/.test(normalizeText(query))) emotion = 'happy';
 
-    if (estimatedIntent === 'trouble' && (emotion === 'anxious' || /(よる|きゅう|いま|すぐ)/.test(normalizedQuery))) {
+    if (estimatedIntent === 'trouble' && (emotion === 'anxious' || /(よる|きゅう|いま|すぐ|夜|急|今|直ぐ)/.test(expandedQuery))) {
       urgency = 'high';
     }
 
@@ -311,13 +330,10 @@ export const AiKunChat = () => {
       if (chat.weight === 0) continue;
       
       let chatScore = 0;
-      let matchedCount = 0;
       chat.keywords.forEach(kw => {
         const normKw = normalizeText(kw);
-        if (normKw.length === 0) return;
-        // キーワードが入力に含まれているかチェック
-        if (normalizedQuery.includes(normKw)) {
-          matchedCount++;
+        // expandedQueryにキーワードが含まれているかチェック
+        if (normKw.length > 0 && expandedQuery.includes(normKw)) {
           // スコア = 重み × キーワード長ボーナス（長いキーワードほど信頼度が高い）
           chatScore += chat.weight * (1 + normKw.length * 0.3);
         }
@@ -335,8 +351,8 @@ export const AiKunChat = () => {
       // クイズ発火
       if (bestChatKey === 'quiz_start') {
         const randomQuiz = QUIZ_POOL[Math.floor(Math.random() * QUIZ_POOL.length)];
-        setCurrentQuizId(randomQuiz.id);
-        const questionText = `それじゃあ、アイ君のクイズ！デデン！\n\nQ. ${randomQuiz.question}\n\n【1】${randomQuiz.choices[0]}\n【2】${randomQuiz.choices[1]}\n【3】${randomQuiz.choices[2]}\n\n番号で答えてね！`;
+        setCurrentQuizId(randomQuiz.question);
+        const questionText = `それじゃあ、アイ君のクイズ！デデン！\n\nQ. ${randomQuiz.question}\n\n【1】${randomQuiz.options[0]}\n【2】${randomQuiz.options[1]}\n【3】${randomQuiz.options[2]}\n\n番号で答えてね！`;
         return {
           response: questionText,
           category: 'quiz_running',
@@ -383,16 +399,16 @@ export const AiKunChat = () => {
       if (item.category === estimatedIntent) score += 15;
       
       if (item.phrases) {
+        // V22.2: 誤爆を防ぐため、完全一致の場合のみ超高得点（フレーズの部分一致による加点を廃止）
         item.phrases.forEach(phrase => {
           const normalizedPhrase = normalizeText(phrase);
-          if (normalizedQuery === normalizedPhrase) score += 200;
-          else if (normalizedPhrase.includes(normalizedQuery) || normalizedQuery.includes(normalizedPhrase)) score += 50;
+          if (normalizedQuery === normalizedPhrase || expandedQuery === normalizedPhrase) score += 100;
         });
       }
 
       item.keywords.forEach(kw => {
         const normKw = normalizeText(kw.word);
-        if (normalizedQuery.includes(normKw)) {
+        if (expandedQuery.includes(normKw)) {
           score += kw.weight * (1 + normKw.length * 0.4);
         }
       });
@@ -444,7 +460,7 @@ export const AiKunChat = () => {
     return { 
       response: `${fallback}\n\nちなみに…「${philosophy}」`,
       category: 'general',
-      suggestedTopics: ['料金について', '手続きしたい', 'クイズ', '占い']
+      suggestedTopics: ['料金表を見たい', '引っ越しの手続き', 'クイズ', '占い']
     };
   };
 
