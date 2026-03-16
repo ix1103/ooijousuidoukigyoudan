@@ -6,13 +6,13 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V20, 
+  AI_KUN_KNOWLEDGE_V21, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem,
   EmotionContext
-} from '@/constants/knowledge-base-v20';
+} from '@/constants/knowledge-base-v21';
 
 interface Message {
   id: string;
@@ -33,12 +33,19 @@ export const AiKunChat = () => {
   const proactiveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // チャットを開いたときの初期挨拶
+  // チャットを開いたときの初期挨拶（時間帯に応じて変化 V21）
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
-        const greetings = AI_KUN_PERSONALITY.greetings;
-        addAssistantMessage(greetings[Math.floor(Math.random() * greetings.length)] + " どんなことでも気軽に話しかけてね！");
+        const hour = new Date().getHours();
+        let greetingKey = 'greeting_day';
+        if (hour >= 5 && hour < 11) greetingKey = 'greeting_morning';
+        else if (hour >= 11 && hour < 17) greetingKey = 'greeting_day';
+        else if (hour >= 17 && hour < 23) greetingKey = 'greeting_evening';
+        else greetingKey = 'greeting_night';
+
+        const greetingData = AI_KUN_CHATTER[greetingKey];
+        addAssistantMessage(greetingData.response, undefined, 'chat', greetingData.suggest);
       }, 400);
       setProactiveMessage(null);
     }
@@ -124,20 +131,38 @@ export const AiKunChat = () => {
     else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい)/i.test(normalizedQuery)) estimatedIntent = 'trouble';
     else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ)/i.test(normalizedQuery)) estimatedIntent = 'about';
 
-    // V20: 文脈（Context）理解によるIntent補正
+    // V20: 文脈（Context）理解によるIntent補正 と V21 連続クイズ判定
     const isShortQuery = normalizedQuery.length <= 4 || /(それ|あれ|これ|はい|いいえ|うん|ううん|もっと|くわしく|詳細)/.test(normalizedQuery);
     let contextCategory = '';
     
-    if (isShortQuery && pastMessages.length > 0) {
+    if (pastMessages.length > 0) {
       for (let i = pastMessages.length - 1; i >= 0; i--) {
-        if (pastMessages[i].role === 'assistant' && pastMessages[i].category && pastMessages[i].category !== 'general' && pastMessages[i].category !== 'chat') {
+        if (pastMessages[i].role === 'assistant' && pastMessages[i].category) {
           contextCategory = pastMessages[i].category as string;
           break;
         }
       }
     }
+
+    // V21 連続クイズの回答判定
+    if (contextCategory === 'quiz_running') {
+      const isCorrect = /(2|２|かわねほんちょう|川根本)/.test(normalizedQuery);
+      if (isCorrect) {
+        return { 
+          response: '大正解！🎉\n島田市・吉田町・川根本町の1市2町に安全な水を届けているのが私たち大井上水道企業団なんだ！すごいね！', 
+          category: 'chat',
+          suggestedTopics: ['他のクイズ出して', '大井川の歴史']
+        };
+      } else {
+        return {
+          response: 'ざんねん…！ハズレだよ。\n正解は「【2】川根本町」でした！島田市・吉田町・川根本町の1市2町に水を届けているんだよ。次は頑張って！',
+          category: 'chat',
+          suggestedTopics: ['もう一回クイズ！', '企業団って？']
+        };
+      }
+    }
     
-    if (contextCategory && estimatedIntent === 'general') {
+    if (isShortQuery && contextCategory && contextCategory !== 'general' && contextCategory !== 'chat' && estimatedIntent === 'general') {
       estimatedIntent = contextCategory as any;
     }
 
@@ -180,15 +205,17 @@ export const AiKunChat = () => {
       }
 
       if (bestChatKey && maxChatScore >= 4.0) { // 閾値調整
-        return { response: AI_KUN_CHATTER[bestChatKey].response, category: 'chat' };
+        // V21: クイズ開始時などはカテゴリを特定のものにする
+        const chatCategory = bestChatKey === 'quiz_start' ? 'quiz_running' : 'chat';
+        return { response: AI_KUN_CHATTER[bestChatKey].response, category: chatCategory, suggestedTopics: AI_KUN_CHATTER[bestChatKey].suggest };
       }
     }
 
-    // 4. 実務知識検索（V20ロジック）
+    // 4. 実務知識検索（V21ロジック）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V20.forEach(item => {
+    AI_KUN_KNOWLEDGE_V21.forEach(item => {
       let score = 0;
       let hitCount = 0;
 
@@ -213,7 +240,9 @@ export const AiKunChat = () => {
         });
       }
 
-      // C. キーワード＆シノニムマッチング
+      // C. キーワード＆シノニムマッチング（V21: 近接スコア Proximity Scoring 導入）
+      let foundPositions: number[] = []; // ヒットした単語の位置を記録
+
       item.keywords.forEach(kw => {
         let keywordHit = false;
         const normKw = normalizeText(kw.word);
@@ -221,20 +250,37 @@ export const AiKunChat = () => {
         // TF-IDF的：長いキーワードは希少（価値が高い）
         const lengthMultiplier = 1 + (normKw.length * 0.4);
 
-        if (normalizedQuery.includes(normKw)) {
+        let pos = normalizedQuery.indexOf(normKw);
+        if (pos !== -1) {
           score += kw.weight * lengthMultiplier;
           keywordHit = true;
+          foundPositions.push(pos);
         }
+        
         (SYNONYMS[kw.word] || []).forEach(syn => {
           const normSyn = normalizeText(syn);
-          if (normalizedQuery.includes(normSyn)) {
-            // シノニムも同等の重みで評価
+          let synPos = normalizedQuery.indexOf(normSyn);
+          if (synPos !== -1) {
             score += kw.weight * lengthMultiplier * 0.98;
             keywordHit = true;
+            foundPositions.push(synPos);
           }
         });
         if (keywordHit) hitCount++;
       });
+
+      // V21 近接スコアリング（複数単語がヒットした場合、距離が近いほどボーナス）
+      if (foundPositions.length >= 2) {
+        foundPositions.sort((a, b) => a - b);
+        let minDistance = 999;
+        for (let i = 0; i < foundPositions.length - 1; i++) {
+          const dist = foundPositions[i + 1] - foundPositions[i];
+          if (dist > 0 && dist < minDistance) minDistance = dist;
+        }
+        if (minDistance <= 15) {
+          score += 15; // 距離15文字以内ならボーナス加点
+        }
+      }
       
       // D. タイトルマッチング
       const normTitle = normalizeText(item.title);
@@ -258,42 +304,56 @@ export const AiKunChat = () => {
       }
     });
 
-    // スコア閾値チェック
-    if (bestItem && maxScore >= 8) {
+    // V21: スコア閾値チェック ＆ 「もしかして〇〇ですか？」機能（曖昧さ回避）
+    const CONFIDENCE_THRESHOLD = 8.0;
+    const AMBIGUOUS_THRESHOLD = 3.5;
+
+    if (bestItem) {
       const item = bestItem as KnowledgeItem;
       const endings = AI_KUN_PERSONALITY.endings;
       const ending = endings[Math.floor(Math.random() * endings.length)];
-      
-      // V19 感情・緊急度による前置きの動的生成
-      let empathy = item.empathy ? `${item.empathy}\n\n` : '';
-      if (urgency === 'high' && item.category === 'trouble') {
-          empathy = `【緊急】大変！水漏れや故障はパニックになるよね。落ち着いて聞いてね。\n\n`;
-      } else if (emotion === 'angry') {
-          empathy = `イライラさせてごめんね。すぐに役立つ情報を教えるよ！\n\n`;
-      } else if (emotion === 'sad') {
-          empathy = `落ち込まないで。私がしっかりサポートするから安心して！\n\n`;
+
+      if (maxScore >= CONFIDENCE_THRESHOLD) {
+        // --- 確信度が高い（通常回答） ---
+        
+        // V19 感情・緊急度による前置きの動的生成
+        let empathy = item.empathy ? `${item.empathy}\n\n` : '';
+        if (urgency === 'high' && item.category === 'trouble') {
+            empathy = `【緊急】大変！水漏れや故障はパニックになるよね。落ち着いて聞いてね。\n\n`;
+        } else if (emotion === 'angry') {
+            empathy = `イライラさせてごめんね。すぐに役立つ情報を教えるよ！\n\n`;
+        } else if (emotion === 'sad') {
+            empathy = `落ち込まないで。私がしっかりサポートするから安心して！\n\n`;
+        }
+
+        let content = item.content;
+        if (content.endsWith('。')) content = content.slice(0, -1);
+        
+        // V20: 次のアクションを促す提案機能
+        let suggestedTopics: string[] | undefined;
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+        if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
+        else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き', 'よくある質問'];
+        else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策', '夜間・休日の連絡'];
+        else if (item.category === 'about') suggestedTopics = ['アクセス・場所', '電話番号'];
+        else if (item.category === 'faq') suggestedTopics = ['漏水・故障の相談', '料金表'];
+        // スマホの場合はサジェストは2つくらいに絞る
+        if (suggestedTopics && isMobile) suggestedTopics = suggestedTopics.slice(0, 2);
+
+        return { 
+          response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
+          link: item.url ? { title: item.title, url: item.url } : undefined,
+          category: item.category,
+          suggestedTopics
+        };
+      } else if (maxScore >= AMBIGUOUS_THRESHOLD) {
+        // --- 確信度が微妙（もしかして？機能） ---
+        return {
+          response: `うーん…もしかして「${item.title}」のことかな？\nもしそうなら、下のボタンを押してみてね！違ったら、もう少し違う言葉で教えてもらえると嬉しいな！`,
+          category: 'general',
+          suggestedTopics: [item.title, '違う（FAQを見る）', '電話をかける']
+        };
       }
-
-      let content = item.content;
-      if (content.endsWith('。')) content = content.slice(0, -1);
-      
-      // V20: 次のアクションを促す提案機能
-      let suggestedTopics: string[] | undefined;
-      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-      if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
-      else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き', 'よくある質問'];
-      else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策', '夜間・休日の連絡'];
-      else if (item.category === 'about') suggestedTopics = ['アクセス・場所', '電話番号'];
-      else if (item.category === 'faq') suggestedTopics = ['漏水・故障の相談', '料金表'];
-      // スマホの場合はサジェストは2つくらいに絞る
-      if (suggestedTopics && isMobile) suggestedTopics = suggestedTopics.slice(0, 2);
-
-      return { 
-        response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
-        link: item.url ? { title: item.title, url: item.url } : undefined,
-        category: item.category,
-        suggestedTopics
-      };
     }
 
     // 5. フォールバック
@@ -389,7 +449,10 @@ export const AiKunChat = () => {
                     <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
                   </div>
                   <div>
-                    <h3 className="font-black text-base leading-tight">アイ君</h3>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-black text-base leading-tight">アイ君</h3>
+                      <span className="bg-white/20 px-1.5 py-0.5 rounded text-[8px] font-black tracking-wider leading-none">v21</span>
+                    </div>
                     <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">※アイ君は平気で嘘をつく事があります</p>
                   </div>
                 </div>
@@ -514,7 +577,10 @@ export const AiKunChat = () => {
                     <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-0.5 scale-125" />
                   </motion.div>
                   <div>
-                    <h3 className="font-black text-xl leading-tight">アイ君</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-black text-xl leading-tight">アイ君</h3>
+                      <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-black tracking-wider leading-none">v21</span>
+                    </div>
                     <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">※アイ君は平気で嘘をつく事があります</p>
                   </div>
                 </div>
