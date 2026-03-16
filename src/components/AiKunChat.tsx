@@ -6,19 +6,21 @@ import { X, Send, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
-  AI_KUN_KNOWLEDGE_V19, 
+  AI_KUN_KNOWLEDGE_V20, 
   SYNONYMS, 
   AI_KUN_PERSONALITY, 
   AI_KUN_CHATTER,
   KnowledgeItem,
   EmotionContext
-} from '@/constants/knowledge-base-v19';
+} from '@/constants/knowledge-base-v20';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   link?: { title: string; url: string };
+  category?: string;
+  suggestedTopics?: string[];
 }
 
 export const AiKunChat = () => {
@@ -77,18 +79,18 @@ export const AiKunChat = () => {
     }
   }, [messages, isTyping]);
 
-  const addAssistantMessage = (content: string, link?: { title: string; url: string }) => {
-    const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link };
+  const addAssistantMessage = (content: string, link?: { title: string; url: string }, category?: string, suggestedTopics?: string[]) => {
+    const newMessage: Message = { id: Date.now().toString(), role: 'assistant', content, link, category, suggestedTopics };
     setMessages(prev => [...prev, newMessage]);
   };
 
   /**
-   * V19 超超精度検索エンジン（極限進化）
-   * - 完全一致ショートカット
-   * - メタIntent（感情推論・緊急度）のサポート
-   * - タイブレーク時の厳密な優先順位付けと動的配点の緻密化
+   * V20 究極検索エンジン（極限進化）
+   * - 過去のコンテキストを参照する文脈理解
+   * - 次の質問サジェスト機能
+   * - 約200パターンの超バリエーション辞書連携
    */
-  const handleLogic = (query: string): { response: string; link?: { title: string; url: string } } => {
+  const handleLogic = (query: string, pastMessages: Message[] = []): { response: string; link?: { title: string; url: string }, category?: string, suggestedTopics?: string[] } => {
     // 0. 特殊ショートカット（雑な入力への最速回答）
     if (query === '料金' || query === '水道代') {
       return { response: '水道料金についてだね！基本料金は2ヶ月で1,815円（13/20mm）から。詳しい料金表や支払い方法はこのページを見てね！', link: { title: '水道料金表', url: '/resident/price' } };
@@ -112,8 +114,8 @@ export const AiKunChat = () => {
 
     if (!normalizedQuery) normalizedQuery = normalizeText(query); // 全部消えちゃった場合のフェイルセーフ
 
-    // 2. メタIntent（基本カテゴリ＋感情推論＋緊急度）の推定
-    let estimatedIntent: 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' = 'general';
+    // 2. メタIntent（基本カテゴリ＋感情推論＋緊急度＋文脈理解）の推定
+    let estimatedIntent: 'money' | 'procedure' | 'trouble' | 'about' | 'faq' | 'general' | 'chat' = 'general';
     let emotion: EmotionContext = 'neutral';
     let urgency: 'high' | 'normal' = 'normal';
 
@@ -121,6 +123,23 @@ export const AiKunChat = () => {
     else if (/(ひっこし|てつづき|かいし|ちゅうし|めいぎ|しんせい|かえる|あける|とめる|だうんろーど)/i.test(normalizedQuery)) estimatedIntent = 'procedure';
     else if (/(もれる|ろうすい|こわれる|しゅうり|とまる|でない|だんすい|さぎ|どろぼう|あやしい|とうけつ|にごる|あかみず|しろい)/i.test(normalizedQuery)) estimatedIntent = 'trouble';
     else if (/(どこ|でんわ|じかん|えいぎょう|やすみ|きぎょうだん|ばしょ)/i.test(normalizedQuery)) estimatedIntent = 'about';
+
+    // V20: 文脈（Context）理解によるIntent補正
+    const isShortQuery = normalizedQuery.length <= 4 || /(それ|あれ|これ|はい|いいえ|うん|ううん|もっと|くわしく|詳細)/.test(normalizedQuery);
+    let contextCategory = '';
+    
+    if (isShortQuery && pastMessages.length > 0) {
+      for (let i = pastMessages.length - 1; i >= 0; i--) {
+        if (pastMessages[i].role === 'assistant' && pastMessages[i].category && pastMessages[i].category !== 'general' && pastMessages[i].category !== 'chat') {
+          contextCategory = pastMessages[i].category as string;
+          break;
+        }
+      }
+    }
+    
+    if (contextCategory && estimatedIntent === 'general') {
+      estimatedIntent = contextCategory as any;
+    }
 
     // 感情・緊急度推論
     if (/(こわい|ふあん|たすけて|パニック|あせる)/.test(normalizeText(query))) emotion = 'anxious';
@@ -161,15 +180,15 @@ export const AiKunChat = () => {
       }
 
       if (bestChatKey && maxChatScore >= 4.0) { // 閾値調整
-        return { response: AI_KUN_CHATTER[bestChatKey].response };
+        return { response: AI_KUN_CHATTER[bestChatKey].response, category: 'chat' };
       }
     }
 
-    // 4. 実務知識検索（V19ロジック）
+    // 4. 実務知識検索（V20ロジック）
     let bestItem: KnowledgeItem | null = null;
     let maxScore = 0;
 
-    AI_KUN_KNOWLEDGE_V19.forEach(item => {
+    AI_KUN_KNOWLEDGE_V20.forEach(item => {
       let score = 0;
       let hitCount = 0;
 
@@ -258,9 +277,22 @@ export const AiKunChat = () => {
       let content = item.content;
       if (content.endsWith('。')) content = content.slice(0, -1);
       
+      // V20: 次のアクションを促す提案機能
+      let suggestedTopics: string[] | undefined;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+      if (item.category === 'money') suggestedTopics = ['料金シミュレーター', '支払い方法', '名義変更'];
+      else if (item.category === 'procedure') suggestedTopics = ['申請書のダウンロード', '使用開始の手続き', 'よくある質問'];
+      else if (item.category === 'trouble') suggestedTopics = ['指定工事店の一覧', '凍結防止対策', '夜間・休日の連絡'];
+      else if (item.category === 'about') suggestedTopics = ['アクセス・場所', '電話番号'];
+      else if (item.category === 'faq') suggestedTopics = ['漏水・故障の相談', '料金表'];
+      // スマホの場合はサジェストは2つくらいに絞る
+      if (suggestedTopics && isMobile) suggestedTopics = suggestedTopics.slice(0, 2);
+
       return { 
         response: `${empathy}「${item.title}」についてだね。${content}${ending}`,
-        link: item.url ? { title: item.title, url: item.url } : undefined
+        link: item.url ? { title: item.title, url: item.url } : undefined,
+        category: item.category,
+        suggestedTopics
       };
     }
 
@@ -268,22 +300,31 @@ export const AiKunChat = () => {
     const philosophies = AI_KUN_PERSONALITY.philosophies;
     const philosophy = philosophies[Math.floor(Math.random() * philosophies.length)];
     return { 
-      response: `ごめんね、「${query}」については、私のデータベースを隅々まで調べたけど見つからなかったよ。\nでも、こんな言葉を贈るね。「${philosophy}」\n料金・手続き・水漏れなど、短い単語で聞いてくれると答えやすいかも！`
+      response: `ごめんね、「${query}」については、私のデータベースを隅々まで調べたけど見つからなかったよ。\nでも、こんな言葉を贈るね。「${philosophy}」\n料金・手続き・トラブルなど、具体的な単語で聞いてくれると答えやすいかもしれないな！`,
+      category: 'general'
     };
+  };
+
+  const handleQuickSend = (text: string) => {
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: text };
+    setMessages(prev => [...prev, userMessage]);
+    setIsTyping(true);
+
+    setTimeout(() => {
+      setMessages(currentMessages => {
+        const { response, link, category, suggestedTopics } = handleLogic(text, currentMessages);
+        setIsTyping(false);
+        const assistantMsg: Message = { id: Date.now().toString(), role: 'assistant', content: response, link, category, suggestedTopics };
+        return [...currentMessages, assistantMsg];
+      });
+    }, 800);
   };
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: inputValue };
-    setMessages(prev => [...prev, userMessage]);
+    const text = inputValue.trim();
     setInputValue('');
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const { response, link } = handleLogic(userMessage.content);
-      setIsTyping(false);
-      addAssistantMessage(response, link);
-    }, 800);
+    handleQuickSend(text);
   };
 
   return (
@@ -384,6 +425,19 @@ export const AiKunChat = () => {
                         <ExternalLink size={13} />
                         {m.link.title}を見る
                       </Link>
+                    )}
+                    {m.suggestedTopics && m.suggestedTopics.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2 pointer-events-auto">
+                        {m.suggestedTopics.map(topic => (
+                          <button
+                            key={topic}
+                            onClick={() => handleQuickSend(topic)}
+                            className="text-[11px] font-bold bg-white text-primary-deep border border-primary-light/40 px-3 py-1.5 rounded-full shadow-sm hover:bg-primary-light/10 active:scale-95 transition-all text-left"
+                          >
+                            👉 {topic} 
+                          </button>
+                        ))}
+                      </div>
                     )}
                   </motion.div>
                 ))}
@@ -494,6 +548,19 @@ export const AiKunChat = () => {
                         <ExternalLink size={14} />
                         {m.link.title}を見る
                       </Link>
+                    )}
+                    {m.suggestedTopics && m.suggestedTopics.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2 pointer-events-auto">
+                        {m.suggestedTopics.map(topic => (
+                          <button
+                            key={topic}
+                            onClick={() => handleQuickSend(topic)}
+                            className="text-[12px] font-bold bg-white text-primary-deep border border-primary-light/40 px-3 py-1.5 rounded-full shadow-sm hover:bg-primary-light/10 hover:-translate-y-0.5 active:scale-95 transition-all outline-none text-left"
+                          >
+                            👉 {topic} 
+                          </button>
+                        ))}
+                      </div>
                     )}
                   </motion.div>
                 ))}
