@@ -237,7 +237,7 @@ export const AiKunChat = () => {
                   </div>
                   <div>
                     <h3 className="font-black text-base leading-tight">アイ君</h3>
-                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">Grand Concierge v16</p>
+                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-widest">※アイ君は平気で嘘をつく事があります</p>
                   </div>
                 </div>
                 <button 
@@ -349,7 +349,7 @@ export const AiKunChat = () => {
                   </motion.div>
                   <div>
                     <h3 className="font-black text-xl leading-tight">アイ君</h3>
-                    <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">Grand Concierge v16</p>
+                    <p className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em]">※アイ君は平気で嘘をつく事があります</p>
                   </div>
                 </div>
                 <button 
