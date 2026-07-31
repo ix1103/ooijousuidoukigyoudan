@@ -1,6 +1,6 @@
 "use client";
 
-import type { Announcement } from "@/lib/microcms";
+import type { StaticAnnouncement } from "@/data/static-content";
 import {
   AnimatePresence,
   motion,
@@ -164,14 +164,14 @@ function WaterLens({ compact = false }: { compact?: boolean }) {
       <svg viewBox="0 0 300 440" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden={compact}>
         <defs>
           <radialGradient id={`${shapeId}-glass`} cx="31%" cy="18%" r="88%">
-            <stop offset="0%" stopColor="rgba(255,255,255,.96)" />
-            <stop offset="25%" stopColor="rgba(205,242,250,.72)" />
-            <stop offset="56%" stopColor="rgba(66,177,207,.52)" />
-            <stop offset="100%" stopColor="rgba(4,52,105,.82)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,.88)" />
+            <stop offset="24%" stopColor="rgba(220,250,255,.46)" />
+            <stop offset="54%" stopColor="rgba(73,203,222,.24)" />
+            <stop offset="100%" stopColor="rgba(5,74,139,.46)" />
           </radialGradient>
           <linearGradient id={`${shapeId}-depth`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(54,210,225,.16)" />
-            <stop offset="100%" stopColor="rgba(0,35,91,.92)" />
+            <stop offset="0%" stopColor="rgba(87,232,239,.12)" />
+            <stop offset="100%" stopColor="rgba(0,44,108,.66)" />
           </linearGradient>
           <clipPath id={`${shapeId}-clip`}>
             <path d={dropPath} />
@@ -179,9 +179,13 @@ function WaterLens({ compact = false }: { compact?: boolean }) {
           <filter id={`${shapeId}-glow`} x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="9" />
           </filter>
+          <filter id={`${shapeId}-water`} x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.016 0.045" numOctaves="2" seed="7" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
         </defs>
 
-        <path d={dropPath} fill={`url(#${shapeId}-glass)`} />
+        <path d={dropPath} fill={`url(#${shapeId}-glass)`} filter={`url(#${shapeId}-water)`} />
         <g clipPath={`url(#${shapeId}-clip)`}>
           <rect x="0" y="192" width="300" height="250" fill={`url(#${shapeId}-depth)`} />
           <motion.ellipse
@@ -213,6 +217,8 @@ function WaterLens({ compact = false }: { compact?: boolean }) {
           </motion.g>
           <path d="M24 196H278" stroke="rgba(255,255,255,.72)" strokeWidth="1" />
           <path d="M52 36C22 137 31 281 94 378" fill="none" stroke="rgba(255,255,255,.35)" strokeWidth="4" />
+          <path d="M-18 154C42 127 95 179 154 151C213 123 259 161 327 132" fill="none" stroke="rgba(255,255,255,.38)" strokeWidth="2" />
+          <path d="M-18 168C42 141 95 193 154 165C213 137 259 175 327 146" fill="none" stroke="rgba(196,249,255,.25)" strokeWidth="4" />
           <motion.circle
             cx="238"
             cy="118"
@@ -294,6 +300,7 @@ function SkeletonFish({
   duration,
   size,
   reverse = false,
+  flip = false,
   className = "",
 }: {
   top: string;
@@ -301,6 +308,7 @@ function SkeletonFish({
   duration: number;
   size: number;
   reverse?: boolean;
+  flip?: boolean;
   className?: string;
 }) {
   const shouldReduceMotion = useReducedMotion();
@@ -309,25 +317,53 @@ function SkeletonFish({
     <motion.svg
       viewBox="0 0 240 96"
       initial={{ x: reverse ? "110vw" : "-28vw" }}
-      animate={shouldReduceMotion ? undefined : { x: reverse ? "-32vw" : "116vw", y: [0, -9, 5, 0] }}
+      animate={shouldReduceMotion ? undefined : { x: reverse ? "-32vw" : "116vw", y: [0, -15, 8, -5, 0], rotate: [0, reverse ? -1.2 : 1.2, reverse ? 1 : -1, 0] }}
       transition={{
         x: { duration, delay, repeat: Infinity, ease: "linear" },
-        y: { duration: 5.8, delay, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 4.9, delay, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 4.9, delay, repeat: Infinity, ease: "easeInOut" },
       }}
-      className={`pointer-events-none absolute left-0 z-[2] text-white/55 drop-shadow-[0_0_10px_rgba(181,247,255,.22)] ${className}`}
+      className={`pointer-events-none absolute left-0 z-[2] text-white/85 drop-shadow-[0_0_12px_rgba(226,255,255,.36)] ${className}`}
       style={{ top, width: size }}
       aria-hidden="true"
     >
-      <g transform={reverse ? "translate(240 0) scale(-1 1)" : undefined} fill="none" stroke="currentColor" strokeLinecap="round">
-        <path d="M42 48H194" strokeWidth="4" />
-        <path d="M194 48L229 22M194 48L229 74M206 38L229 48L206 58" strokeWidth="3.2" />
-        <path d="M55 48C67 15 103 11 129 26M55 48C68 80 104 84 129 70" strokeWidth="3" />
-        <path d="M73 48L88 23M73 48L88 73M94 48L108 18M94 48L108 78M117 48L130 23M117 48L130 73M140 48L151 30M140 48L151 66" strokeWidth="2.5" />
-        <path d="M42 48C30 28 10 33 9 48C10 63 30 68 42 48Z" strokeWidth="3.5" />
-        <circle cx="22" cy="43" r="2.5" fill="currentColor" stroke="none" />
-        <path d="M49 48L64 37M49 48L64 59" strokeWidth="2.5" />
+      <g transform={flip ? "translate(240 0) scale(-1 1)" : undefined} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 52C24 37 43 36 60 42L70 52L60 62C43 68 24 67 12 52Z" strokeWidth="3.6" />
+        <path d="M18 52H43M47 43L58 52L47 61M60 43L74 35M60 61L74 69" strokeWidth="2.3" />
+        <circle cx="30" cy="47" r="2.5" fill="currentColor" stroke="none" />
+        <g fill="currentColor" stroke="none">
+          {[42, 48, 54, 60, 66, 72].map((x, index) => <circle key={`skull-a-${x}`} cx={x} cy={index % 2 === 0 ? 37 : 67} r="3.6" />)}
+          {[47, 53, 59, 65, 71].map((x, index) => <circle key={`skull-b-${x}`} cx={x} cy={index % 2 === 0 ? 45 : 59} r="3" />)}
+        </g>
+        <path d="M70 52C107 49 163 50 207 52" strokeWidth="4.6" />
+        <path d="M82 50C87 27 91 22 96 19M96 50C102 25 108 18 114 17M113 51C120 24 128 18 135 20M132 51C140 27 149 23 157 28M151 51C161 33 171 32 180 38" strokeWidth="2.7" />
+        <path d="M82 54C87 77 92 82 98 86M98 54C104 78 111 86 118 87M116 54C123 78 132 85 140 82M136 54C145 75 155 80 164 75M154 54C164 69 174 71 182 66" strokeWidth="2.7" />
+        <path d="M108 50L99 30M131 53L123 75M160 51L151 34" strokeWidth="2.1" />
+        <path d="M205 52L235 24M205 52L235 80M216 42L238 52L216 62" strokeWidth="3.8" />
+        {[80, 94, 109, 125, 142, 160, 178, 194].map((x) => <circle key={x} cx={x} cy="52" r="3.7" fill="#06172b" strokeWidth="2.2" />)}
       </g>
     </motion.svg>
+  );
+}
+
+function DiveBubbles({ count = 20, className = "" }: { count?: number; className?: string }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
+      {Array.from({ length: count }).map((_, bubble) => {
+        const size = 4 + (bubble % 6) * 3;
+        return (
+          <motion.span
+            key={bubble}
+            animate={shouldReduceMotion ? undefined : { y: ["22vh", "-132vh"], x: [0, bubble % 2 ? -18 : 22, 0], opacity: [0, 0.7, 0] }}
+            transition={{ duration: 6.5 + (bubble % 7) * 0.9, delay: (bubble % 9) * 0.48, repeat: Infinity, ease: "linear" }}
+            className="absolute bottom-[-10%] rounded-full border border-white/70 bg-cyan-50/10 shadow-[inset_1px_1px_4px_rgba(255,255,255,.7),0_0_12px_rgba(169,247,255,.22)]"
+            style={{ left: `${3 + ((bubble * 23) % 94)}%`, width: size, height: size }}
+          />
+        );
+      })}
+    </div>
   );
 }
 
@@ -524,21 +560,18 @@ function PromiseScene({
 export function RenewalHome({
   initialAnnouncements = [],
 }: {
-  initialAnnouncements?: Announcement[];
+  initialAnnouncements?: StaticAnnouncement[];
 }) {
   const heroSceneRef = useRef<HTMLElement>(null);
   const networkSceneRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [introVisible, setIntroVisible] = useState(true);
-  const [clock, setClock] = useState<Date | null>(null);
   const announcements = initialAnnouncements;
 
   useEffect(() => {
     const introTimer = window.setTimeout(() => setIntroVisible(false), 1650);
-    const clockTimer = window.setInterval(() => setClock(new Date()), 1000);
     return () => {
       window.clearTimeout(introTimer);
-      window.clearInterval(clockTimer);
     };
   }, []);
 
@@ -562,6 +595,8 @@ export function RenewalHome({
   const portalOpacity = useTransform(heroProgress, [0, 0.48, 0.68], [1, 1, 0]);
   const missionOpacity = useTransform(heroProgress, [0.28, 0.43, 0.72, 0.87], [0, 1, 1, 0]);
   const missionY = useTransform(heroProgress, [0.28, 0.48, 0.82], ["18%", "0%", "-12%"]);
+  const plungeOpacity = useTransform(heroProgress, [0.42, 0.58, 0.86, 1], [0, 1, 0.85, 0]);
+  const plungeScale = useTransform(heroProgress, [0.42, 0.9], [0.82, 1.2]);
   const sceneWipe = useTransform(heroProgress, [0.78, 0.96], ["100%", "0%"]);
 
   const { scrollYProgress: networkProgressRaw } = useScroll({
@@ -592,10 +627,6 @@ export function RenewalHome({
   const networkTitleOpacity = useTransform(networkProgress, [0.3, 0.47, 0.76, 0.9], [0, 1, 1, 0]);
   const networkCopyOpacity = useTransform(networkProgress, [0.52, 0.68, 0.94], [0, 1, 1]);
   const depthLine = useTransform(networkProgress, [0, 1], ["0%", "100%"]);
-
-  const timeLabel = clock
-    ? clock.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", hour12: false })
-    : "--:--";
 
   return (
     <div className="bg-[#f8faf7] text-[#092f46]">
@@ -631,7 +662,7 @@ export function RenewalHome({
         <div className="sticky top-0 h-screen overflow-hidden text-white">
           <motion.div style={{ scale: backgroundScale, y: backgroundY, opacity: backgroundOpacity }} className="absolute inset-0">
             <Image
-              src="/images/water-region-hero-v2.png"
+              src="/images/water-surface-aquarium-v1.png"
               alt="地域の暮らしを支える水源と浄水施設"
               fill
               priority
@@ -646,11 +677,6 @@ export function RenewalHome({
             transition={{ duration: 18, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
             className="absolute inset-0 opacity-[0.11] [background-image:linear-gradient(rgba(255,255,255,.32)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.32)_1px,transparent_1px)] [background-size:96px_96px]"
           />
-
-          <div className="absolute right-6 top-28 z-20 hidden text-right xl:block">
-            <p className="text-sm font-black tracking-[0.18em]">{timeLabel}</p>
-            <p className="mt-1 text-[8px] font-bold tracking-[0.12em] text-white/55">SHIZUOKA, JAPAN</p>
-          </div>
 
           <SceneProgress progress={heroProgress} />
 
@@ -736,6 +762,21 @@ export function RenewalHome({
             </div>
           </motion.div>
 
+          <motion.div style={{ opacity: plungeOpacity, scale: plungeScale }} className="pointer-events-none absolute inset-0 z-[24]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_115%,rgba(38,205,211,.42),transparent_45%),linear-gradient(180deg,transparent_0%,rgba(18,160,183,.16)_55%,rgba(2,45,96,.38)_100%)]" />
+            <motion.svg
+              animate={shouldReduceMotion ? undefined : { x: ["-3%", "3%", "-3%"] }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+              viewBox="0 0 1200 220"
+              preserveAspectRatio="none"
+              className="absolute bottom-[-2%] left-[-5%] h-[38%] w-[110%] opacity-70"
+              aria-hidden="true"
+            >
+              <path d="M0 86C122 20 222 168 356 88C486 9 590 156 722 77C845 4 1004 161 1200 52V220H0Z" fill="rgba(90,225,230,.3)" />
+              <path d="M0 101C142 42 238 170 380 106C527 39 628 175 782 96C918 26 1045 152 1200 83" fill="none" stroke="rgba(235,255,255,.88)" strokeWidth="3" />
+            </motion.svg>
+          </motion.div>
+
           <div className="absolute bottom-7 left-6 z-20 flex items-center gap-4 text-[9px] font-black tracking-[0.28em] sm:left-10 xl:left-8">
             SCROLL
             <motion.span
@@ -746,15 +787,48 @@ export function RenewalHome({
             </motion.span>
           </div>
 
-          <motion.div
+          <motion.svg
             style={{ y: sceneWipe }}
-            className="absolute inset-0 z-30 bg-[linear-gradient(160deg,#e6f1dd_0%,#c2e4d4_45%,#7fc5c0_100%)]"
-          />
+            viewBox="0 0 1200 1000"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 z-30 h-full w-full"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="hero-wave-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#d9f8f2" />
+                <stop offset="35%" stopColor="#55c4cb" />
+                <stop offset="100%" stopColor="#07517e" />
+              </linearGradient>
+              <filter id="hero-wave-soft" x="-5%" y="-25%" width="110%" height="150%">
+                <feGaussianBlur stdDeviation="12" />
+              </filter>
+            </defs>
+            <path d="M0 82C95 18 177 146 286 77C391 11 479 151 595 71C711 -9 802 141 920 68C1035 -3 1116 103 1200 46V1000H0Z" fill="url(#hero-wave-fill)" />
+            <path d="M0 82C95 18 177 146 286 77C391 11 479 151 595 71C711 -9 802 141 920 68C1035 -3 1116 103 1200 46" fill="none" stroke="rgba(235,255,255,.76)" strokeWidth="18" filter="url(#hero-wave-soft)" />
+            <path d="M0 82C95 18 177 146 286 77C391 11 479 151 595 71C711 -9 802 141 920 68C1035 -3 1116 103 1200 46" fill="none" stroke="rgba(249,255,255,.92)" strokeWidth="3.5" />
+            <path d="M0 109C105 52 178 161 299 100C418 39 490 167 613 91C732 16 812 157 934 94C1050 35 1129 124 1200 77" fill="none" stroke="rgba(205,250,249,.6)" strokeWidth="8" />
+          </motion.svg>
         </div>
       </section>
 
       <section ref={networkSceneRef} id="about" className="relative h-[340vh] bg-[#d9f2e8]">
+        <div className="pointer-events-none absolute -top-20 inset-x-0 z-30 h-40 bg-[linear-gradient(180deg,rgba(7,81,126,.7),rgba(85,196,203,.32)_44%,rgba(217,242,232,0)_100%)] blur-2xl" aria-hidden="true" />
         <motion.div style={{ backgroundColor: waterDepthColor }} className="sticky top-0 h-screen overflow-hidden">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-[12] h-[32%] bg-[linear-gradient(180deg,#064d61_0%,rgba(8,113,139,.82)_28%,rgba(74,190,196,.38)_60%,rgba(217,242,232,0)_100%)]" aria-hidden="true" />
+          <motion.svg
+            animate={shouldReduceMotion ? undefined : { x: ["-3%", "3%", "-3%"] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            viewBox="0 0 1200 260"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute -left-[4%] top-0 z-[13] h-[34%] w-[108%] opacity-80"
+            aria-hidden="true"
+          >
+            <defs><filter id="depth-boundary-blur" x="-8%" y="-35%" width="116%" height="170%"><feGaussianBlur stdDeviation="10" /></filter></defs>
+            <path d="M0 80C119 11 216 151 341 79C468 8 562 152 688 73C817 -8 912 145 1042 66C1111 25 1162 50 1200 37" fill="none" stroke="rgba(206,255,251,.52)" strokeWidth="26" filter="url(#depth-boundary-blur)" />
+            <path d="M0 80C119 11 216 151 341 79C468 8 562 152 688 73C817 -8 912 145 1042 66C1111 25 1162 50 1200 37" fill="none" stroke="rgba(228,255,252,.72)" strokeWidth="3" />
+            <path d="M0 130C105 68 215 178 350 119C482 59 581 176 716 111C851 44 947 160 1063 101C1120 73 1173 90 1200 80" fill="none" stroke="rgba(175,244,240,.34)" strokeWidth="8" />
+          </motion.svg>
           <motion.div style={{ opacity: lightOpacity }} className="pointer-events-none absolute inset-0 z-[1]">
             <div className="absolute -top-[8%] left-[5%] h-[105%] w-[28%] origin-top -rotate-[9deg] bg-[linear-gradient(180deg,rgba(237,255,251,.55),rgba(152,242,238,.08)_72%,transparent)] blur-xl [clip-path:polygon(28%_0,72%_0,100%_100%,0_100%)]" />
             <div className="absolute -top-[8%] left-[36%] h-[92%] w-[18%] origin-top rotate-[7deg] bg-[linear-gradient(180deg,rgba(255,255,255,.4),rgba(179,249,244,.04)_76%,transparent)] blur-2xl [clip-path:polygon(35%_0,66%_0,100%_100%,0_100%)]" />
@@ -763,7 +837,7 @@ export function RenewalHome({
 
           <motion.div
             style={{ y: surfaceY, scale: surfaceScale, opacity: surfaceOpacity }}
-            className="pointer-events-none absolute inset-x-[-12%] top-[28%] z-20 h-[52%]"
+            className="pointer-events-none absolute inset-x-[-12%] top-[-2%] z-20 h-[52%]"
           >
             <motion.svg
               animate={shouldReduceMotion ? undefined : { x: ["-4%", "4%", "-4%"] }}
@@ -811,31 +885,7 @@ export function RenewalHome({
           </motion.div>
 
           <motion.div style={{ opacity: aquariumOpacity }} className="pointer-events-none absolute inset-0 z-[2]">
-            {Array.from({ length: 15 }).map((_, bubble) => {
-              const size = 5 + (bubble % 5) * 4;
-              return (
-                <motion.span
-                  key={bubble}
-                  animate={
-                    shouldReduceMotion
-                      ? undefined
-                      : {
-                          y: ["12vh", "-118vh"],
-                          x: [0, bubble % 2 === 0 ? 25 : -18, 0],
-                          opacity: [0, 0.58, 0],
-                        }
-                  }
-                  transition={{
-                    duration: 8 + (bubble % 6) * 1.35,
-                    delay: (bubble % 7) * 0.9,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="absolute bottom-[-12%] rounded-full border border-cyan-50/65 bg-cyan-100/10 shadow-[inset_2px_2px_5px_rgba(255,255,255,.32)]"
-                  style={{ left: `${5 + ((bubble * 17) % 91)}%`, width: size, height: size }}
-                />
-              );
-            })}
+            <DiveBubbles count={32} />
 
             <AquariumFish top="28%" delay={0} duration={19} size={105} />
             <AquariumFish top="56%" delay={5} duration={26} size={72} reverse />
@@ -1142,11 +1192,17 @@ export function RenewalHome({
       </section>
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#021a34_0%,#02152b_100%)] py-24 text-white sm:py-32 lg:py-40">
-        <UnderwaterCurrent className="opacity-50" />
+        <UnderwaterCurrent fish className="opacity-70" />
+        <DiveBubbles count={22} className="opacity-70" />
         <div className="absolute inset-0 opacity-55">
           <div className="absolute -right-[8%] -top-[40%] h-[780px] w-[780px] rounded-[48%] border border-cyan-100/12" />
           <div className="absolute -right-[2%] -top-[28%] h-[600px] w-[600px] rounded-[48%] border border-cyan-100/10" />
           <div className="absolute left-[12%] top-[18%] h-72 w-72 rounded-full bg-cyan-400/[0.055] blur-[90px]" />
+          <motion.div
+            animate={shouldReduceMotion ? undefined : { x: ["-14%", "14%", "-14%"], y: ["-4%", "7%", "-4%"], opacity: [0.12, 0.35, 0.12] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-[16%] top-[5%] h-[86%] w-[42%] origin-top rotate-[18deg] bg-[linear-gradient(180deg,rgba(216,255,255,.25),transparent_74%)] blur-2xl [clip-path:polygon(48%_0,74%_0,100%_100%,0_100%)]"
+          />
         </div>
         <div className="relative mx-auto grid max-w-[1320px] gap-14 px-5 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:px-12">
           <Reveal>
@@ -1216,8 +1272,10 @@ export function RenewalHome({
 
       <section id="contact" className="relative overflow-hidden bg-[linear-gradient(180deg,#031426_0%,#01101e_100%)] px-5 py-24 text-white sm:px-8 sm:py-32 lg:px-12 lg:py-40">
         <UnderwaterCurrent className="opacity-30" />
-        <SkeletonFish key="skeleton-mobile" top="59%" delay={0} duration={31} size={180} className="sm:hidden" />
-        <SkeletonFish key="skeleton-desktop" top="19%" delay={0} duration={31} size={220} className="hidden sm:block" />
+        <SkeletonFish key="skeleton-mobile-primary" top="59%" delay={0} duration={31} size={68} flip className="sm:hidden" />
+        <SkeletonFish key="skeleton-mobile-secondary" top="77%" delay={5} duration={23} size={48} reverse className="sm:hidden" />
+        <SkeletonFish key="skeleton-desktop-primary" top="19%" delay={0} duration={31} size={92} flip className="hidden sm:block" />
+        <SkeletonFish key="skeleton-desktop-secondary" top="49%" delay={6} duration={24} size={64} reverse className="hidden sm:block" />
         <Sparkles className="absolute -right-20 -top-20 h-72 w-72 text-cyan-100/5" strokeWidth={0.4} />
         <div className="relative mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <Reveal>

@@ -1,14 +1,18 @@
-import { createClient } from 'microcms-js-sdk';
+// microCMS連携は停止中です。公開コンテンツは static-content.ts で管理します。
 
 if (!process.env.NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN) {
   // 開発初期段階ではエラーを投げず、警告のみにしておきます（後で環境変数を設定してもらうため）
   console.warn('NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN is not defined');
 }
 
-export const client = createClient({
+export const client = {
   serviceDomain: process.env.NEXT_PUBLIC_MICROCMS_SERVICE_DOMAIN || 'example', // プレースホルダー
   apiKey: process.env.NEXT_PUBLIC_MICROCMS_API_KEY || 'xxx', // プレースホルダー
-});
+  get: async <T = { contents: never[] }>(..._args: unknown[]) => {
+    void _args;
+    return { contents: [] } as T;
+  },
+};
 
 // --- 型定義 ---
 
@@ -103,7 +107,7 @@ export type SiteStatus = {
 // News（お知らせ・入札）取得
 export const getNewsList = async (limit = 10, category?: string) => {
   try {
-    const queries: any = { limit, orders: '-publishedAt' };
+    const queries: { limit: number; orders: string; filters?: string } = { limit, orders: '-publishedAt' };
     if (category) {
       queries.filters = `category[contains]${category}`;
     }
@@ -144,7 +148,7 @@ export const getSiteStatus = async (): Promise<SiteStatus | null> => {
       queries: { limit: 1 }
     });
     return data.contents[0] || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -227,7 +231,7 @@ export const getPageBySlug = async (slug: string): Promise<PageContent | null> =
 export const getPagesByMenu = async (location: 'resident' | 'business' | 'bidding' | 'outline'): Promise<PageContent[]> => {
   try {
     // フィルタを使わず全件取得（最大100件）して、JS側で柔軟に判定する
-    const data = await client.get<{ contents: any[] }>({
+    const data = await client.get<{ contents: PageContent[] }>({
       endpoint: 'pages',
       queries: {
         limit: 100,

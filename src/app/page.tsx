@@ -1,10 +1,6 @@
 import { RenewalHome } from "@/components/RenewalHome";
-import { getMergedAnnouncements } from "@/lib/microcms";
+import { staticAnnouncements } from "@/data/static-content";
 
-export const revalidate = 300;
-
-export default async function Home() {
-  const announcements = await getMergedAnnouncements(3);
-
-  return <RenewalHome initialAnnouncements={announcements} />;
+export default function Home() {
+  return <RenewalHome initialAnnouncements={staticAnnouncements} />;
 }
