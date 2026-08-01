@@ -142,7 +142,7 @@ export const AiKunChat = () => {
         const greetingData = AI_KUN_CHATTER[greetingKey];
         
         // 友好度に応じた挨拶（配列の場合はランダム選択）
-        let baseGreeting = Array.isArray(greetingData.response) 
+        const baseGreeting = Array.isArray(greetingData.response)
           ? greetingData.response[Math.floor(Math.random() * greetingData.response.length)] 
           : greetingData.response;
           
@@ -242,7 +242,7 @@ export const AiKunChat = () => {
         .replace(/[ー〜、。！？!?,.\s　]/g, '');
     };
 
-    let normalizedQuery = normalizeText(query);
+    const normalizedQuery = normalizeText(query);
 
     // V22.2: シノニム展開（表記ゆれ・同義語の吸収）
     // ユーザーの入力にシノニムが含まれていれば、正規化されたクエリに「代表語」を裏で追加する。
@@ -562,7 +562,7 @@ export const AiKunChat = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] font-sans flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[90] font-sans flex flex-col items-end">
       
       <AnimatePresence>
         {!isOpen && proactiveMessage && (
@@ -571,7 +571,7 @@ export const AiKunChat = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.5, y: 20 }}
             onClick={() => setIsOpen(true)}
-            className="mb-8 bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative max-w-[200px] mr-2"
+            className="mb-8 hidden bg-white p-4 rounded-2xl shadow-2xl border border-primary-light/20 text-sm font-bold text-primary-deep cursor-pointer relative max-w-[200px] mr-2 sm:block"
           >
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white rotate-45 border-r border-b border-primary-light/20" />
             <div className="flex items-start gap-2">
@@ -594,7 +594,7 @@ export const AiKunChat = () => {
             <div className="bg-primary-main p-5 flex items-center justify-between text-white shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12 bg-white rounded-full overflow-hidden border-2 border-white/20">
-                  <Image src="/aikun.png" alt="アイ君" fill className="object-contain p-1 scale-110" />
+                  <Image src="/aikun.png" alt="アイ君" fill sizes="48px" className="object-contain p-1 scale-110" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -678,7 +678,7 @@ export const AiKunChat = () => {
         className="w-16 h-16 bg-white rounded-full shadow-2xl border-2 border-primary-main/20 flex items-center justify-center overflow-hidden"
       >
         <div className="w-14 h-14 relative overflow-hidden rounded-full">
-          <Image src="/aikun.png" alt="アイ君" fill className="object-contain scale-125" />
+          <Image src="/aikun.png" alt="アイ君" fill sizes="80px" className="object-contain scale-125" />
         </div>
       </motion.button>
     </div>

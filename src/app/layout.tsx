@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { RenewalHeader } from "@/components/RenewalHeader";
+import { RenewalFooter } from "@/components/RenewalFooter";
 import { EmergencyAlert } from "@/components/EmergencyAlert";
 import { BackToTop } from "@/components/BackToTop";
-import { AiKunChat } from "@/components/AiKunChat";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoJp = Noto_Sans_JP({
@@ -29,13 +28,12 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
     apple: '/favicon.svg',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover',
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -44,18 +42,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className="overflow-x-hidden">
-      <body className={`${inter.variable} ${notoJp.variable} ${notoSerifJp.variable} antialiased min-h-screen flex flex-col overflow-x-hidden w-full relative`}>
-        <div className="fixed top-0 z-50 w-full flex flex-col">
+    <html lang="ja" className="overflow-x-clip">
+      <body className={`${inter.variable} ${notoJp.variable} ${notoSerifJp.variable} antialiased min-h-screen flex flex-col overflow-x-clip w-full relative`}>
+        <div className="fixed top-0 z-[10000] w-full flex flex-col">
           <EmergencyAlert />
-          <Header />
+          <RenewalHeader />
         </div>
-        <main className="flex-grow">
+        <main className="relative flex-grow">
           {children}
         </main>
         <BackToTop />
-        <Footer />
-        <AiKunChat />
+        <RenewalFooter />
       </body>
     </html>
   );

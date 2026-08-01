@@ -1,6 +1,32 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    const contentRoutes = [
+      '/about',
+      '/about/:path*',
+      '/business',
+      '/business/:path*',
+      '/resident',
+      '/resident/:path*',
+      '/emergency',
+      '/links',
+      '/news',
+      '/news/:path*',
+      '/pages/:path*',
+      '/privacy',
+      '/recruit',
+      '/sitemap',
+      '/terms',
+    ];
+
+    return {
+      beforeFiles: contentRoutes.map((source) => ({
+        source,
+        destination: `/content${source}`,
+      })),
+    };
+  },
   async redirects() {
     return [
       // 住民向けページ（旧 → 新）
@@ -13,7 +39,6 @@ const nextConfig: NextConfig = {
       { source: '/business', destination: '/business/bidding', permanent: true },
       // 組織情報（旧 → 新）
       { source: '/about/outline', destination: '/about', permanent: true },
-      { source: '/about/business', destination: '/about', permanent: true },
       // トラブルページ（旧 → 新）
       { source: '/trouble', destination: '/resident/trouble', permanent: true },
       // 旧HPからのリンク（必要に応じて）
