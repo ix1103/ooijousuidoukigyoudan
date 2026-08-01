@@ -29,6 +29,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import {
+  AquariumAtmosphere,
+  BubbleVortex,
+  FishShoal,
+  Jellyfish,
+} from "./AquariumAtmosphere";
 
 const services = [
   {
@@ -441,6 +447,51 @@ function UnderwaterCurrent({
   );
 }
 
+function SurfaceRefraction() {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden mix-blend-screen" aria-hidden="true">
+      <motion.svg
+        animate={shouldReduceMotion ? undefined : { x: ["-6%", "4%", "-6%"], y: ["-2%", "3%", "-2%"] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        viewBox="0 0 1400 900"
+        preserveAspectRatio="none"
+        className="absolute -inset-[8%] h-[116%] w-[116%] opacity-45"
+      >
+        <defs>
+          <filter id="surface-refraction-filter" x="-12%" y="-12%" width="124%" height="124%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.026" numOctaves="2" seed="4" result="noise">
+              {!shouldReduceMotion && (
+                <animate attributeName="baseFrequency" dur="12s" values="0.008 0.026;0.012 0.018;0.008 0.026" repeatCount="indefinite" />
+              )}
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" xChannelSelector="R" yChannelSelector="B" />
+            <feGaussianBlur stdDeviation="1.4" />
+          </filter>
+          <linearGradient id="surface-refraction-glow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="42%" stopColor="rgba(211,255,255,.38)" />
+            <stop offset="55%" stopColor="rgba(132,235,246,.14)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
+        </defs>
+        <g filter="url(#surface-refraction-filter)" fill="none" stroke="url(#surface-refraction-glow)" strokeLinecap="round">
+          <path d="M-120 124C190 20 306 268 570 122C839 -26 1028 222 1520 42" strokeWidth="18" />
+          <path d="M-80 286C168 182 355 405 620 267C889 128 1094 354 1500 192" strokeWidth="9" />
+          <path d="M-140 586C128 453 365 714 674 543C944 392 1148 625 1530 441" strokeWidth="13" />
+          <path d="M-100 760C184 631 401 872 703 721C991 577 1197 777 1510 661" strokeWidth="7" />
+        </g>
+      </motion.svg>
+      <motion.div
+        animate={shouldReduceMotion ? undefined : { x: ["-34%", "120%"], opacity: [0, 0.25, 0] }}
+        transition={{ duration: 8.5, repeat: Infinity, repeatDelay: 2.5, ease: "easeInOut" }}
+        className="absolute -top-[20%] h-[140%] w-[18%] rotate-[12deg] bg-[linear-gradient(90deg,transparent,rgba(226,255,255,.25),transparent)] blur-2xl"
+      />
+    </div>
+  );
+}
+
 function PromiseScene({
   item,
   position,
@@ -630,6 +681,7 @@ export function RenewalHome({
 
   return (
     <div className="bg-[#f8faf7] text-[#092f46]">
+      <AquariumAtmosphere density={58} tone="surface" />
       <AnimatePresence>
         {introVisible && (
           <motion.div
@@ -672,6 +724,7 @@ export function RenewalHome({
           </motion.div>
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(1,25,68,.12),rgba(1,32,75,.42))]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_53%_46%,transparent_0%,rgba(1,29,69,.18)_42%,rgba(1,23,59,.58)_100%)]" />
+          <SurfaceRefraction />
           <motion.div
             animate={shouldReduceMotion ? undefined : { backgroundPositionX: ["0%", "100%"] }}
             transition={{ duration: 18, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
@@ -764,6 +817,7 @@ export function RenewalHome({
 
           <motion.div style={{ opacity: plungeOpacity, scale: plungeScale }} className="pointer-events-none absolute inset-0 z-[24]">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_115%,rgba(38,205,211,.42),transparent_45%),linear-gradient(180deg,transparent_0%,rgba(18,160,183,.16)_55%,rgba(2,45,96,.38)_100%)]" />
+            <BubbleVortex className="opacity-90" />
             <motion.svg
               animate={shouldReduceMotion ? undefined : { x: ["-3%", "3%", "-3%"] }}
               transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
@@ -890,6 +944,8 @@ export function RenewalHome({
             <AquariumFish top="28%" delay={0} duration={19} size={105} />
             <AquariumFish top="56%" delay={5} duration={26} size={72} reverse />
             <AquariumFish top="72%" delay={10} duration={22} size={88} />
+            <FishShoal className="left-0 top-[20%] w-[330px] opacity-70 sm:w-[480px]" />
+            <Jellyfish className="right-[7%] top-[18%] w-24 opacity-70 sm:w-36" delay={1.4} duration={13} />
           </motion.div>
 
           <motion.div
@@ -1020,6 +1076,9 @@ export function RenewalHome({
       <section id="promise" className="relative overflow-clip bg-[#061f3b] text-white">
         <div className="relative flex min-h-screen items-center overflow-hidden px-5 py-24 sm:px-8 lg:px-12">
           <UnderwaterCurrent fish className="opacity-60" />
+          <Jellyfish className="-right-7 top-[18%] w-36 opacity-55 sm:right-[8%] sm:w-52" delay={0.5} duration={14} />
+          <Jellyfish className="left-[4%] top-[62%] w-20 opacity-35 sm:w-28" delay={3} duration={17} />
+          <FishShoal className="left-0 top-[48%] w-[360px] opacity-55 sm:w-[520px]" reverse />
           <motion.div
             animate={shouldReduceMotion ? undefined : { x: ["0%", "-50%"] }}
             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
